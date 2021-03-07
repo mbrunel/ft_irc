@@ -1,2 +1,1 @@
-# ft_irc
-42 project
+# ft_irc - A 42 project
