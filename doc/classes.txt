@@ -1,0 +1,91 @@
+// SSL settings used by one or more Listener
+SslConfig:
+	(private)
+	- _certificatePath: string
+	- _certificateKeyPath: string
+
+	(public)
+	certificatePath(): const string&
+	certificateKeyPath(): const string&
+
+// A generic two-way connection-based socket both compatible with IPv4 and IPv6 network layer
+Socket:
+	(protected)
+	- _fd: int
+	- _addr: struct sockaddr_in6
+
+	(public)
+	Socket()
+	Socket(fd: int)
+
+// A client connected to a Listener using TCP
+TcpSocket <- Socket:
+	(private)
+	- _isReadable: bool
+	- _ip: string
+	- _readBuf: string
+	- _writeBuf: string
+
+	virtual flush()
+
+	(public)
+	TcpSocket(fd: int)
+	hostname(): string
+	ip(): string
+	port(): uint16_t
+	write(const string &data)
+	virtual readLine()
+
+// A client using a secure connection
+SslSocket <- TcpSocket:
+	(private)
+	- _session: SSL*
+	- _state: SslSocket::State
+
+	flush()
+
+	(public)
+	- enum State { FAILURE, SUCCESS, DOIT_FAIRE_SES_PREUVES }
+
+	SslSocket(fd: int, ctx: SSL_CTX*)
+	readLine(): string
+	state(): SslSocket::State
+
+// Implements a socket listening on any port
+Listener <- Socket:
+	(protected)
+	- _maxConnections: size_t
+
+	(public)
+	Listener(port: uint16_t, maxConnections = 1024: size_t)
+	maxConnections(): size_t const
+	virtual accept(): TcpSocket*
+
+// A specific Listener using SSL
+SslListener <- Listener:
+	(global)
+	- _sslInit: bool
+	(private)
+	- _ctx: SSL_CTX*
+
+	(public)
+	SslListener(port: uint16_t, maxConnections = 1024: size_t, config: const SslConfig&)
+	accept(): TcpSocket*
+
+// A TCP server supporting multiple clients on different ports
+TcpServer:
+	(private)
+	- _clients: list<TcpSocket*>
+	- _listeners: set<Listener*>
+	- _incoming: list<TcpSocket*>
+	- _readable: list<TcpSocket*>
+	- _writable: list<TcpSocket*>
+
+	(public)
+	TcpServer()
+	disconnect(client: TcpSocket*)
+	listen(listener: Listener*)
+	nextIncomingConnection(): TcpSocket*
+	nextPendingConnection(): TcpSocket*
+	sendData()
+	waitData()
