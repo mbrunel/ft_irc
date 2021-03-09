@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 13:11:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/07 13:34:30 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/07 15:04:18 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,19 @@
 
 class SslSocket : public TcpSocket
 {
-public:
+  public:
 	enum State { FAILURE, SUCCESS, DOIT_FAIRE_SES_PREUVES };
 
 	SslSocket(int fd, SSL_CTX *ctx);
 	virtual ~SslSocket();
 
 	std::string			readLine();
-	SslSocket::State	state();
+	SslSocket::State	state() const;
 
-protected:
+  protected:
 	void flush();
 
-private:
+  private:
 	SSL		*_session;
 	State	_state;
 

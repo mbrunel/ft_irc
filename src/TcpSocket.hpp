@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 12:56:19 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/07 13:09:26 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/07 15:03:46 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,20 @@
 
 class TcpSocket : public Socket
 {
-public:
+  public:
 	TcpSocket(int fd);
 	virtual ~TcpSocket();
 
-	const std::string	&hostname();
-	const std::string	&ip();
-	uint16_t			port();
+	const std::string	&hostname() const;
+	const std::string	&ip() const;
+	uint16_t			port() const;
 	void				write(const std::string &data);
 	virtual std::string	readLine();
 
-protected:
+  protected:
 	virtual void flush();
 
-private:
+  private:
 	std::string	_hostname;
 	std::string	_ip;
 	bool		_isReadable;

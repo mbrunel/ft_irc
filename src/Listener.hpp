@@ -1,34 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Socket.hpp                                         :+:      :+:    :+:   */
+/*   Listener.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/07 12:39:08 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/07 13:10:11 by asoursou         ###   ########.fr       */
+/*   Created: 2021/03/07 13:02:49 by mbrunel           #+#    #+#             */
+/*   Updated: 2021/03/07 15:02:31 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <netinet/in.h>
+#include <stdint.h>
+#include "TcpSocket.hpp"
 
-typedef struct sockaddr_in6	t_sockaddr_in6;
-typedef struct sockaddr_in	t_sockaddr_in;
-typedef struct sockaddr		t_sockaddr;
-
-class Socket
+class Listener : public Socket
 {
-public:
-	Socket();
-	Socket(int fd);
-	virtual ~Socket();
+  public:
+	Listener(uint16_t port, size_t maxConnections = 1024);
+	virtual ~Listener();
 
-protected:
-	int				_fd;
-	t_sockaddr_in6	_addr;
+	size_t				maxConnections() const;
+	virtual TcpSocket*	accept();
 
-private:
-	Socket(const Socket &other);
-	Socket &operator=(const Socket &other);
+  protected:
+	size_t	_maxConnections;
+
+	Listener(const Listener &);
+	Listener &operator=(const Listener &);
 };
