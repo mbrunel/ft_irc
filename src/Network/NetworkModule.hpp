@@ -1,31 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   NetworkModule.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/07 11:30:18 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/22 13:24:33 by mbrunel          ###   ########.fr       */
+/*   Created: 2021/03/07 13:46:48 by asoursou          #+#    #+#             */
+/*   Updated: 2021/03/12 02:25:42 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcServer.hpp"
-#include <iostream>
-
-int main()
-{
-	IrcServer irc;
-	irc.setMaxConnections(5);
-	irc.setVerbose(true);
-  try {
-	SslContext ctx("ircserv.ssl.crt", "ircserv.ssl.key");
-	irc.listen("6667");
-	irc.listen("6697", ctx.ctx());
-	irc.run();
-  } catch (std::exception &e) {
-		irc.log(e.what(), true);
-		return (1);
-	}
-	return (0);
-}
+#pragma once
+#include "SslListener.hpp"
+#include "SslSocket.hpp"
+#include "TcpServer.hpp"
+#include "SslContext.hpp"

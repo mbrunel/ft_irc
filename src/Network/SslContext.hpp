@@ -1,31 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   SslContext.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/07 11:30:18 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/22 13:24:33 by mbrunel          ###   ########.fr       */
+/*   Created: 2021/03/09 01:18:20 by mbrunel           #+#    #+#             */
+/*   Updated: 2021/03/14 14:56:44 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcServer.hpp"
-#include <iostream>
+#pragma once
 
-int main()
+#include <string>
+#include <openssl/ssl.h>
+#include "exceptions.hpp"
+
+struct SslContext
 {
-	IrcServer irc;
-	irc.setMaxConnections(5);
-	irc.setVerbose(true);
-  try {
-	SslContext ctx("ircserv.ssl.crt", "ircserv.ssl.key");
-	irc.listen("6667");
-	irc.listen("6697", ctx.ctx());
-	irc.run();
-  } catch (std::exception &e) {
-		irc.log(e.what(), true);
-		return (1);
-	}
-	return (0);
-}
+  public :
+	SslContext(const char *certificatePath, const char *keyPath);
+	~SslContext() throw();
+
+	SSL_CTX *ctx();
+
+  private :
+	SSL_CTX *_ctx;
+};

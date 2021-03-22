@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+         #
+#    By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/07 11:33:08 by asoursou          #+#    #+#              #
-#    Updated: 2021/03/14 12:58:45 by asoursou         ###   ########.fr        #
+#    Updated: 2021/03/22 13:30:32 by mbrunel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ SRC			:= $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
 CXX			:= clang++
 CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -std=c++98 -MMD -MP -g \
 			   $(foreach i,$(SUB_DIR:src/%=%),-I./src/$i)
-LDFLAGS		:= #-lcrypto -lssl
+LDFLAGS		:= -lcrypto -lssl
 DOC_DIR		:= doc/html
 OBJ			:= $(SRC:src/%.cpp=$(BUILD_DIR)/%.o)
 C_RED		:= \033[31m
