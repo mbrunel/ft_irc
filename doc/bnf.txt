@@ -1,0 +1,47 @@
+; Terminals
+alnum      := digit | alpha
+alpha      := upper | 'a' .. 'z'
+xdigit     := digit | 'A' .. 'F' | 'a' .. 'f'
+digit      := '0' .. '9'
+upper      := 'A' .. 'Z'
+space      := '\r' | '\n' | ' '
+hspace     := ' '
+special    := '[' | ']' | '\' | '`' | '_' | '^' | '{' | '|' | '}'
+wildone    := '?'
+wildmany   := '*'
+servername = hostname
+host       = hostname | hostaddr
+hostname   = shortname *( '.' shortname )
+shortname  = alnum *( alnum | '-' ) alnum
+hostaddr   = ip4addr | ip6addr
+ip4addr    = +3digit 3('.' +3digit)
+ip6addr    = +4xdigit 7( ':' +4xdigit )
+nickname   = ( alpha | special ) *8( alnum | special | '-' )
+
+; 1st step: extract command
+message    = [ ':' prefix hspace ] command [ params ] "\r\n"
+prefix     = servername | ( nickname [ [ '!' user ] '@' host ] )
+user       = +!( NUL | space | '@' )
+command    = +alpha | 3digit
+params     = *14( hspace middle ) [ hspace ':' trailing ] |
+             14( hspace middle ) [ hspace [ ':' ] trailing ]
+middle     = nospcrlfcl *( ':' | nospcrlfcl )
+trailing   = *( ':' | ' ' | nospcrlfcl )
+nospcrlfcl = !( NUL | space | ':' )
+
+; 2nd step: extract arguments
+target     = nickname | servername
+msgtarget  = msgto *( ',' msgto )
+msgto      = channel | targetmask | nickname
+channel    = ( '#' | '+' | '&' | ( '!' channelid ) ) chanstring [ ':' chanstring ]
+targetmask = ( '$' | '#' ) mask
+chanstring = !( NUL | space | BELL | ',' | ':' )
+channelid  = 5( digit | upper )
+key        = +24!( NUL | space | '\f' | '\t' | '\v' )
+
+; 3rd step: wildcards matching
+mask       = *( nowild | noesc wildone | noesc wildmany )
+nowild     = !( NUL, wildone, wildmany )
+noesc      = !( NUL, '\' )
+matchone   = !NUL
+matchmany  = *matchone

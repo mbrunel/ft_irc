@@ -1,28 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   MsgTo.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/07 11:30:18 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/19 20:24:02 by asoursou         ###   ########.fr       */
+/*   Created: 2021/03/19 19:46:23 by asoursou          #+#    #+#             */
+/*   Updated: 2021/03/19 20:18:57 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include "Message.hpp"
+#include "MsgTo.hpp"
 
-int main(int ac, char **av)
+MsgTo::MsgTo()
+{}
+
+MsgTo::~MsgTo()
+{}
+
+MsgTo::Type MsgTo::type() const
 {
-	if (ac == 2)
-	{
-		Message msg(std::string(av[1]) + '\n');
+	return (_type);
+}
 
-		if (msg.isValid())
-			std::cout << msg << std::endl;
-		else
-			std::cerr << "error: Invalid message" << std::endl;
-	}
-	return (0);
+const std::string &MsgTo::target() const
+{
+	return (_target);
+}
+
+bool MsgTo::interpret(Context &o)
+{
+	if (!asNickname(o, _target))
+		return (reject());
+	_type = NICKNAME;
+	return (accept());
+}
+
+std::ostream &operator<<(std::ostream &o, const MsgTo &m)
+{
+	return (o << m.target());
 }

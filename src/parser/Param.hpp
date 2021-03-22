@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Param.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/07 11:30:18 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/19 20:24:02 by asoursou         ###   ########.fr       */
+/*   Created: 2021/03/19 19:24:26 by asoursou          #+#    #+#             */
+/*   Updated: 2021/03/20 15:55:23 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include "Message.hpp"
+#pragma once
+#include <list>
+#include "MsgTo.hpp"
 
-int main(int ac, char **av)
+class Param : public std::string
 {
-	if (ac == 2)
-	{
-		Message msg(std::string(av[1]) + '\n');
+public:
+	Param(const std::string &value);
+	virtual ~Param();
 
-		if (msg.isValid())
-			std::cout << msg << std::endl;
-		else
-			std::cerr << "error: Invalid message" << std::endl;
-	}
-	return (0);
-}
+	MsgTo				asMsgTo() const;
+	std::list<MsgTo>	asMultipleMsgTo() const;
+};

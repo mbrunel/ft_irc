@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Listener.hpp                                       :+:      :+:    :+:   */
+/*   MsgTo.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/07 13:02:49 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/07 15:02:31 by asoursou         ###   ########.fr       */
+/*   Created: 2021/03/19 19:46:13 by asoursou          #+#    #+#             */
+/*   Updated: 2021/03/19 20:16:44 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <stdint.h>
-#include "TcpSocket.hpp"
+#include <iostream>
+#include "Expression.hpp"
 
-class Listener : public Socket
+class MsgTo : public Expression
 {
-  public:
-	Listener(uint16_t port, size_t maxConnections = 1024);
-	virtual ~Listener();
+public:
+	enum Type { CHANNEL, NICKNAME, TARGETMASK };
 
-	size_t				maxConnections() const;
-	virtual TcpSocket*	accept();
+	MsgTo();
+	virtual ~MsgTo();
 
-  protected:
-	size_t	_maxConnections;
+	Type				type() const;
+	const std::string	&target() const;
+	bool				interpret(Context &o);
 
-	Listener(const Listener &);
-	Listener &operator=(const Listener &);
+private:
+	Type		_type;
+	std::string	_target;
 };
+
+std::ostream	&operator<<(std::ostream &o, const MsgTo &m);
