@@ -34,3 +34,6 @@ ircserv
 
 # Documentation
 doc/html
+
+# SSL
+*.ssl.*
