@@ -6,13 +6,15 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 18:50:36 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 21:21:31 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 22:22:47 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "TcpSocket.hpp"
+
+// class that allows to communicate with an unknown connection
 
 class Sender
 {
@@ -27,5 +29,5 @@ class Sender
 
   private:
 	Type		_type;
-	TcpSocket	*_socket;
+	TcpSocket	*_socket; //only here and not in user anymore
 };

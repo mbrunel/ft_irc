@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 22:01:38 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 22:26:27 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void IrcServer::run() throw()
 			Message msg(line);
 			Sender *sender;
 			if (!(sender = findSender(msg.prefix(), Connection)))
-				{ srv.disconnect(Connection); continue ; }
+				{ srv.disconnect(Connection); continue ; } //disconnect if unknown connection sent a msg
 			exec(sender, msg);
 		}
 	}
