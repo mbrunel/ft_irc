@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:24:31 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 18:36:53 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ public:
 	const State			&state() const;
 	void				setNickname(const std::string &nickname);
 	void				setUsername(const std::string &username);
+	void				setRealname(const std::string &realname);
 	void				setState(const State &state);
 
 protected:

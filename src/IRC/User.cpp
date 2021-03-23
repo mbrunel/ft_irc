@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:25:19 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 18:38:11 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,11 @@ void User::setNickname(const std::string &nickname)
 void User::setUsername(const std::string &username)
 {
 	_username = username;
+}
+
+void User::setRealname(const std::string &realname)
+{
+	_realname = realname;
 }
 
 void User::setState(const State &state)

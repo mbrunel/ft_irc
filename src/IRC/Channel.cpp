@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 17:31:47 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 18:50:01 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ MemberMode::~MemberMode()
 {}
 
 Channel::Channel(const std::string &name) :
-_name(name)
+_name(name), _isLocal(name.size() > 0 && name[0] == '&')
 {}
 
 Channel::~Channel()
@@ -81,6 +81,11 @@ const ChannelMode &Channel::mode() const
 	return (_mode);
 }
 
+bool Channel::isLocal() const
+{
+	return (_isLocal);
+}
+
 void Channel::setTopic(const std::string &topic)
 {
 	_topic = topic;
@@ -89,9 +94,4 @@ void Channel::setTopic(const std::string &topic)
 void Channel::setKey(const std::string &key)
 {
 	_key = key;
-}
-
-bool Channel::isLocal() const
-{
-	return (_name.size() > 0 && _name[0] == '&');
 }

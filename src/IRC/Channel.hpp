@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 17:18:20 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 18:47:00 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,11 @@ public:
 	MemberMode			&addUser(User *user);
 	void				broadcast(User *user, const std::string &message);
 	void				delUser(User *user);
-	bool				isLocal() const;
 	const std::string	&name() const;
 	const std::string	&topic() const;
 	const std::string	&key() const;
 	const ChannelMode	&mode() const;
+	bool				isLocal() const;
 	void				setTopic(const std::string &topic);
 	void				setKey(const std::string &key);
 
@@ -74,6 +74,7 @@ private:
 	std::string			_topic;
 	std::string			_key;
 	ChannelMode			_mode;
+	bool				_isLocal;
 	t_MemberMap			_members;
 
 	//size_t					_limit;
