@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 15:07:46 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 17:18:20 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,7 @@
 #include "Mode.hpp"
 #include "User.hpp"
 
-class Membership : public Mode
-{
-public:
-	enum Flag
-	{
-		CREATOR = 1,
-		OPERATOR = 1 << 2,
-		VOICE = 1 << 3
-	};
-
-	Membership();
-	virtual ~Membership();
-};
-
-class Channel : public Mode
+class ChannelMode : public Mode
 {
 public:
 	enum Flag
@@ -46,24 +32,49 @@ public:
 		TOPIC_SETTABLE_BY_CHANOP = 1 << 9
 	};
 
+	ChannelMode(unsigned flags = 0);
+	virtual ~ChannelMode();
+};
+
+class MemberMode : public Mode
+{
+public:
+	enum Flag
+	{
+		CREATOR = 1,
+		OPERATOR = 1 << 2,
+		VOICE = 1 << 3
+	};
+
+	MemberMode(unsigned flags = 0);
+	virtual ~MemberMode();
+};
+
+class Channel : public Mode
+{
+public:
 	Channel(const std::string &name);
 	virtual ~Channel();
 
-	Membership			&addUser(User *user);
+	MemberMode			&addUser(User *user);
+	void				broadcast(User *user, const std::string &message);
+	void				delUser(User *user);
 	bool				isLocal() const;
 	const std::string	&name() const;
 	const std::string	&topic() const;
 	const std::string	&key() const;
+	const ChannelMode	&mode() const;
 	void				setTopic(const std::string &topic);
 	void				setKey(const std::string &key);
 
 private:
-	typedef std::map<User *, Membership>	t_MembershipMap;
+	typedef std::map<User*, MemberMode>	t_MemberMap;
 
 	const std::string	_name;
 	std::string			_topic;
 	std::string			_key;
-	t_MembershipMap		_members;
+	ChannelMode			_mode;
+	t_MemberMap			_members;
 
 	//size_t					_limit;
 	//std::list<std::string>	_banMasks;
