@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 14:02:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/20 15:37:12 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 13:53:42 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void Message::parseTrailing(Context &o)
 
 bool Message::interpret(Context &o)
 {
-	if ((*o == ':' && (!_prefix.interpret(++o) || *o != ' ')) ||
-	!asCommand(++o, _command))
+	if ((*o == ':' && (!_prefix.interpret(++o) || *(o++) != ' ')) ||
+	!asCommand(o, _command))
 		return (reject());
 	for (size_t i = 14; *o == ' '; --i)
 		if (*(++o) == ':' || !i)
