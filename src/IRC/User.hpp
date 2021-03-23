@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/22 13:20:27 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 14:57:53 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 class TcpSocket;
 
-class UserMode
+class User : public Mode
 {
 public:
 	enum Flag
@@ -30,21 +30,13 @@ public:
 		MARK = 1 << 7
 	};
 
-	UserMode();
-	~UserMode();
-
-	const Flag	isSet(const Flag flag) const;
-	void		setFlag(const Flag flag);
-	void		unsetFlag(const Flag flag);
-
-private:
-	unsigned _flags;
-};
-
-class User
-{
-public:
-	enum State { NEED_PASS, NEED_NICK, NEED_USER, READY };
+	enum State
+	{
+		NEED_PASS,
+		NEED_NICK,
+		NEED_USER,
+		READY
+	};
 
 	User(TcpSocket *socket);
 	virtual ~User();
@@ -52,8 +44,7 @@ public:
 	bool			isAway() const;
 	RemoteServer	*makeRemoteServer();
 	void			setState(const State state);
-	const State		state() const;
-	const UserMode	&umode() const;
+	State			state() const;
 
 protected:
 	TcpSocket	*_socket;
@@ -62,7 +53,6 @@ protected:
 	std::string _host;
 	std::string _realname;
 	unsigned	_servertoken;
-	unsigned	_umode;
 	unsigned	_hopcount;
 	State		_state;
 

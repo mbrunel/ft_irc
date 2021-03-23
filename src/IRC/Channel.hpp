@@ -6,16 +6,31 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 13:46:13 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 15:07:46 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <list>
 #include <map>
 #include <string>
+#include "Mode.hpp"
+#include "User.hpp"
 
-class ChannelMode
+class Membership : public Mode
+{
+public:
+	enum Flag
+	{
+		CREATOR = 1,
+		OPERATOR = 1 << 2,
+		VOICE = 1 << 3
+	};
+
+	Membership();
+	virtual ~Membership();
+};
+
+class Channel : public Mode
 {
 public:
 	enum Flag
@@ -31,56 +46,25 @@ public:
 		TOPIC_SETTABLE_BY_CHANOP = 1 << 9
 	};
 
-	ChannelMode(const Flag flag = 0);
-	~ChannelMode();
-
-	const Flag	isSet(const Flag flag) const;
-	void		setFlag(const Flag flag);
-	void		unsetFlag(const Flag flag);
-
-private:
-	unsigned	_flags;
-};
-
-class MembershipMode
-{
-public:
-	enum Flag
-	{
-		CREATOR = 1,
-		OPERATOR = 1 << 2,
-		VOICE = 1 << 3
-	};
-
-	MembershipMode();
-	~MembershipMode();
-
-	const Flag	isSet(const Flag flag) const;
-	void		setFlag(const Flag flag);
-	void		unsetFlag(const Flag flag);
-
-private:
-	unsigned	_flags;
-};
-
-class Channel : public ChannelMode
-{
-public:
 	Channel(const std::string &name);
-	~Channel();
+	virtual ~Channel();
 
-	void				addUser();
+	Membership			&addUser(User *user);
+	bool				isLocal() const;
 	const std::string	&name() const;
 	const std::string	&topic() const;
-	bool				isLocal() const;
-	void				setKey(const std::string &topic);
+	const std::string	&key() const;
 	void				setTopic(const std::string &topic);
+	void				setKey(const std::string &key);
 
 private:
-	const std::string		_name;
-	ChannelMode				_mode;
-	std::string				_topic;
-	std::string				_key;
+	typedef std::map<User *, Membership>	t_MembershipMap;
+
+	const std::string	_name;
+	std::string			_topic;
+	std::string			_key;
+	t_MembershipMap		_members;
+
 	//size_t					_limit;
 	//std::list<std::string>	_banMasks;
 	//std::list<std::string>	_exceptionMasks;
