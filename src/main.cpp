@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 11:30:18 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 14:39:41 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 15:23:03 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int main()
 	IrcServer irc;
 	irc.setMaxConnections(5);
 	irc.setVerbose(true);
+	//irc.setLogDestination("logfile.txt");
   try {
 	SslContext ctx("ircserv.ssl.crt", "ircserv.ssl.key");
 	irc.listen("6667");

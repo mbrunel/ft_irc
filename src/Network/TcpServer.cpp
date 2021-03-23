@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 01:29:06 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 14:37:59 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 15:13:58 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int abortFd = -1;
 
-TcpServer::TcpServer():_maxConnections(1024), _verbose(true)
+TcpServer::TcpServer():_maxConnections(1024), _verbose(true), _log(std::cerr.rdbuf())
 {
 	_hint.ai_family = AF_UNSPEC;
 	_hint.ai_socktype = SOCK_STREAM;
@@ -29,6 +29,8 @@ TcpServer::~TcpServer() throw()
 		delete *it;
 	for (std::list<TcpSocket *>::iterator it = _connections.begin(); it != _connections.end(); it++)
 		delete *it;
+	if (_logfile.is_open())
+		_logfile.close();
 }
 
 void TcpServer::setUpListener(addrinfo *a, Listener *listener)
@@ -58,12 +60,13 @@ std::string timestamp() throw()
 
 void TcpServer::setLogDestination(const std::string &destfile)
 {
-	_log.open(destfile.c_str(), std::ios::out);
+	_logfile.open(destfile.c_str(), std::ios::out);
+	_log.rdbuf(_logfile.rdbuf());
 }
 
 std::ostream &TcpServer::log() throw()
 {
-	return ((_log.is_open() ? _log : std::cerr) << timestamp() << " ");
+	return (_log << timestamp() << " ");
 }
 
 void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)

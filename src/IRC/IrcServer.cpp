@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 14:40:40 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 14:43:07 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ IrcServer::~IrcServer() {}
 void IrcServer::setMaxConnections(size_t MaxConnections) { srv.setMaxConnections(MaxConnections); }
 
 void IrcServer::setVerbose(bool verbose) { srv.setVerbose(verbose); }
+
+void IrcServer::setLogDestination(const std::string &destfile) { srv.setLogDestination(destfile); }
 
 std::ostream &IrcServer::log() throw() { return srv.log(); }
 

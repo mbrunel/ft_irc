@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 12:49:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 14:21:18 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 15:08:02 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ class TcpServer
 	std::list<TcpSocket*>	_pending;
 	size_t					_maxConnections;
 	bool					_verbose;
-	std::ofstream			_log;
+	std::ostream			_log;
+	std::ofstream			_logfile;
 
 	void setUpListener(addrinfo *a, Listener *listener);
 

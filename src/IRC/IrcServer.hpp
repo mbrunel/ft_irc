@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 14:31:08 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 14:44:31 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class IrcServer
 
 	void			setMaxConnections(size_t setMaxConnections);
 	void			setVerbose(bool verbose);
+	void			setLogDestination(const std::string &destfile);
 	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
 
 	std::ostream	&log() throw();
