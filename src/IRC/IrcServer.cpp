@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/22 13:28:10 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 13:35:42 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,9 @@ void IrcServer::run() throw()
 			if (!Connection->readLine(line))
 				continue ;
 			srv.log(line);
+			Message msg(line);
+			srv.log(line);
+			std::cout << msg << std::endl;
 			Connection->writeLine("OK");
 		}
 	}

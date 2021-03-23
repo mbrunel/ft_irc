@@ -6,13 +6,14 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/22 13:27:37 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 13:36:18 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "NetworkModule.hpp"
+#include "Message.hpp"
 #include <map>
 #include <set>
 

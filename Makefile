@@ -6,14 +6,14 @@
 #    By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/07 11:33:08 by asoursou          #+#    #+#              #
-#    Updated: 2021/03/22 13:30:32 by mbrunel          ###   ########.fr        #
+#    Updated: 2021/03/23 13:35:08 by mbrunel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		:= ircserv
 BUILD_DIR	:= .build
 SUB_DIR		:= $(dir $(wildcard src/*/.))
-SRC			:= $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
+SRC			:= $(wildcard src/*/*/*.cpp) $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
 CXX			:= clang++
 CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -std=c++98 -MMD -MP -g \
 			   $(foreach i,$(SUB_DIR:src/%=%),-I./src/$i)
