@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 01:41:30 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/15 15:03:05 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 13:48:05 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,16 @@ void TcpSocket::writeLine(const std::string &data) throw()
 	_writeBuf += data + "\n";
 }
 
-int TcpSocket::readLine(std::string &line) throw()
+bool TcpSocket::readLine(std::string &line) throw()
 {
 	line = "";
-	size_t sep = _readBuf.find_first_of('\n');
-	if (sep == std::string::npos)
-		return (0);
-	line = _readBuf.substr(0, sep);
+	size_t sep;
+	if ((sep = _readBuf.find_first_of('\n')) == std::string::npos)
+		if ((sep = _readBuf.find_first_of('\r')) == std::string::npos)
+			return false;
+	line = _readBuf.substr(0, sep + 1);
 	_readBuf.erase(0, sep + 1);
-	return (1);
+	return (true);
 }
 
 int TcpSocket::IO()

@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 12:56:19 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/15 14:48:03 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 13:47:23 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class TcpSocket : public Socket
 	uint16_t			port() const;
 
 	void				writeLine(const std::string &data) throw();
-	int					readLine(std::string &line) throw();
+	bool				readLine(std::string &line) throw();
 	virtual int			IO();
 
   protected:
