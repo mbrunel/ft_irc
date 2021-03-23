@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 17:20:47 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 17:31:47 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void Channel::broadcast(User *user, const std::string &message)
 	std::string buf;
 	User		*u;
 
-	buf = ':' + user->nickname() + " PRIVMSG " + _name + ' ' + message;
+	buf = ':' + user->nickname() + " PRIVMSG " + _name + " :" + message;
 	for (t_MemberMap::iterator i = _members.begin(); i != _members.end(); ++i)
 		if (!(u = i->first)->isRemote())
 			u->socket()->writeLine(buf);

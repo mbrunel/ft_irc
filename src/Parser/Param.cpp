@@ -6,11 +6,12 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:30 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/20 15:56:53 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 18:23:37 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Param.hpp"
+#include "Parser.hpp"
 
 Param::Param(const std::string &value) :
 std::string(value)
@@ -36,14 +37,7 @@ std::list<MsgTo> Param::asMultipleMsgTo() const
 
 	while (*c)
 	{
-		try
-		{
-			l.push_back(MsgTo());
-		}
-		catch(const std::exception &e)
-		{
-			(void)e;
-		}
+		l.push_back(MsgTo());
 		if (!l.back().interpret(c) || (*c && *c != ','))
 		{
 			l.clear();
@@ -52,4 +46,13 @@ std::list<MsgTo> Param::asMultipleMsgTo() const
 		++c;
 	}
 	return (l);
+}
+
+std::string Param::asNickname() const
+{
+	std::string	s;
+	Context	c(*this);
+
+	Parser::asNickname(c, s);
+	return (s);
 }

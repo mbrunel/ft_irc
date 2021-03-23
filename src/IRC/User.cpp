@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 17:26:46 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 18:25:19 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,8 @@ Mode(flags)
 UserMode::~UserMode()
 {}
 
-UserState::UserState(unsigned flags) :
-Mode(flags)
-{}
-
-UserState::~UserState()
-{}
-
 User::User(TcpSocket *socket) :
-_socket(socket), _ustate(UserState::NEED_NICK | UserState::NEED_USER),
+_socket(socket), _state(NEED_NICK),
 _isRemote(false)
 {}
 
@@ -74,9 +67,9 @@ const std::string &User::realname() const
 	return (_realname);
 }
 
-const UserState &User::ustate() const
+const User::State &User::state() const
 {
-	return (_ustate);
+	return (_state);
 }
 
 void User::setNickname(const std::string &nickname)
@@ -87,4 +80,9 @@ void User::setNickname(const std::string &nickname)
 void User::setUsername(const std::string &username)
 {
 	_username = username;
+}
+
+void User::setState(const State &state)
+{
+	_state = state;
 }

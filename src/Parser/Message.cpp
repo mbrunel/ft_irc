@@ -6,11 +6,12 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 14:02:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 16:23:41 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 18:26:39 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
+#include "Parser.hpp"
 
 Message::Message(const std::string &entry) : _entry(entry)
 {
@@ -65,7 +66,7 @@ void Message::parseTrailing(Context &o)
 bool Message::interpret(Context &o)
 {
 	if ((*o == ':' && (!_prefix.interpret(++o) || *(o++) != ' ')) ||
-	!asCommand(o, _command))
+	!Parser::asCommand(o, _command))
 		return (reject());
 	for (size_t i = 14; *o == ' '; --i)
 		if (*(++o) == ':' || !i)
