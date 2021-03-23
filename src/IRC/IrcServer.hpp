@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 13:36:18 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 14:31:08 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ class IrcServer
 	IrcServer();
 	~IrcServer();
 
-	void		setMaxConnections(size_t setMaxConnections);
-	void		setVerbose(bool verbose);
-	void		listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
+	void			setMaxConnections(size_t setMaxConnections);
+	void			setVerbose(bool verbose);
+	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
 
-	void		log(const std::string &s, bool err = false) const throw();
-	void		run() throw();
+	std::ostream	&log() throw();
+	void			run() throw();
 
   private:
 	TcpServer srv;

@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 13:49:11 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 14:40:40 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void IrcServer::setMaxConnections(size_t MaxConnections) { srv.setMaxConnections
 
 void IrcServer::setVerbose(bool verbose) { srv.setVerbose(verbose); }
 
-void IrcServer::log(const std::string &s, bool err) const throw() { srv.log(s, err); }
+std::ostream &IrcServer::log() throw() { return srv.log(); }
 
 void IrcServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen) { srv.listen(port, ctx, maxQueueLen); }
 
@@ -28,7 +28,7 @@ void IrcServer::run() throw()
 {
 	while (1)
 	{
-		try { srv.select(); } catch(TcpServer::SigintException &e) { srv.log("SIGINT catched, exiting properly"); return ; }
+		try { srv.select(); } catch(TcpServer::SigintException &e) { log() << "\rSIGINT catched, exiting properly" << std::endl; return ; }
 		TcpSocket *newConnection;
 		while ((newConnection = srv.nextNewConnection()))
 			newConnection->writeLine("BONJOUR CHER CLIENT");
@@ -36,15 +36,13 @@ void IrcServer::run() throw()
 		while ((Connection = srv.nextPendingConnection()))
 		{
 			try { if (!Connection->IO()) { srv.disconnect(Connection); continue ; } }
-			catch (std::exception &e) { srv.log(e.what(), true); srv.disconnect(Connection); continue ; }
+			catch (std::exception &e) { log() << e.what() << std::endl; srv.disconnect(Connection); continue ; }
 			std::string line;
 			if (!Connection->readLine(line))
 				continue ;
-			srv.log(line);
+			log() << line;
 			Message msg(line);
-			srv.log(line);
-			std::cout << msg.isValid() << std::endl;
-			std::cout << msg << std::endl;
+			log() << msg.isValid() << " : " << msg << std::endl;
 			Connection->writeLine("OK");
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 12:49:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/20 00:10:49 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 14:21:18 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <sys/select.h>
 #include <sys/signal.h>
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <time.h>
 #include "Listener.hpp"
@@ -28,16 +29,17 @@ class TcpServer
 	TcpServer();
 	~TcpServer() throw();
 
-	size_t		nbConnections() const;
-	void		listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
-	void		setMaxConnections(size_t MaxConnections);
-	void		setVerbose(bool verbose);
+	size_t			nbConnections() const;
+	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
+	void			setMaxConnections(size_t MaxConnections);
+	void			setVerbose(bool verbose);
+	void			setLogDestination(const std::string &destfile);
 
-	void		disconnect(TcpSocket *client) throw();
-	void		log(const std::string &s, bool err = false) const throw();
-	TcpSocket	*nextNewConnection() throw();
-	TcpSocket	*nextPendingConnection() throw();
-	void		select();
+	void			disconnect(TcpSocket *client) throw();
+	std::ostream	&log() throw();
+	TcpSocket		*nextNewConnection() throw();
+	TcpSocket		*nextPendingConnection() throw();
+	void			select();
 
 	class SigintException : public std::exception {};
 
@@ -49,6 +51,7 @@ class TcpServer
 	std::list<TcpSocket*>	_pending;
 	size_t					_maxConnections;
 	bool					_verbose;
+	std::ofstream			_log;
 
 	void setUpListener(addrinfo *a, Listener *listener);
 

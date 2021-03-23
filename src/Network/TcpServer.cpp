@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 01:29:06 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/22 13:51:16 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 14:37:59 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,14 @@ std::string timestamp() throw()
 	return (stamp);
 }
 
-void TcpServer::log(const std::string &s, bool err) const throw()
+void TcpServer::setLogDestination(const std::string &destfile)
 {
-	std::ostream &ostream = err ? std::cerr : std::cout;
-	if (_verbose || err)
-		ostream << "\r" << timestamp() + " : " + s << std::endl;
+	_log.open(destfile.c_str(), std::ios::out);
+}
+
+std::ostream &TcpServer::log() throw()
+{
+	return ((_log.is_open() ? _log : std::cerr) << timestamp() << " ");
 }
 
 void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
@@ -90,7 +93,7 @@ void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
 
 void TcpServer::disconnect(TcpSocket *connection) throw()
 {
-	log(connection->ip() + " DISCONNECTED");
+	log() << connection->ip() << " DISCONNECTED" << std::endl;
 	_pending.remove(connection);
 	_connections.remove(connection);
 	delete connection;
@@ -108,10 +111,10 @@ TcpSocket *TcpServer::nextNewConnection() throw()
 		if (_connections.size() == _maxConnections)
 			throw MsgException("Too many connections");
 		_connections.push_back(newConnection.get());
-		log(newConnection->ip() + " CONNECTED");
+		log() << newConnection->ip() << " CONNECTED" << std::endl;
 	}
 	catch (std::exception &e) {
-		log(e.what(), true);
+		log() << e.what() << std::endl;
 		return nextNewConnection();
 	}
 	return newConnection.release();

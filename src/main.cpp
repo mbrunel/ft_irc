@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 11:30:18 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/22 13:24:33 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 14:39:41 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int main()
 	irc.listen("6697", ctx.ctx());
 	irc.run();
   } catch (std::exception &e) {
-		irc.log(e.what(), true);
+		irc.log() << e.what() << std::endl;
 		return (1);
 	}
 	return (0);
