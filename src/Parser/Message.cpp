@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 14:02:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 13:53:42 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 16:23:41 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ std::ostream &operator<<(std::ostream &o, const Message &m)
 		std::list<Param>::const_iterator i = m.params().begin();
 		o << *i;
 		for (++i; i != m.params().end(); ++i)
-			std::cout << ", " << *i;
+			o << ", " << *i;
 		o << ']';
 	}
 	return (o << ']');
