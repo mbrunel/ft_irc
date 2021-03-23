@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 20:42:41 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 22:21:17 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 22:34:45 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void IrcServer::privmsg(Sender *sender, const Message &msg)
 		if (!target.isValid())
 		{
 			user->writeTo("bad msgto\n");
-			continue ; //coment this if you want a msg
+			continue ;
 		}
 		if (target.type() == MsgTo::NICKNAME)
 		{
