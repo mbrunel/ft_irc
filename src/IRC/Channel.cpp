@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:50:01 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 21:05:10 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void Channel::broadcast(User *user, const std::string &message)
 	buf = ':' + user->nickname() + " PRIVMSG " + _name + " :" + message;
 	for (t_MemberMap::iterator i = _members.begin(); i != _members.end(); ++i)
 		if (!(u = i->first)->isRemote())
-			u->socket()->writeLine(buf);
+			u->writeTo(buf);
 }
 
 void Channel::delUser(User *user)

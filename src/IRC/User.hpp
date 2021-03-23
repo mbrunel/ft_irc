@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:36:53 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 20:37:50 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <string>
 #include "Mode.hpp"
 #include "RemoteServer.hpp"
-#include "TcpSocket.hpp"
+#include "Sender.hpp"
 
 class UserMode : public Mode
 {
@@ -34,7 +34,7 @@ public:
 	virtual ~UserMode();
 };
 
-class User
+class User : public Sender
 {
 public:
 	enum State
@@ -64,7 +64,6 @@ public:
 	void				setState(const State &state);
 
 protected:
-	TcpSocket	*_socket;
 	std::string	_nickname;
 	std::string _username;
 	std::string _host;

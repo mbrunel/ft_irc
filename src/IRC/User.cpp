@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:38:11 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 21:04:59 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ UserMode::~UserMode()
 {}
 
 User::User(TcpSocket *socket) :
-_socket(socket), _state(NEED_NICK),
+Sender(USER, socket),
+_state(NEED_NICK),
 _isRemote(false)
 {}
 
@@ -35,11 +36,6 @@ bool User::isAway() const
 bool User::isRemote() const
 {
 	return (_isRemote);
-}
-
-TcpSocket *User::socket() const
-{
-	return (_socket);
 }
 
 const std::string &User::nickname() const
