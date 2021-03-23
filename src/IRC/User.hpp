@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 20:37:50 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 23:48:45 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <string>
 #include "Mode.hpp"
 #include "RemoteServer.hpp"
-#include "Sender.hpp"
+#include "BasicConnection.hpp"
 
 class UserMode : public Mode
 {
@@ -34,7 +34,7 @@ public:
 	virtual ~UserMode();
 };
 
-class User : public Sender
+class User : public BasicConnection
 {
 public:
 	enum State
@@ -51,7 +51,6 @@ public:
 	bool				isAway() const;
 	bool				isRemote() const;
 	RemoteServer		*makeRemoteServer();
-	TcpSocket			*socket() const;
 	const std::string	&nickname() const;
 	const std::string	&username() const;
 	const std::string	&host() const;

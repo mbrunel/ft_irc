@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 01:41:30 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 13:48:05 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 22:42:46 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ bool TcpSocket::isWbufEmpty() const { return (_writeBuf.empty()); }
 
 void TcpSocket::writeLine(const std::string &data) throw()
 {
-	_writeBuf += data + "\n";
+	_writeBuf += data;
 }
 
 bool TcpSocket::readLine(std::string &line) throw()

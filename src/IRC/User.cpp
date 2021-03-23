@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 21:04:59 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/23 23:24:50 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ UserMode::~UserMode()
 {}
 
 User::User(TcpSocket *socket) :
-Sender(USER, socket),
+BasicConnection(USER, socket),
 _state(NEED_NICK),
 _isRemote(false)
 {}
