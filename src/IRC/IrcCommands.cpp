@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcCommands.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 20:42:41 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/24 00:34:38 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/24 13:36:30 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,13 @@ void IrcServer::privmsg(BasicConnection *sender, const Message &msg)
 			user->writeTo("No text to send\n");
 		return ;
 	}
-	std::list<MsgTo> targets = msg.params().front().asMultipleMsgTo();
-	for (std::list<MsgTo>::const_iterator it = targets.begin(); it != targets.end(); it++)
+	std::list<Param> targets = msg.params().front().split();
+	for (std::list<Param>::const_iterator it = targets.begin(); it != targets.end(); it++)
 	{
-		MsgTo target = *it;
+		MsgTo target = it->asMsgTo();
 		if (!target.isValid())
 		{
-			user->writeTo("bad msgto\n");
+			user->writeTo(*it + " :No such nick/channel\n");
 			continue ;
 		}
 		if (target.type() == MsgTo::NICKNAME)

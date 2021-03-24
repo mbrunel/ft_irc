@@ -6,14 +6,15 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:46:23 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:27:04 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/24 13:38:17 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MsgTo.hpp"
 #include "Parser.hpp"
 
-MsgTo::MsgTo()
+MsgTo::MsgTo() :
+_type(UNKNOWN)
 {}
 
 MsgTo::~MsgTo()

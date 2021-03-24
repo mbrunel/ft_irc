@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/24 00:26:44 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/24 13:51:56 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,8 @@ void IrcServer::run() throw()
 			if (!Connection->readLine(line))
 				continue ;
 			Message msg(line);
+			if (!msg.isValid())
+				continue ;
 			BasicConnection *sender;
 			if (!(sender = findSender(msg.prefix(), Connection)))
 				{ disconnect(Connection); continue ; } //disconnect if msg of unknown origin

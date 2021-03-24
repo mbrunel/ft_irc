@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 21:05:10 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/24 12:23:21 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void Channel::broadcast(User *user, const std::string &message)
 	std::string buf;
 	User		*u;
 
-	buf = ':' + user->nickname() + " PRIVMSG " + _name + " :" + message;
+	buf = ':' + user->nickname() + " PRIVMSG " + _name + " :" + message + '\n';
 	for (t_MemberMap::iterator i = _members.begin(); i != _members.end(); ++i)
 		if (!(u = i->first)->isRemote())
 			u->writeTo(buf);
