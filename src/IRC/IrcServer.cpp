@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/24 13:51:56 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/24 17:42:59 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ void IrcServer::run() throw()
 			Message msg(line);
 			if (!msg.isValid())
 				continue ;
+			log() << msg << std::endl;
 			BasicConnection *sender;
 			if (!(sender = findSender(msg.prefix(), Connection)))
 				{ disconnect(Connection); continue ; } //disconnect if msg of unknown origin

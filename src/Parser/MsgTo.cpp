@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:46:23 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/24 13:38:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/24 15:41:04 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,18 @@ const std::string &MsgTo::target() const
 
 bool MsgTo::interpret(Context &o)
 {
-	if (!Parser::asNickname(o, _target))
+	Context channelContext(o);
+
+	if (Parser::asNickname(o, _target))
+		_type = NICKNAME;
+	else if (Parser::asChannel(channelContext, _target))
+	{
+		_type = CHANNEL;
+		o = channelContext;
+	}
+	// else if mask
+	else
 		return (reject());
-	_type = NICKNAME;
 	return (accept());
 }
 

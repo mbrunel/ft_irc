@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 18:17:49 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:18:18 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/24 14:01:23 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 namespace Parser
 {
+	bool	asChannel(Context &o, std::string &s);
 	bool	asCommand(Context &o, std::string &s);
 	bool	asHost(Context &o, std::string &s);
 	bool	asHostname(Context &o, std::string &s);

@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 18:19:41 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:22:52 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/24 18:08:44 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,18 @@
 
 namespace Parser
 {
+	bool asChannel(Context &o, std::string &s)
+	{
+		o.resetDistance();
+		if (*o != '#' && *o != '&')
+			return (false);
+		while ((++o).distance() < 50 && *o && *o != ',' && *o != '\b');
+		if (o.distance() < 2)
+			return (false);
+		s = o.extract();
+		return (true);
+	}
+
 	bool asCommand(Context &o, std::string &s)
 	{
 		o.resetDistance();

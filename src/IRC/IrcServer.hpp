@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/24 00:05:08 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/24 16:35:19 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "Channel.hpp"
 #include "Message.hpp"
 #include "NetworkModule.hpp"
 #include "BasicConnection.hpp"
@@ -28,6 +29,8 @@ class IrcServer
 	typedef std::map<IrcServer::cmdIdType, cmdType> cmdMapType;
 	typedef std::map<std::string, User *>::iterator nickIter;
 	typedef std::map<TcpSocket *, User *>::iterator sockIter;
+	typedef std::map<std::string, Channel> channelsMap;
+	typedef std::list<Param> Params;
 
 	IrcServer();
 	~IrcServer();
@@ -38,9 +41,10 @@ class IrcServer
 	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
 	void			loadIrcCommands();
 
+	void			join(BasicConnection *sender, const Message &msg);
+	void			privmsg(BasicConnection *sender, const Message &msg);
 	void			userNick(BasicConnection *sender, const Message &msg);
 	void			userUser(BasicConnection *sender, const Message &msg);
-	void			privmsg(BasicConnection *sender, const Message &msg);
 
 	void			disconnect(TcpSocket *socket) throw();
 	void			disconnect(BasicConnection *connection) throw();
@@ -51,6 +55,7 @@ class IrcServer
 	TcpServer srv;
 	std::map<std::string, User *>	allUsers;
 	std::map<TcpSocket *, User *>	localUsers;
+	channelsMap						channels;
 	cmdMapType						commands;
 
 	void				loadCmd(const std::string &cmd, BasicConnection::Type type, void (IrcServer::*handler)(BasicConnection *sender, const Message &msg));

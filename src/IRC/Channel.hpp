@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 18:47:00 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/24 17:28:26 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,37 +53,35 @@ public:
 class Channel : public Mode
 {
 public:
-	Channel(const std::string &name);
+	typedef std::map<User*, MemberMode>	t_MemberMap;
+
+	Channel(const std::string &name = "");
 	virtual ~Channel();
 
 	MemberMode			&addUser(User *user);
 	void				broadcast(User *user, const std::string &message);
+	size_t				count() const;
 	void				delUser(User *user);
 	const std::string	&name() const;
 	const std::string	&topic() const;
 	const std::string	&key() const;
 	const ChannelMode	&mode() const;
 	bool				isLocal() const;
+	const t_MemberMap	&members() const;
+	void				setName(const std::string &name);
 	void				setTopic(const std::string &topic);
 	void				setKey(const std::string &key);
 
 private:
-	typedef std::map<User*, MemberMode>	t_MemberMap;
-
-	const std::string	_name;
-	std::string			_topic;
-	std::string			_key;
-	ChannelMode			_mode;
-	bool				_isLocal;
-	t_MemberMap			_members;
+	std::string	_name;
+	std::string	_topic;
+	std::string	_key;
+	ChannelMode	_mode;
+	bool		_isLocal;
+	t_MemberMap	_members;
 
 	//size_t					_limit;
 	//std::list<std::string>	_banMasks;
 	//std::list<std::string>	_exceptionMasks;
 	//std::list<std::string>	_invitationMasks;
-	//bool					_isLocal;
-
-	Channel(const Channel &other);
-
-	Channel	&operator=(const Channel &other);
 };
