@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/24 16:35:19 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/25 11:43:11 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,14 @@ class IrcServer
 	std::map<TcpSocket *, User *>	localUsers;
 	channelsMap						channels;
 	cmdMapType						commands;
+	BasicConnection					*sender;
+	Message							msg;
 
 	void				loadCmd(const std::string &cmd, BasicConnection::Type type, void (IrcServer::*handler)(BasicConnection *sender, const Message &msg));
 	User				*userFromConnection(BasicConnection *sender);
 	BasicConnection		*findSender(const Prefix &prefix, TcpSocket *Connection);
 	void				exec(BasicConnection *sender, const Message &msg);
+	bool				checkParams(size_t min);
 	IrcServer(const IrcServer& copy);
 	IrcServer &operator=(const IrcServer& copy);
 };

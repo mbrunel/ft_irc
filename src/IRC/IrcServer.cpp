@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/24 17:42:59 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/25 14:26:32 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,13 @@ void IrcServer::exec(BasicConnection *sender, const Message &msg)
 		return ;
 	}
 	(this->*(it->second))(sender, msg);
+}
+
+bool IrcServer::checkParams(size_t min)
+{
+	if (msg.params().size() < min)
+		sender->writeTo(":localhost 461 ")
+
 }
 
 void IrcServer::run() throw()
