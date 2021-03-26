@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 15:17:19 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 18:43:03 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,23 @@ class ChannelMode : public Mode
 public:
 	enum Flag
 	{
+		/** Anonymous Channel flag */
 		ANONYMOUS = 1,
+		/** Invite-only Channel flag */
 		INVITE_ONLY = 1 << 2,
+		/** Moderated Channel flag */
 		MODERATED = 1 << 3,
+		/** No messages to Channel from User on the outside */
 		NO_OUTSIDE_MSG = 1 << 4,
+		/** Quiet channel flag */
 		QUIET = 1 << 5,
+		/** Private channel flag */
 		PRIVATE = 1 << 6,
+		/** Secret channel flag */
 		SECRET = 1 << 7,
+		/** Server reop Channel flag */
 		REOP = 1 << 8,
+		/** Topic settable by Channel operator only flag */
 		TOPIC_SETTABLE_BY_CHANOP = 1 << 9
 	};
 
@@ -41,8 +50,11 @@ class MemberMode : public Mode
 public:
 	enum Flag
 	{
+		/** Channel creator status */
 		CREATOR = 1,
+		/** Channel operator privilege */
 		OPERATOR = 1 << 2,
+		/** Voice privilege */
 		VOICE = 1 << 3
 	};
 
@@ -50,7 +62,7 @@ public:
 	virtual ~MemberMode();
 };
 
-class Channel : public Mode
+class Channel
 {
 public:
 	typedef std::map<User*, MemberMode>	t_MemberMap;

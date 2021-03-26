@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 15:17:31 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 18:29:57 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void IrcServer::join(BasicConnection *sender, const Message &msg)
 			{
 				c.setName(target);
 				m = &c.addUser(u);
-				m->setFlags(MemberMode::CREATOR | MemberMode::OPERATOR);
+				m->set(MemberMode::CREATOR | MemberMode::OPERATOR);
 			}
 			else if (c.members().find(u) == c.members().end())
 				m = &c.addUser(u);

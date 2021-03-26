@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 15:20:06 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 18:37:14 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,19 @@ class UserMode : public Mode
 public:
 	enum Flag
 	{
+		/** User is flagged as away */
 		AWAY = 1,
+		/** Marks a User as invisible */
 		INVISIBLE = 1 << 2,
+		/** User receives wallops */
 		WALLOPS = 1 << 3,
+		/** Restricted User connection */
 		RESTRICTED = 1 << 4,
+		/** Operator flag */
 		OPERATOR = 1 << 5,
+		/** Local operator flag */
 		LOCAL_OPERATOR = 1 << 6,
+		/** Marks a User for receipt of server notices */
 		MARK = 1 << 7
 	};
 
@@ -51,9 +58,8 @@ public:
 	RemoteServer		*makeRemoteServer();
 	const std::string	&nickname() const;
 	const std::string	&username() const;
-	const std::string	&host() const;
-	const UserMode		&umode() const;
 	const std::string	&realname() const;
+	const UserMode		&umode() const;
 	const State			&state() const;
 	void				setNickname(const std::string &nickname);
 	void				setUsername(const std::string &username);
@@ -64,8 +70,7 @@ public:
 protected:
 	std::string	_nickname;
 	std::string _username;
-	UserMode	_umode;
 	std::string _realname;
+	UserMode	_umode;
 	State		_state;
-	unsigned	_servertoken;
 };
