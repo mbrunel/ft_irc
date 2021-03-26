@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:14:24 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 13:29:16 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 13:40:55 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,18 @@ void IrcServer::userNick(BasicConnection *sender, const Message &msg)
 		return ;
 	if (msg.params().empty())
 	{
-		sender->writeLine("No nick given\n");
+		sender->writeLine("No nick given");
 		return ;
 	}
 	std::string nickname = Param(msg.params().back()).asNickname();
 	if (nickname.empty())
 	{
-		sender->writeLine("erroneus nickname\n");
+		sender->writeLine("erroneus nickname");
 		return ;
 	}
 	if (allUsers.find(nickname) != allUsers.end())
 	{
-		sender->writeLine("nickname already in use\n");
+		sender->writeLine("nickname already in use");
 		return ;
 	}
 	if (user->state() != User::NEED_NICK)
