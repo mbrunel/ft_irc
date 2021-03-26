@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/25 11:43:11 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 13:17:54 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class IrcServer
 	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
 	void			loadIrcCommands();
 
+	void			away(BasicConnection *sender, const Message &msg);
 	void			join(BasicConnection *sender, const Message &msg);
 	void			privmsg(BasicConnection *sender, const Message &msg);
 	void			userNick(BasicConnection *sender, const Message &msg);
@@ -57,14 +58,11 @@ class IrcServer
 	std::map<TcpSocket *, User *>	localUsers;
 	channelsMap						channels;
 	cmdMapType						commands;
-	BasicConnection					*sender;
-	Message							msg;
 
 	void				loadCmd(const std::string &cmd, BasicConnection::Type type, void (IrcServer::*handler)(BasicConnection *sender, const Message &msg));
 	User				*userFromConnection(BasicConnection *sender);
 	BasicConnection		*findSender(const Prefix &prefix, TcpSocket *Connection);
 	void				exec(BasicConnection *sender, const Message &msg);
-	bool				checkParams(size_t min);
 	IrcServer(const IrcServer& copy);
 	IrcServer &operator=(const IrcServer& copy);
 };

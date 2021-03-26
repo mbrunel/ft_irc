@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BasicConnection.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 19:04:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 23:28:48 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/26 13:28:50 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,4 @@ BasicConnection::Type BasicConnection::type() const { return (_type); }
 
 TcpSocket *BasicConnection::socket() { return (_socket); }
 
-void BasicConnection::writeTo(const std::string &msg) { _socket->writeLine(msg); }
+void BasicConnection::writeLine(const std::string &msg) { _socket->writeLine(msg); }

@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/25 14:26:32 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 13:32:53 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,17 +97,10 @@ void IrcServer::exec(BasicConnection *sender, const Message &msg)
 
 	if ((it = commands.find(cmdIdType(msg.command(), sender->type()))) == commands.end())
 	{
-		sender->writeTo("Unknown Command\n");
+		sender->writeLine("Unknown Command");
 		return ;
 	}
 	(this->*(it->second))(sender, msg);
-}
-
-bool IrcServer::checkParams(size_t min)
-{
-	if (msg.params().size() < min)
-		sender->writeTo(":localhost 461 ")
-
 }
 
 void IrcServer::run() throw()
@@ -118,7 +111,7 @@ void IrcServer::run() throw()
 		TcpSocket *newConnection;
 		while ((newConnection = srv.nextNewConnection()))
 		{
-			newConnection->writeLine("Connection established\n");
+			newConnection->writeLine("Connection established");
 			localUsers[newConnection] = new User(newConnection);
 		}
 		TcpSocket *Connection;

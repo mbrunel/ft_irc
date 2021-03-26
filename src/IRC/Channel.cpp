@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/24 18:04:01 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 13:29:16 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void Channel::broadcast(User *user, const std::string &message)
 	buf = ':' + user->nickname() + ' ' + message + '\n';
 	for (t_MemberMap::iterator i = _members.begin(); i != _members.end(); ++i)
 		if (!(u = i->first)->isRemote())
-			u->writeTo(buf);
+			u->writeLine(buf);
 }
 
 size_t Channel::count() const

@@ -1,34 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BasicConnection.hpp                                :+:      :+:    :+:   */
+/*   IrcReply.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 18:50:36 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/26 13:28:45 by asoursou         ###   ########.fr       */
+/*   Created: 2021/03/26 12:56:43 by asoursou          #+#    #+#             */
+/*   Updated: 2021/03/26 13:10:10 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#include <string>
 
-#include "TcpSocket.hpp"
-
-// class that allows to interact with an undefined connection
-
-class BasicConnection
+namespace IrcReply
 {
-  public:
-	enum Type {USER, SERVER};
-
-	BasicConnection(Type type, TcpSocket *socket);
-	virtual ~BasicConnection();
-
-	Type type() const;
-	TcpSocket *socket();
-	void writeLine(const std::string &);
-
-  protected:
-	Type		_type;
-	TcpSocket	*_socket;
-};
+	std::string away(const std::string &prefix, const std::string &nickname, const std::string &raison);
+	std::string unaway(const std::string &prefix);
+	std::string noaway(const std::string &prefix);
+}

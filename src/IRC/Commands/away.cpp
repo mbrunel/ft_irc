@@ -1,34 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BasicConnection.hpp                                :+:      :+:    :+:   */
+/*   away.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 18:50:36 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/26 13:28:45 by asoursou         ###   ########.fr       */
+/*   Created: 2021/03/26 13:22:52 by asoursou          #+#    #+#             */
+/*   Updated: 2021/03/26 13:29:26 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "IrcServer.hpp"
 
-#include "TcpSocket.hpp"
-
-// class that allows to interact with an undefined connection
-
-class BasicConnection
+void IrcServer::away(BasicConnection *sender, const Message &msg)
 {
-  public:
-	enum Type {USER, SERVER};
+	User *user;
 
-	BasicConnection(Type type, TcpSocket *socket);
-	virtual ~BasicConnection();
-
-	Type type() const;
-	TcpSocket *socket();
-	void writeLine(const std::string &);
-
-  protected:
-	Type		_type;
-	TcpSocket	*_socket;
-};
+	if (!(user = userFromConnection(sender)))
+		return ;
+	(void)msg;
+}

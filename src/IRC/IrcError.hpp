@@ -6,10 +6,11 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/27 14:00:28 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/25 15:47:07 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 12:56:05 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
 #include <string>
 
 namespace IrcError
