@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/26 13:32:53 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 15:17:05 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ IrcServer::IrcServer() {}
 IrcServer::~IrcServer()
 {
 	for (nickIter it = allUsers. begin() ; it != allUsers.end() ; ++it)
-		if (it->second->isRemote())
+		if (it->second->hopcount())
 			delete it->second;
 	for (sockIter it = localUsers.begin() ; it != localUsers.end() ; ++it)
 		disconnect(it->second);

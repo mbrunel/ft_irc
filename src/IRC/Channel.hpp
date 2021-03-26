@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/24 17:28:26 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 15:17:19 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ public:
 	virtual ~Channel();
 
 	MemberMode			&addUser(User *user);
-	void				broadcast(User *user, const std::string &message);
 	size_t				count() const;
 	void				delUser(User *user);
 	const std::string	&name() const;

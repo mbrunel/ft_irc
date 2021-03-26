@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 23:48:45 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/26 15:20:06 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ public:
 	User(TcpSocket *socket);
 	virtual ~User();
 
-	bool				isAway() const;
-	bool				isRemote() const;
 	RemoteServer		*makeRemoteServer();
 	const std::string	&nickname() const;
 	const std::string	&username() const;
@@ -60,21 +58,14 @@ public:
 	void				setNickname(const std::string &nickname);
 	void				setUsername(const std::string &username);
 	void				setRealname(const std::string &realname);
+	void				setUmode(const UserMode &umode);
 	void				setState(const State &state);
 
 protected:
 	std::string	_nickname;
 	std::string _username;
-	std::string _host;
 	UserMode	_umode;
 	std::string _realname;
-	unsigned	_servertoken;
-	unsigned	_hopcount;
 	State		_state;
-	bool		_isRemote;
-
-private:
-	User(const User &other);
-
-	User	&operator=(const User &other);
+	unsigned	_servertoken;
 };

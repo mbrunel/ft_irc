@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 13:31:21 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 14:44:21 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void IrcServer::privmsg(BasicConnection *sender, const Message &msg)
 			if ((it = allUsers.find(target.target())) != allUsers.end())
 			{
 				User *receiver = it->second;
-				if (receiver->isAway())
+				if (receiver->umode().isSet(UserMode::AWAY))
 					user->writeLine("reply away");
 				else
 					receiver->writeLine(":" + user->nickname() + " PRIVMSG " + receiver->nickname() + " :" + msg.params().back() + "\n");

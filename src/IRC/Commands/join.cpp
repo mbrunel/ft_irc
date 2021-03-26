@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 13:32:41 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/26 15:17:31 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void IrcServer::join(BasicConnection *sender, const Message &msg)
 			if (m)
 			{
 				u->writeLine("332 " + c.name() + " :" + c.topic());
-				c.broadcast(u, "JOIN " + target);
+				//c.broadcast(u, "JOIN " + target);
 				// Add NAMES
 			}
 		}

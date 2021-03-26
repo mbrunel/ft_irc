@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 23:24:50 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/26 15:19:46 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,20 @@ UserMode::~UserMode()
 User::User(TcpSocket *socket) :
 BasicConnection(USER, socket),
 _state(NEED_NICK),
-_isRemote(false)
+_servertoken(0)
 {}
 
 User::~User()
 {}
 
-bool User::isAway() const
+/*
+RemoteServer *User::makeRemoteServer()
 {
-	return (_umode.isSet(UserMode::AWAY));
+	TcpSocket *socket = _socket;
+	_socket = NULL;
+	return (new RemoteServer(socket));
 }
-
-bool User::isRemote() const
-{
-	return (_isRemote);
-}
+*/
 
 const std::string &User::nickname() const
 {
@@ -46,11 +45,6 @@ const std::string &User::nickname() const
 const std::string &User::username() const
 {
 	return (_username);
-}
-
-const std::string &User::host() const
-{
-	return (_host);
 }
 
 const UserMode &User::umode() const
