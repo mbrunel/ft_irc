@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:13:59 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 13:30:52 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/27 14:46:29 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void IrcServer::userUser(BasicConnection *sender, const Message &msg)
 
 	if (!(user = userFromConnection(sender)))
 		return ;
-	if (user->state() == User::NEED_USER || user->state() == User::CONNECTED)
+	if (user->state() == User::CONNECTED)
 	{
 		user->writeLine(IrcError::alreadyregistred("127.0.0.1"));
 		return ;

@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 18:31:48 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/27 14:56:53 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ UserMode::~UserMode()
 
 User::User(TcpSocket *socket) :
 BasicConnection(USER, socket),
-_state(NEED_NICK)
+_state(NEED_NICK),
+_joinedChannels(0)
 {}
 
 User::~User()
@@ -61,6 +62,11 @@ const User::State &User::state() const
 	return (_state);
 }
 
+size_t User::joinedChannels() const
+{
+	return (_joinedChannels);
+}
+
 void User::setNickname(const std::string &nickname)
 {
 	_nickname = nickname;
@@ -84,4 +90,9 @@ void User::setUmode(const UserMode &umode)
 void User::setState(const State &state)
 {
 	_state = state;
+}
+
+void User::setJoinedChannels(size_t joinedChannels)
+{
+	_joinedChannels = joinedChannels;
 }

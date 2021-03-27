@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 11:30:18 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 22:24:09 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/27 13:28:51 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int main()
 	irc.setMaxConnections(5);
 	irc.setVerbose(true);
 	//irc.setLogDestination("logfile.txt");
-	irc.loadIrcCommands();
   try {
 	SslContext ctx("ircserv.ssl.crt", "ircserv.ssl.key");
 	irc.listen("6667");

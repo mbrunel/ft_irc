@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 13:47:34 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 18:30:57 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/27 13:20:17 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ public:
 	 * \return Positive if all bits from the mask are set to true
 	*/
 	bool areSet(unsigned mask) const;
+
+	/**
+	 * \return Return raw binary data
+	*/
+	unsigned flags() const;
 
 	/**
 	 * Checks if at least one bit is set to true using a mask.

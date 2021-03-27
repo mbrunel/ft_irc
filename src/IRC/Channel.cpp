@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 18:30:14 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/27 14:10:12 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,23 @@ MemberMode::~MemberMode()
 {}
 
 Channel::Channel(const std::string &name) :
-_name(name), _topic("An interesting topic"),
-_isLocal(name.size() > 0 && name[0] == '&')
-{}
+_name(name), _type(UNKNOWN)
+{
+	if (name.size())
+	{
+		if (name[0] == '#')
+			_type = GLOBAL;
+		else if (name[0] == '&')
+			_type = LOCAL;
+	}
+}
 
 Channel::~Channel()
 {}
 
-MemberMode &Channel::addUser(User *user)
+void Channel::addMember(User *user, const MemberMode &mode)
 {
-	return (_members[user]);
+	_members[user] = mode;
 }
 
 size_t Channel::count() const
@@ -44,9 +51,15 @@ size_t Channel::count() const
 	return (_members.size());
 }
 
-void Channel::delUser(User *user)
+void Channel::delMember(User *user)
 {
 	_members.erase(user);
+}
+
+const MemberMode *Channel::findMember(User *user) const
+{
+	MemberMap::const_iterator i(_members.find(user));
+	return (i != _members.end() ? &i->second : NULL);
 }
 
 const std::string &Channel::name() const
@@ -54,14 +67,14 @@ const std::string &Channel::name() const
 	return (_name);
 }
 
-const std::string &Channel::topic() const
+Channel::Type Channel::type() const
 {
-	return (_topic);
+	return (_type);
 }
 
-const std::string &Channel::key() const
+const MemberMap &Channel::members() const
 {
-	return (_key);
+	return (_members);
 }
 
 const ChannelMode &Channel::mode() const
@@ -69,19 +82,14 @@ const ChannelMode &Channel::mode() const
 	return (_mode);
 }
 
-bool Channel::isLocal() const
+const std::string &Channel::key() const
 {
-	return (_isLocal);
+	return (_key);
 }
 
-const Channel::t_MemberMap &Channel::members() const
+const std::string &Channel::topic() const
 {
-	return (_members);
-}
-
-void Channel::setName(const std::string &name)
-{
-	_name = name;
+	return (_topic);
 }
 
 void Channel::setTopic(const std::string &topic)

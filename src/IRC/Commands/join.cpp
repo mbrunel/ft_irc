@@ -6,10 +6,11 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 18:29:57 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/27 15:58:53 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "IrcError.hpp"
 #include "IrcServer.hpp"
 
 void IrcServer::join(BasicConnection *sender, const Message &msg)
@@ -34,36 +35,34 @@ void IrcServer::join(BasicConnection *sender, const Message &msg)
 		return ;
 	}
 	Params::const_iterator arg(msg.params().begin());
-	Params chan(arg->split());
+	Params channelsList(arg->split());
 	Params keys;
 	if (msg.params().size() > 1)
 		keys = (++arg)->split();
-	for (Params::const_iterator i = chan.begin(), j = keys.begin();
-	i != chan.end(); ++i)
+	for (Params::const_iterator i(channelsList.begin()); i != channelsList.end(); ++i)
 	{
-		std::string target = i->asChannel();
+		std::string target(i->asChannel());
 		if (target.size())
 		{
-			Channel &c(channels[target]);
-			MemberMode *m = NULL;
-			if (!c.name().size())
+			if (u->joinedChannels() >= config.maxChannels)
 			{
-				c.setName(target);
-				m = &c.addUser(u);
-				m->set(MemberMode::CREATOR | MemberMode::OPERATOR);
+				u->writeLine(IrcError::toomanychannels(u->nickname(), target));
+				continue ;
 			}
-			else if (c.members().find(u) == c.members().end())
-				m = &c.addUser(u);
-			if (m)
-			{
-				u->writeLine("332 " + c.name() + " :" + c.topic());
-				//c.broadcast(u, "JOIN " + target);
-				// Add NAMES
-			}
+			ChannelMap::iterator res(channels.find(target));
+			bool found(res != channels.end());
+			if (!found)
+				channels.insert(ChannelMap::value_type(target, Channel(target)));
+			Channel &c(found ? res->second : channels[target]);
+			if (c.findMember(u))
+				continue ;
+			c.addMember(u, MemberMode(c.count() ? 0 : MemberMode::CREATOR | MemberMode::OPERATOR));
+			u->setJoinedChannels(u->joinedChannels() + 1);
+			topic(sender, Message("TOPIC " + target));
+			broadcast(c, ':' + u->nickname() + ' ' + msg.command() + ' ' + target);
+			// Add NAMES
 		}
 		else if (i->size())
-			u->writeLine("403 " + u->nickname() + ' ' + *i + " :No such channel");
-		if (j != keys.end())
-			++j;
+			u->writeLine(IrcError::nosuchchannel(u->nickname(), *i));
 	}
 }

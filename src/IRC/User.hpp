@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 18:37:14 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/27 14:54:46 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,13 @@ public:
 	const std::string	&realname() const;
 	const UserMode		&umode() const;
 	const State			&state() const;
+	size_t				joinedChannels() const;
 	void				setNickname(const std::string &nickname);
 	void				setUsername(const std::string &username);
 	void				setRealname(const std::string &realname);
 	void				setUmode(const UserMode &umode);
 	void				setState(const State &state);
+	void				setJoinedChannels(size_t joinedChannels);
 
 protected:
 	std::string	_nickname;
@@ -73,4 +75,5 @@ protected:
 	std::string _realname;
 	UserMode	_umode;
 	State		_state;
+	size_t		_joinedChannels;
 };

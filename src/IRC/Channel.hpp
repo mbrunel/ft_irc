@@ -6,14 +6,12 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 18:43:03 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/27 14:05:50 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <map>
-#include <string>
-#include "Mode.hpp"
 #include "User.hpp"
 
 class ChannelMode : public Mode
@@ -62,34 +60,42 @@ public:
 	virtual ~MemberMode();
 };
 
+typedef std::map<User*, MemberMode>	MemberMap;
+
 class Channel
 {
 public:
-	typedef std::map<User*, MemberMode>	t_MemberMap;
+	enum Type
+	{
+		GLOBAL,
+		LOCAL,
+		UNKNOWN
+	};
 
 	Channel(const std::string &name = "");
-	virtual ~Channel();
+	~Channel();
 
-	MemberMode			&addUser(User *user);
+	void				addMember(User *user, const MemberMode &mode);
 	size_t				count() const;
-	void				delUser(User *user);
+	void				delMember(User *user);
+	const MemberMode	*findMember(User *user) const;
 	const std::string	&name() const;
-	const std::string	&topic() const;
-	const std::string	&key() const;
+	Type				type() const;
+	const MemberMap		&members() const;
 	const ChannelMode	&mode() const;
-	bool				isLocal() const;
-	const t_MemberMap	&members() const;
-	void				setName(const std::string &name);
-	void				setTopic(const std::string &topic);
+	const std::string	&key() const;
+	const std::string	&topic() const;
+	void				setMode(const MemberMode &mode);
 	void				setKey(const std::string &key);
+	void				setTopic(const std::string &topic);
 
 private:
-	std::string	_name;
-	std::string	_topic;
-	std::string	_key;
-	ChannelMode	_mode;
-	bool		_isLocal;
-	t_MemberMap	_members;
+	const std::string	_name;
+	Type				_type;
+	MemberMap			_members;
+	ChannelMode			_mode;
+	std::string			_key;
+	std::string			_topic;
 
 	//size_t					_limit;
 	//std::list<std::string>	_banMasks;
