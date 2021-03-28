@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BasicConnection.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 18:50:36 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/26 15:18:57 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/28 15:27:14 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ class BasicConnection
 	{
 		SERVER,
 		SERVICE,
+		UNKNOWN,
 		USER
 	};
 
-	BasicConnection(Type type, TcpSocket *socket, unsigned hopcount = 0);
+	BasicConnection(TcpSocket *socket, Type type = UNKNOWN, unsigned hopcount = 0);
 	virtual ~BasicConnection();
 
 	Type		type() const;

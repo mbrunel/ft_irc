@@ -11,18 +11,21 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "TcpSocket.hpp"
+#include "BasicConnection.hpp"
 
-class RemoteServer
+class RemoteServer : public BasicConnection
 {
-public:
+  public:
 	RemoteServer(TcpSocket *socket);
 	virtual ~RemoteServer();
 
-protected:
-	TcpSocket	*_socket;
+	void setName(const std::string &name);
+	const std::string &name() const;
+
+  private:
+
+	std::string _name;
 
 	RemoteServer(const RemoteServer &other);
-
 	RemoteServer	&operator=(const RemoteServer &other);
 };

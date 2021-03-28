@@ -3,26 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 18:32:16 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/28 22:13:39 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 
-void IrcServer::privmsg(BasicConnection *sender, const Message &msg)
+bool checkprivmsg(const Message &msg, User *user, std::string &text)
 {
-	User *user;
 	unsigned nb_p;
 
-	if (!(user = userFromConnection(sender)))
-		return ;
-	if (user->state() != User::CONNECTED)
+	if (user->state() != User::REGISTERED)
 	{
 		user->writeLine("You're not registered");
-		return ;
+		return false;
 	}
 	if ((nb_p = msg.params().size()) < 2)
 	{
@@ -30,8 +27,22 @@ void IrcServer::privmsg(BasicConnection *sender, const Message &msg)
 			user->writeLine("No recipient");
 		if (nb_p == 1)
 			user->writeLine("No text to send");
-		return ;
+		return false;
 	}
+	for (std::list<Param>::const_iterator it = ++msg.params().begin(); it != msg.params().end(); it++)
+	{
+		text += " " + *it;
+	}
+	return true;
+}
+
+void IrcServer::privmsg(BasicConnection *sender, const Message &msg)
+{
+	User *user = network.conToUsr(sender);
+	std::string text;
+
+	if (!checkprivmsg(msg, user, text))
+		return ;
 	Params targets = msg.params().front().split();
 	for (Params::const_iterator it = targets.begin(); it != targets.end(); it++)
 	{
@@ -43,23 +54,24 @@ void IrcServer::privmsg(BasicConnection *sender, const Message &msg)
 		}
 		if (target.type() == MsgTo::NICKNAME)
 		{
-			nickIter it;
-			if ((it = allUsers.find(target.target())) != allUsers.end())
+			User *receiver = network.getUser(target.target());
+			if (!receiver)
+				user->writeLine("No such nick");
+			else
 			{
-				User *receiver = it->second;
 				if (receiver->umode().isSet(UserMode::AWAY))
 					user->writeLine("reply away");
 				else
-					receiver->writeLine(":" + user->nickname() + " PRIVMSG " + receiver->nickname() + " :" + msg.params().back() + "\n");
-			}
-			else
-			{
-				user->writeLine("No such nick");
+					receiver->writeLine(":" + user->nickname() + " PRIVMSG " + receiver->nickname() + " :" + text);
 			}
 		}
 		else if (target.type() == MsgTo::CHANNEL)
 		{
-			
+			Channel *chan = network.getChan(target.target());
+			if (!chan)
+				user->writeLine("No such channel");
+			else
+				network.msgToChan(chan, ":" + user->nickname() + " PRIVMSG " + chan->name() + " :" + text, user);
 		}
 		else
 		{

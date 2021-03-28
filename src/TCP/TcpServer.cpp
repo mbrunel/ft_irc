@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 01:29:06 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/23 15:13:58 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/28 20:20:40 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ TcpServer::TcpServer():_maxConnections(1024), _verbose(true), _log(std::cerr.rdb
 
 TcpServer::~TcpServer() throw()
 {
+	while (!_connections.empty())
+		disconnect(_connections.front());
 	for (std::list<Listener *>::iterator it = _listeners.begin(); it != _listeners.end(); it++)
-		delete *it;
-	for (std::list<TcpSocket *>::iterator it = _connections.begin(); it != _connections.end(); it++)
 		delete *it;
 	if (_logfile.is_open())
 		_logfile.close();
@@ -43,6 +43,8 @@ void TcpServer::setUpListener(addrinfo *a, Listener *listener)
 }
 
 size_t TcpServer::nbConnections() const { return (_connections.size()); }
+
+const std::string &TcpServer::host() const { return (_host); }
 
 void TcpServer::setMaxConnections(size_t maxConnections) { _maxConnections = maxConnections; }
 

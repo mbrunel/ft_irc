@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/27 15:10:36 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/27 16:06:29 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/28 22:34:00 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 
 void IrcServer::topic(BasicConnection *sender, const Message &msg)
 {
-	User *u;
-
-	if (!(u = userFromConnection(sender)) || u->state() != User::CONNECTED)
+	User *u = network.conToUsr(sender);
+	if (u->state() != User::REGISTERED)
 		return ;
 	if (!msg.params().size())
 	{
@@ -26,31 +25,28 @@ void IrcServer::topic(BasicConnection *sender, const Message &msg)
 	}
 	Params::const_iterator args = msg.params().begin();
 	std::string	target(args->asChannel());
-	ChannelMap::iterator i(channels.find(target));
-	if (target.size() && i != channels.end())
+	Channel *chan = network.getChan(target);
+	if (target.size() && chan)
 	{
-		Channel &c(i->second);
-		const MemberMode *m(c.findMember(u));
+		const MemberMode *m(chan->findMember(u));
 		if (m)
 		{
 			if (++args != msg.params().end())
 			{
-				if (c.mode().isSet(ChannelMode::TOPIC_SETTABLE_BY_CHANOP) &&
+				if (chan->mode().isSet(ChannelMode::TOPIC_SETTABLE_BY_CHANOP) &&
 				!m->isSet(MemberMode::OPERATOR))
 					u->writeLine(IrcError::chanoprisneeded(u->nickname(), msg.command()));
 				else
 				{
-					c.setTopic(*args);
-					if (c.topic().size())
-						broadcast(c, ":aled.broken.net 332 " + u->nickname() + ' ' + target + " :" + c.topic());
-					else
-						broadcast(c, ":aled.broken.net 331 " + u->nickname() + ' ' + target + " :No topic is set");
+					chan->setTopic(*args); //seulement le premier param est pris en compte, j'ai la flemme de changer tout le code pour que ca marche though
+					if (chan->topic().size())
+						network.msgToChan(chan, u->nickname() + " 332 " + chan->name() + " :" + chan->topic());
 				}
 			}
-			else if (c.topic().size())
-				u->writeLine(":aled.broken.net 332 " + u->nickname() + ' ' + target + " :" + c.topic());
+			else if (chan->topic().size())
+				u->writeLine(":aled.broken.net 332 " + chan->name() + " :" + chan->topic());
 			else
-				u->writeLine(":aled.broken.net 331 " + u->nickname() + ' ' + target + " :No topic is set");
+				u->writeLine(":aled.broken.net 331 " + chan->name() + " :No topic is set");
 		}
 		else
 			u->writeLine(IrcError::notonchannel(u->nickname(), msg.command()));

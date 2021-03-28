@@ -1,17 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   NetworkModule.hpp                                  :+:      :+:    :+:   */
+/*   RemoteServer.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/07 13:46:48 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/12 02:25:42 by mbrunel          ###   ########.fr       */
+/*   Created: 2021/03/28 03:23:29 by mbrunel           #+#    #+#             */
+/*   Updated: 2021/03/28 20:00:29 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include "SslListener.hpp"
-#include "SslSocket.hpp"
-#include "TcpServer.hpp"
-#include "SslContext.hpp"
+#include "RemoteServer.hpp"
+
+RemoteServer::RemoteServer(TcpSocket *socket):
+BasicConnection(socket, SERVER)
+{}
+
+RemoteServer::~RemoteServer() {}
+
+const std::string &RemoteServer::name() const
+{
+	return _name;
+}
+
+void RemoteServer::setName(const std::string &name)
+{
+	_name = name;
+}

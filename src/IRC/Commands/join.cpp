@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/27 15:58:53 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/28 21:23:19 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void IrcServer::join(BasicConnection *sender, const Message &msg)
 {
 	User *u;
 
-	if (!(u = userFromConnection(sender)))
-		return ;
-	if (u->state() != User::CONNECTED)
+	u = network.conToUsr(sender);
+
+	if (u->state() != User::REGISTERED)
 	{
 		u->writeLine("You're not registered");
 		return ;
@@ -49,17 +49,15 @@ void IrcServer::join(BasicConnection *sender, const Message &msg)
 				u->writeLine(IrcError::toomanychannels(u->nickname(), target));
 				continue ;
 			}
-			ChannelMap::iterator res(channels.find(target));
-			bool found(res != channels.end());
-			if (!found)
-				channels.insert(ChannelMap::value_type(target, Channel(target)));
-			Channel &c(found ? res->second : channels[target]);
-			if (c.findMember(u))
+			Channel *c = network.getChan(target);
+			if (!c)
+				c = network.newChan(target);
+			if (c->findMember(u))
 				continue ;
-			c.addMember(u, MemberMode(c.count() ? 0 : MemberMode::CREATOR | MemberMode::OPERATOR));
+			c->addMember(u, MemberMode(c->count() ? 0 : MemberMode::CREATOR | MemberMode::OPERATOR));
 			u->setJoinedChannels(u->joinedChannels() + 1);
 			topic(sender, Message("TOPIC " + target));
-			broadcast(c, ':' + u->nickname() + ' ' + msg.command() + ' ' + target);
+			network.msgToChan(c, ':' + u->nickname() + ' ' + msg.command() + ' ' + target);
 			// Add NAMES
 		}
 		else if (i->size())

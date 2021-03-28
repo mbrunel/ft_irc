@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/27 14:54:46 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/28 15:32:17 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ class User : public BasicConnection
 public:
 	enum State
 	{
-		NEED_PASS,
-		NEED_NICK,
-		NEED_USER,
-		CONNECTED
+		HAS_NOTHING,
+		HAS_NICK,
+		HAS_USER,
+		REGISTERED
 	};
 
 	User(TcpSocket *socket);

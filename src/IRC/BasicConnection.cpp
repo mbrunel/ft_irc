@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   BasicConnection.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 19:04:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/26 15:19:14 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/28 15:27:35 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BasicConnection.hpp"
 
-BasicConnection::BasicConnection(Type type, TcpSocket *socket, unsigned hopcount) :
+BasicConnection::BasicConnection(TcpSocket *socket, Type type, unsigned hopcount) :
 _type(type),
 _socket(socket),
 _hopcount(hopcount)

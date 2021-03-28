@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/27 14:56:53 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/28 19:58:09 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,13 @@ UserMode::~UserMode()
 {}
 
 User::User(TcpSocket *socket) :
-BasicConnection(USER, socket),
-_state(NEED_NICK),
+BasicConnection(socket, USER),
+_state(HAS_NOTHING),
 _joinedChannels(0)
 {}
 
 User::~User()
 {}
-
-/* Must add RemoteServer first
-RemoteServer *User::makeRemoteServer()
-{
-	TcpSocket *socket = _socket;
-	_socket = NULL;
-	return (new RemoteServer(socket));
-}
-*/
 
 const std::string &User::nickname() const
 {
