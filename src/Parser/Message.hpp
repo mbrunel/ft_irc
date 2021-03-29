@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 13:40:12 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/19 19:44:20 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/29 19:37:30 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ public:
 	Message(const std::string &entry);
 	virtual ~Message();
 
-	const std::string		&entry() const;
-	const Prefix			&prefix() const;
-	const std::string		&command() const;
-	const std::list<Param>	&params() const;
+	const std::string			&entry() const;
+	const Prefix				&prefix() const;
+	const std::string			&command() const;
+	const std::vector<Param>	&params() const;
 
 private:
 	const std::string	_entry;
 	Prefix				_prefix;
 	std::string			_command;
-	std::list<Param>	_params;
+	std::vector<Param>	_params;
 
 	bool	parseMiddle(Context &o);
 	void	parseTrailing(Context &o);

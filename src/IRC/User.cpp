@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/28 19:58:09 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/29 19:47:31 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "User.hpp"
+
+UserRequirement::UserRequirement(unsigned flags) :
+Mode(flags)
+{}
+
+UserRequirement::~UserRequirement()
+{}
 
 UserMode::UserMode(unsigned flags) :
 Mode(flags)
@@ -19,14 +26,34 @@ Mode(flags)
 UserMode::~UserMode()
 {}
 
-User::User(TcpSocket *socket) :
+User::User(TcpSocket *socket, UserRequirement::Flag requirements) :
 BasicConnection(socket, USER),
-_state(HAS_NOTHING),
+_requirements(requirements),
 _joinedChannels(0)
 {}
 
 User::~User()
 {}
+
+bool User::isRegistered() const
+{
+	return (!_requirements.flags());
+}
+
+/*
+RemoteServer *User::makeRemoteServer()
+{}
+*/
+
+void User::unsetRequirement(UserRequirement::Flag requirement)
+{
+	_requirements.unset(requirement);
+}
+
+const UserRequirement &User::requirements() const
+{
+	return (_requirements);
+}
 
 const std::string &User::nickname() const
 {
@@ -46,11 +73,6 @@ const std::string &User::realname() const
 const UserMode &User::umode() const
 {
 	return (_umode);
-}
-
-const User::State &User::state() const
-{
-	return (_state);
 }
 
 size_t User::joinedChannels() const
@@ -76,11 +98,6 @@ void User::setRealname(const std::string &realname)
 void User::setUmode(const UserMode &umode)
 {
 	_umode = umode;
-}
-
-void User::setState(const State &state)
-{
-	_state = state;
 }
 
 void User::setJoinedChannels(size_t joinedChannels)

@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 13:47:34 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/27 13:20:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/29 13:15:51 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ class Mode
 {
 public:
 	Mode(unsigned mask = 0);
-	~Mode();
+	virtual ~Mode();
 
 	/**
 	 * Checks if all bits are set to true using a mask.

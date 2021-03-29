@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BasicConnection.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 18:50:36 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/28 15:27:14 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/29 19:11:58 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "TcpSocket.hpp"
 
 // class that allows to interact with an undefined connection
-
 class BasicConnection
 {
   public:
@@ -22,20 +21,20 @@ class BasicConnection
 	{
 		SERVER,
 		SERVICE,
-		UNKNOWN,
 		USER
 	};
 
-	BasicConnection(TcpSocket *socket, Type type = UNKNOWN, unsigned hopcount = 0);
 	virtual ~BasicConnection();
 
-	Type		type() const;
-	TcpSocket	*socket() const;
-	unsigned	hopcount() const;
-	void		writeLine(const std::string &content);
+	Type			type() const;
+	TcpSocket		*socket() const;
+	unsigned		hopcount() const;
+	void			writeLine(const std::string &content);
 
   protected:
-	Type		_type;
 	TcpSocket	*_socket;
+	Type		_type;
 	unsigned	_hopcount;
+
+	BasicConnection(TcpSocket *socket, Type type, unsigned hopcount = 0);
 };

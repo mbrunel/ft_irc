@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 13:47:34 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/26 18:30:41 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/29 18:12:43 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ Mode::~Mode()
 bool Mode::areSet(unsigned mask) const
 {
 	return (!((_flags & mask) ^ mask));
+}
+
+unsigned Mode::flags() const
+{
+	return (_flags);
 }
 
 bool Mode::isSet(unsigned mask) const

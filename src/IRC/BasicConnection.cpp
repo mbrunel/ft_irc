@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   BasicConnection.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 19:04:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/28 15:27:35 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/29 18:12:10 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BasicConnection.hpp"
-
-BasicConnection::BasicConnection(TcpSocket *socket, Type type, unsigned hopcount) :
-_type(type),
-_socket(socket),
-_hopcount(hopcount)
-{}
 
 BasicConnection::~BasicConnection()
 {}
@@ -40,3 +34,9 @@ void BasicConnection::writeLine(const std::string &content)
 {
 	_socket->writeLine(content);
 }
+
+BasicConnection::BasicConnection(TcpSocket *socket, Type type, unsigned hopcount) :
+_socket(socket),
+_type(type),
+_hopcount(hopcount)
+{}

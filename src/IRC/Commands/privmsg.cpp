@@ -3,45 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/28 22:13:39 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/29 19:39:25 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 
-bool checkprivmsg(const Message &msg, User *user, std::string &text)
+bool checkprivmsg(const Message &msg, User &user, std::string &text)
 {
 	unsigned nb_p;
 
-	if (user->state() != User::REGISTERED)
+	if (!user.isRegistered())
 	{
-		user->writeLine("You're not registered");
+		user.writeLine("You're not registered");
 		return false;
 	}
 	if ((nb_p = msg.params().size()) < 2)
 	{
 		if (!nb_p)
-			user->writeLine("No recipient");
+			user.writeLine("No recipient");
 		if (nb_p == 1)
-			user->writeLine("No text to send");
+			user.writeLine("No text to send");
 		return false;
 	}
-	for (std::list<Param>::const_iterator it = ++msg.params().begin(); it != msg.params().end(); it++)
+	for (IrcServer::Params::const_iterator i = ++msg.params().begin(); i != msg.params().end(); ++i)
 	{
-		text += " " + *it;
+		text += " " + *i;
 	}
 	return true;
 }
 
-void IrcServer::privmsg(BasicConnection *sender, const Message &msg)
+void IrcServer::privmsg(User &u, const Message &msg)
 {
-	User *user = network.conToUsr(sender);
 	std::string text;
 
-	if (!checkprivmsg(msg, user, text))
+	if (!checkprivmsg(msg, u, text))
 		return ;
 	Params targets = msg.params().front().split();
 	for (Params::const_iterator it = targets.begin(); it != targets.end(); it++)
@@ -49,33 +48,33 @@ void IrcServer::privmsg(BasicConnection *sender, const Message &msg)
 		MsgTo target = it->asMsgTo();
 		if (!target.isValid())
 		{
-			user->writeLine(*it + " :No such nick/channel");
+			u.writeLine(*it + " :No such nick/channel");
 			continue ;
 		}
 		if (target.type() == MsgTo::NICKNAME)
 		{
-			User *receiver = network.getUser(target.target());
+			User *receiver = network.getByNickname(target.target());
 			if (!receiver)
-				user->writeLine("No such nick");
+				u.writeLine("No such nick");
 			else
 			{
 				if (receiver->umode().isSet(UserMode::AWAY))
-					user->writeLine("reply away");
+					u.writeLine("reply away");
 				else
-					receiver->writeLine(":" + user->nickname() + " PRIVMSG " + receiver->nickname() + " :" + text);
+					receiver->writeLine(":" + u.nickname() + " PRIVMSG " + receiver->nickname() + " :" + text);
 			}
 		}
 		else if (target.type() == MsgTo::CHANNEL)
 		{
-			Channel *chan = network.getChan(target.target());
+			Channel *chan = network.getByChannelname(target.target());
 			if (!chan)
-				user->writeLine("No such channel");
+				u.writeLine("No such channel");
 			else
-				network.msgToChan(chan, ":" + user->nickname() + " PRIVMSG " + chan->name() + " :" + text, user);
+				network.msgToChan(chan, ":" + u.nickname() + " PRIVMSG " + chan->name() + " :" + text, &u);
 		}
 		else
 		{
-			user->writeLine("MASKS NOT SUPPORTED YET");
+			u.writeLine("MASKS NOT SUPPORTED YET");
 		}
 		// incomplete / ugly error handling ofc
 	}

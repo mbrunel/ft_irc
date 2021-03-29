@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 14:02:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/23 21:45:02 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/29 19:40:06 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ const std::string &Message::command() const
 	return (_command);
 }
 
-const std::list<Param> &Message::params() const
+const std::vector<Param> &Message::params() const
 {
 	return (_params);
 }
@@ -94,7 +94,7 @@ std::ostream &operator<<(std::ostream &o, const Message &m)
 	if (m.params().size())
 	{
 		o << ", params: [";
-		std::list<Param>::const_iterator i = m.params().begin();
+		std::vector<Param>::const_iterator i = m.params().begin();
 		o << *i;
 		for (++i; i != m.params().end(); ++i)
 			o << ", " << *i;

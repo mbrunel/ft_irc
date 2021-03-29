@@ -3,70 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   Network.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:16 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/28 21:06:49 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/29 19:08:30 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-
-#include <map>
-#include <list>
 #include <assert.h>
-
-#include "BasicConnection.hpp"
+#include <map>
 #include "Channel.hpp"
-#include "User.hpp"
 #include "RemoteServer.hpp"
 
 class Network
 {
   public:
-	typedef std::map<std::string, User *> UserMap;
-	typedef std::map<std::string, RemoteServer *> ServerMap;
-	typedef std::map<TcpSocket *, BasicConnection *> LocalMap;
-	typedef std::map<std::string, Channel *> ChannelMap;
+	typedef std::map<TcpSocket *, BasicConnection *>	ConnectionMap;
+	typedef std::map<std::string, User *>				UserMap;
+	typedef std::map<std::string, RemoteServer *>		ServerMap;
+	typedef std::map<std::string, Channel *>			ChannelMap;
 
 	Network();
 	~Network() throw();
 
-	User			*newUser(BasicConnection *connection);
-	RemoteServer	*newServer(BasicConnection *connection);
-	BasicConnection	*newConnection(TcpSocket *socket);
-	Channel			*newChan(const std::string &name);
-	void			addUser(User *user);
-	void			addServer(RemoteServer *srv);
-	void			addConnection(BasicConnection *connection);
-	void			addChan(Channel *chan);
-	bool			isUser(const std::string &nick);
-	bool			isServer(const std::string &name);
-	bool			isConnection(TcpSocket *socket);
-	bool			isChan(const std::string &name);
-	User			*getUser(const std::string &nick);
-	RemoteServer	*getServer(const std::string &srvname);
-	Channel			*getChan(const std::string &name);
-	BasicConnection	*getConnection(TcpSocket *socket);
-	void			removeUser(const std::string &nick) throw();
-	void			removeUser(User *user) throw();
-	void			removeServer(const std::string &srvname) throw();
-	void			removeServer(RemoteServer *srv) throw();
-	void			removeConnection(TcpSocket *socket) throw();
-	void			removeConnection(BasicConnection *connection) throw();
-	void			removeChan(const std::string &name) throw();
-	void			removeChan(const Channel *chan) throw();
+	void			add(User *user);
+	void			add(RemoteServer *server);
+	void			add(Channel *channel);
 	void			clear() throw();
-	User			*conToUsr(BasicConnection *connection);
-	RemoteServer	*conToSrv(BasicConnection *connection);
+	BasicConnection	*getBySocket(TcpSocket *socket);
+	User			*getByNickname(const std::string &nickname);
+	RemoteServer	*getByServername(const std::string &servername);
+	Channel			*getByChannelname(const std::string &channelname);
 	void			msgToNetwork(const std::string &msg);
+	void			remove(User *user) throw();
+	void			remove(RemoteServer *srv) throw();
+	void			remove(const Channel *chan) throw();
 	void			msgToChan(Channel *chan, const std::string &msg, User * sender = NULL);
 
   private:
-	UserMap		users;
-	LocalMap	connections;
-	ChannelMap	channels;
-	ServerMap	servers;
+	ConnectionMap	connections;
+	UserMap			users;
+	ServerMap		servers;
+	ChannelMap		channels;
 
 	Network(const Network &);
 	Network &operator=(const Network &);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/28 15:32:17 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/29 19:47:13 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,39 +41,48 @@ public:
 	virtual ~UserMode();
 };
 
+class UserRequirement : public Mode
+{
+public:
+	enum Flag
+	{
+		PASS = 1,
+		NICK = 1 << 2,
+		USER = 1 << 3,
+		ALL_EXCEPT_PASS = NICK | USER,
+		ALL = PASS | ALL_EXCEPT_PASS
+	};
+
+	UserRequirement(unsigned flags = 0);
+	virtual ~UserRequirement();
+};
+
 class User : public BasicConnection
 {
 public:
-	enum State
-	{
-		HAS_NOTHING,
-		HAS_NICK,
-		HAS_USER,
-		REGISTERED
-	};
-
-	User(TcpSocket *socket);
+	User(TcpSocket *socket, UserRequirement::Flag requirements);
 	virtual ~User();
 
-	RemoteServer		*makeRemoteServer();
-	const std::string	&nickname() const;
-	const std::string	&username() const;
-	const std::string	&realname() const;
-	const UserMode		&umode() const;
-	const State			&state() const;
-	size_t				joinedChannels() const;
-	void				setNickname(const std::string &nickname);
-	void				setUsername(const std::string &username);
-	void				setRealname(const std::string &realname);
-	void				setUmode(const UserMode &umode);
-	void				setState(const State &state);
-	void				setJoinedChannels(size_t joinedChannels);
+	bool					isRegistered() const;
+	RemoteServer			*makeRemoteServer();
+	void					unsetRequirement(UserRequirement::Flag requirement);
+	const UserRequirement	&requirements() const;
+	const std::string		&nickname() const;
+	const std::string		&username() const;
+	const std::string		&realname() const;
+	const UserMode			&umode() const;
+	size_t					joinedChannels() const;
+	void					setNickname(const std::string &nickname);
+	void					setUsername(const std::string &username);
+	void					setRealname(const std::string &realname);
+	void					setUmode(const UserMode &umode);
+	void					setJoinedChannels(size_t joinedChannels);
 
 protected:
-	std::string	_nickname;
-	std::string _username;
-	std::string _realname;
-	UserMode	_umode;
-	State		_state;
-	size_t		_joinedChannels;
+	UserRequirement	_requirements;
+	std::string		_nickname;
+	std::string		_username;
+	std::string		_realname;
+	UserMode		_umode;
+	size_t			_joinedChannels;
 };

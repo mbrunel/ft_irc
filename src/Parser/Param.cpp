@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:30 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/24 17:29:47 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/29 19:38:10 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ std::string Param::asKey() const
 	return (c.extract());
 }
 
-std::list<Param> Param::split(char d) const
+std::vector<Param> Param::split(char d) const
 {
-	t_ParamList	l;
-	Context		c(*this);
+	std::vector<Param>	v;
+	Context				c(*this);
 
 	if (*c == d)
 	{
-		l.push_back(Param(""));
+		v.push_back(Param(""));
 		++c;
 	}
 	while (*c)
@@ -67,15 +67,15 @@ std::list<Param> Param::split(char d) const
 		c.resetDistance();
 		while (*c && *c != d)
 			++c;
-		l.push_back(Param(c.extract()));
+		v.push_back(Param(c.extract()));
 		if (*c == d)
 		{
 			++c;
 			if (!*c)
-				l.push_back(Param(""));
+				v.push_back(Param(""));
 		}
 	}
-	return (l);
+	return (v);
 }
 
 std::string Param::parse(bool (*parsing_func)(Context &, std::string &)) const

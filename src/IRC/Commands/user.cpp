@@ -3,38 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:13:59 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/28 21:08:23 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/29 18:41:17 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcError.hpp"
 #include "IrcServer.hpp"
 
-void IrcServer::unknownUser(BasicConnection *sender, const Message &msg)
+void IrcServer::user(User &u, const Message &msg)
 {
-	User *usr = network.newUser(sender);
-	delete sender;
-	network.addConnection(usr);
-	usr->setState(User::HAS_USER);
-	(void)msg;
-}
-
-void IrcServer::userUser(BasicConnection *sender, const Message &msg)
-{
-	User *user = network.conToUsr(sender);
-
-	assert(user->state() != User::HAS_NOTHING);
-	if (user->state() != User::HAS_NICK)
+	if (!u.requirements().isSet(UserRequirement::USER))
 	{
-		user->writeLine(IrcError::alreadyregistred("127.0.0.1"));
+		u.writeLine(IrcError::alreadyregistred("127.0.0.1"));
 		return ;
 	}
 	(void)msg;
-	// Just so it exists
-	network.addUser(user);
-	user->setState(User::REGISTERED);
-	user->writeLine("THIS IS THE MOTD");
+	u.unsetRequirement(UserRequirement::USER);
+	if (u.isRegistered())
+		u.writeLine("THIS IS THE MOTD");
 }
