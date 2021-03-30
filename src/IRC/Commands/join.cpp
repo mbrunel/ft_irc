@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 18:41:45 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/30 02:57:07 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void IrcServer::join(User &u, const Message &msg)
 		{
 			if (u.joinedChannels() >= config.maxChannels)
 			{
-				u.writeLine(IrcError::toomanychannels(u.nickname(), target));
+				u.writeLine(IrcError::toomanychannels(u.prefix(), target));
 				continue ;
 			}
 			Channel *c = network.getByChannelname(target);
@@ -56,10 +56,10 @@ void IrcServer::join(User &u, const Message &msg)
 			c->addMember(&u, MemberMode(c->count() ? 0 : MemberMode::CREATOR | MemberMode::OPERATOR));
 			u.setJoinedChannels(u.joinedChannels() + 1);
 			topic(u, Message("TOPIC " + target));
-			network.msgToChan(c, ':' + u.nickname() + ' ' + msg.command() + ' ' + target);
+			network.msgToChan(c, ':' + u.prefix() + ' ' + msg.command() + ' ' + target);
 			// Add NAMES
 		}
 		else if (i->size())
-			u.writeLine(IrcError::nosuchchannel(u.nickname(), *i));
+			u.writeLine(IrcError::nosuchchannel(u.prefix(), *i));
 	}
 }

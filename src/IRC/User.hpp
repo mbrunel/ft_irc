@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 19:47:13 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/30 03:00:51 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ public:
 	const std::string		&nickname() const;
 	const std::string		&username() const;
 	const std::string		&realname() const;
+	std::string				prefix() const;
 	const UserMode			&umode() const;
 	size_t					joinedChannels() const;
 	void					setNickname(const std::string &nickname);

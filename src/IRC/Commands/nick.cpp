@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:14:24 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 19:33:01 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/30 02:37:27 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@ void IrcServer::nick(User &u, const Message &msg)
 		return ;
 	if (u.requirements().isSet(UserRequirement::NICK))
 	{
+		network.remove(&u);
 		u.setNickname(nickname);
+		network.add(&u);
 		u.unsetRequirement(UserRequirement::NICK);
 		if (u.isRegistered())
 			u.writeLine("THIS IS THE MOTD");

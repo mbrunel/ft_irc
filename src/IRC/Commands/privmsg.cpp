@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 19:39:25 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/30 02:58:16 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,7 @@ bool checkprivmsg(const Message &msg, User &user, std::string &text)
 			user.writeLine("No text to send");
 		return false;
 	}
-	for (IrcServer::Params::const_iterator i = ++msg.params().begin(); i != msg.params().end(); ++i)
-	{
-		text += " " + *i;
-	}
+	text = *++msg.params().begin();
 	return true;
 }
 
@@ -61,7 +58,7 @@ void IrcServer::privmsg(User &u, const Message &msg)
 				if (receiver->umode().isSet(UserMode::AWAY))
 					u.writeLine("reply away");
 				else
-					receiver->writeLine(":" + u.nickname() + " PRIVMSG " + receiver->nickname() + " :" + text);
+					receiver->writeLine(":" + u.prefix() + " PRIVMSG " + receiver->nickname() + " :" + text);
 			}
 		}
 		else if (target.type() == MsgTo::CHANNEL)
@@ -70,7 +67,7 @@ void IrcServer::privmsg(User &u, const Message &msg)
 			if (!chan)
 				u.writeLine("No such channel");
 			else
-				network.msgToChan(chan, ":" + u.nickname() + " PRIVMSG " + chan->name() + " :" + text, &u);
+				network.msgToChan(chan, ":" + u.prefix() + " PRIVMSG " + chan->name() + " :" + text, &u);
 		}
 		else
 		{

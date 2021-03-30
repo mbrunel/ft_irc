@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 19:47:31 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/30 03:00:39 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ const std::string &User::username() const
 const std::string &User::realname() const
 {
 	return (_realname);
+}
+
+std::string User::prefix() const
+{
+	return nickname() + "!" + username() + "@" + _socket->host();
 }
 
 const UserMode &User::umode() const

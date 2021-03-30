@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   TcpSocket.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 01:41:30 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/26 13:27:07 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/30 02:56:09 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,13 @@ TcpSocket::TcpSocket(int listenerFd):Socket()
 		close();
 		throw MsgException("Unknown IP family");
 	}
+	char buf[NI_MAXHOST];
+	if (getnameinfo((sockaddr *)&_addr, addrLen, buf, sizeof(buf), NULL, 0, NI_NAMEREQD))
+	{
+		close();
+		throw MsgException("getnameinfo");
+	}
+	_host = buf;
 }
 
 TcpSocket::~TcpSocket() throw() { close(); }
@@ -103,3 +110,5 @@ int TcpSocket::recv(void *buf, size_t n, int flags)
 const std::string &TcpSocket::ip() const { return (_ip); }
 
 uint16_t TcpSocket::port() const { return (_port); }
+
+const std::string &TcpSocket::host() const { return _host; }

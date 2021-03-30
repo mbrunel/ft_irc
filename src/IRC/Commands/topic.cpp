@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/27 15:10:36 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 18:40:43 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/30 02:58:35 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void IrcServer::topic(User &u, const Message &msg)
 				{
 					chan->setTopic(*args);
 					if (chan->topic().size())
-						network.msgToChan(chan, u.nickname() + " 332 " + chan->name() + " :" + chan->topic());
+						network.msgToChan(chan, u.prefix() + " 332 " + chan->name() + " :" + chan->topic());
 				}
 			}
 			else if (chan->topic().size())
