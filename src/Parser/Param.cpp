@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:30 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 19:38:10 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/31 14:45:28 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,35 +21,23 @@ std::string(value)
 Param::~Param()
 {}
 
-std::string Param::asChannel() const
+bool Param::isChannel() const
 {
-	return (parse(Parser::asChannel));
+	return (check(Parser::asChannel));
 }
 
-MsgTo Param::asMsgTo() const
+bool Param::isNickname() const
 {
-	MsgTo	m;
-	Context	c(*this);
-
-	if (!m.interpret(c) || *c)
-		return (MsgTo());
-	return (m);
+	return (check(Parser::asNickname));
 }
 
-std::string Param::asNickname() const
-{
-	return (parse(Parser::asNickname));
-}
-
-std::string Param::asKey() const
+bool Param::isKey() const
 {
 	Context	c(*this);
 
 	while (c.distance() < 24 && *c && !!std::strchr(" \f\t\v", *c))
 		++c;
-	if (c.distance() < 1 || *c)
-		c.resetDistance();
-	return (c.extract());
+	return (c.distance() > 0 && !*c);
 }
 
 std::vector<Param> Param::split(char d) const
@@ -78,12 +66,10 @@ std::vector<Param> Param::split(char d) const
 	return (v);
 }
 
-std::string Param::parse(bool (*parsing_func)(Context &, std::string &)) const
+bool Param::check(bool (*parsing_func)(Context &, std::string &)) const
 {
 	std::string	s;
 	Context		c(*this);
 
-	if (!parsing_func(c, s) || *c)
-		s.clear();
-	return (s);
+	return (parsing_func(c, s) && !*c);
 }

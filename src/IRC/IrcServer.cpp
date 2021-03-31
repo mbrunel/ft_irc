@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/29 19:47:15 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/31 15:31:52 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ maxChannels(maxChannels)
 {}
 
 IrcServer::IrcServer() :
-config(IrcServerConfig(5))
+config(IrcServerConfig(5)),
+prefix("irc.ourserver.local")
 {
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["JOIN"] = &IrcServer::join;

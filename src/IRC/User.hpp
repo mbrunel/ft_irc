@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/30 03:00:51 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/31 16:13:39 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,17 @@ public:
 		/** User is flagged as away */
 		AWAY = 1,
 		/** Marks a User as invisible */
-		INVISIBLE = 1 << 2,
+		INVISIBLE = 1 << 1,
 		/** User receives wallops */
-		WALLOPS = 1 << 3,
+		WALLOPS = 1 << 2,
 		/** Restricted User connection */
-		RESTRICTED = 1 << 4,
+		RESTRICTED = 1 << 3,
 		/** Operator flag */
-		OPERATOR = 1 << 5,
+		OPERATOR = 1 << 4,
 		/** Local operator flag */
-		LOCAL_OPERATOR = 1 << 6,
+		LOCAL_OPERATOR = 1 << 5,
 		/** Marks a User for receipt of server notices */
-		MARK = 1 << 7
+		MARK = 1 << 6
 	};
 
 	UserMode(unsigned flags = 0);
@@ -47,8 +47,8 @@ public:
 	enum Flag
 	{
 		PASS = 1,
-		NICK = 1 << 2,
-		USER = 1 << 3,
+		NICK = 1 << 1,
+		USER = 1 << 2,
 		ALL_EXCEPT_PASS = NICK | USER,
 		ALL = PASS | ALL_EXCEPT_PASS
 	};

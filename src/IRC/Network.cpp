@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/29 18:21:39 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/31 16:18:10 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ Network::~Network() throw()
 void Network::add(User *u)
 {
 	connections[u->socket()] = u;
-	users[u->nickname()] = u;
+	if (u->isRegistered())
+		users[u->nickname()] = u;
 }
 
 void Network::add(RemoteServer *s)

@@ -6,21 +6,31 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:13:59 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 18:41:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/31 16:43:52 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcError.hpp"
 #include "IrcServer.hpp"
 
-void IrcServer::user(User &u, const Message &msg)
+static bool check(const std::string &prefix, User &u, const Message &m)
 {
 	if (!u.requirements().isSet(UserRequirement::USER))
-	{
-		u.writeLine(IrcError::alreadyregistred("127.0.0.1"));
+		u.writeLine(IrcError::alreadyregistred(prefix));
+	else if (m.params().size() < 4)
+		u.writeLine(IrcError::needmoreparams(prefix, m.command()));
+	else
+		return true;
+	return false;
+}
+
+void IrcServer::user(User &u, const Message &m)
+{
+	if (!check(prefix, u, m))
 		return ;
-	}
-	(void)msg;
+	u.setUsername(m.params()[0]);
+	// Add mode
+	u.setRealname(m.params()[3]);
 	u.unsetRequirement(UserRequirement::USER);
 	if (u.isRegistered())
 		u.writeLine("THIS IS THE MOTD");

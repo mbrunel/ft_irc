@@ -6,13 +6,13 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:26 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 19:38:20 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/31 14:48:56 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <vector>
-#include "MsgTo.hpp"
+#include "Context.hpp"
 
 class Param : public std::string
 {
@@ -20,12 +20,11 @@ public:
 	Param(const std::string &value);
 	virtual ~Param();
 
-	std::string			asChannel() const;
-	MsgTo				asMsgTo() const;
-	std::string			asNickname() const;
-	std::string			asKey() const;
+	bool				isChannel() const;
+	bool				isNickname() const;
+	bool				isKey() const;
 	std::vector<Param>	split(char delimiter = ',') const;
 
 private:
-	std::string	parse(bool (*parsing_func)(Context &, std::string &)) const;
+	bool	check(bool (*parsing_func)(Context &, std::string &)) const;
 };

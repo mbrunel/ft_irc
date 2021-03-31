@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/27 14:05:50 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/31 16:14:03 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,21 @@ public:
 		/** Anonymous Channel flag */
 		ANONYMOUS = 1,
 		/** Invite-only Channel flag */
-		INVITE_ONLY = 1 << 2,
+		INVITE_ONLY = 1 << 1,
 		/** Moderated Channel flag */
-		MODERATED = 1 << 3,
+		MODERATED = 1 << 2,
 		/** No messages to Channel from User on the outside */
-		NO_OUTSIDE_MSG = 1 << 4,
+		NO_OUTSIDE_MSG = 1 << 3,
 		/** Quiet channel flag */
-		QUIET = 1 << 5,
+		QUIET = 1 << 4,
 		/** Private channel flag */
-		PRIVATE = 1 << 6,
+		PRIVATE = 1 << 5,
 		/** Secret channel flag */
-		SECRET = 1 << 7,
+		SECRET = 1 << 6,
 		/** Server reop Channel flag */
-		REOP = 1 << 8,
+		REOP = 1 << 7,
 		/** Topic settable by Channel operator only flag */
-		TOPIC_SETTABLE_BY_CHANOP = 1 << 9
+		TOPIC_SETTABLE_BY_CHANOP = 1 << 8
 	};
 
 	ChannelMode(unsigned flags = 0);

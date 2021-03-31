@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/27 14:10:12 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/31 15:26:47 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ Channel::~Channel()
 void Channel::addMember(User *user, const MemberMode &mode)
 {
 	_members[user] = mode;
+	user->setJoinedChannels(user->joinedChannels() + 1);
 }
 
 size_t Channel::count() const
@@ -54,6 +55,7 @@ size_t Channel::count() const
 void Channel::delMember(User *user)
 {
 	_members.erase(user);
+	user->setJoinedChannels(user->joinedChannels() - 1);
 }
 
 const MemberMode *Channel::findMember(User *user) const

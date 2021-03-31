@@ -3,56 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:14:24 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/30 02:37:27 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/03/31 16:28:42 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "IrcError.hpp"
 #include "IrcServer.hpp"
 
-bool parseNickMsg(User &sender, const Message &msg, std::string &nickname)
+static bool check(const std::string &prefix, User &u, const Message &m, Network &network)
 {
-	if (msg.params().empty())
-	{
-		sender.writeLine("No nick given");
-		return false;
-	}
-	nickname = Param(msg.params().back()).asNickname();
-	if (nickname.empty())
-	{
-		sender.writeLine("erroneus nickname");
-		return false;
-	}
-	return true;
+	if (!m.params().size())
+		u.writeLine(IrcError::nonicknamegiven(prefix));
+	else if (!m.params()[0].isNickname())
+		u.writeLine(IrcError::erroneusnickname(prefix, m.params()[0]));
+	else if (network.getByNickname(m.params()[0]))
+		u.writeLine(IrcError::nicknameinuse(prefix, m.params()[0]));
+	else
+		return true;
+	return false;
 }
 
-bool checkNickErrors(User &sender, const Message &msg, Network &network, std::string &nickname)
+void IrcServer::nick(User &u, const Message &m)
 {
-	if (!parseNickMsg(sender, msg, nickname))
-		return false;
-	if (network.getByNickname(nickname))
-	{
-		sender.writeLine("nickname already in use");
-		return false;
-	}
-	return true;
-}
-
-void IrcServer::nick(User &u, const Message &msg)
-{
-	std::string nickname;
-
-	if (!checkNickErrors(u, msg, network, nickname))
+	if (!check(prefix, u, m, network))
 		return ;
+	network.remove(&u);
+	u.setNickname(m.params()[0]);
+	network.add(&u);
 	if (u.requirements().isSet(UserRequirement::NICK))
 	{
-		network.remove(&u);
-		u.setNickname(nickname);
-		network.add(&u);
 		u.unsetRequirement(UserRequirement::NICK);
 		if (u.isRegistered())
 			u.writeLine("THIS IS THE MOTD");
 	}
+	// Add broadcast to all servers
 }
