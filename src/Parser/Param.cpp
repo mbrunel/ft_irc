@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:30 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/31 14:45:28 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 13:55:43 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,22 @@ Param::~Param()
 bool Param::isChannel() const
 {
 	return (check(Parser::asChannel));
+}
+
+bool Param::isMask() const
+{
+	Param::const_iterator	i;
+	bool					prevIsEsc;
+
+	for (i = begin(), prevIsEsc = false; i != end(); ++i)
+		if ((*i == '*' || *i == '?'))
+		{
+			if (!prevIsEsc)
+				return (true);
+		}
+		else
+			prevIsEsc = *i == '\\';
+	return (false);
 }
 
 bool Param::isNickname() const

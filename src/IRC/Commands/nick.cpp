@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:14:24 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/31 16:28:42 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 15:50:17 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ void IrcServer::nick(User &u, const Message &m)
 	{
 		u.unsetRequirement(UserRequirement::NICK);
 		if (u.isRegistered())
-			u.writeLine("THIS IS THE MOTD");
+			writeWelcome(u);
+		else
+			return ;
 	}
 	// Add broadcast to all servers
 }

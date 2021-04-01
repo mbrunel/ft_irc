@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/31 15:32:23 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 15:59:03 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@
 
 struct IrcServerConfig
 {
-	size_t	maxChannels;
+	std::string	version;
+	size_t		maxChannels;
 
-	IrcServerConfig(size_t maxChannels = 0);
+	IrcServerConfig(const std::string &version, size_t maxChannels = 0);
 };
 
 class IrcServer
@@ -49,16 +50,19 @@ class IrcServer
 
 	void	away(User &sender, const Message &msg);
 	void	join(User &sender, const Message &msg);
+	void	motd(User &sender, const Message &msg);
+	void	nick(User &sender, const Message &msg);
 	void	privmsg(User &sender, const Message &msg);
 	void	topic(User &sender, const Message &msg);
-	void	nick(User &sender, const Message &msg);
 	void	user(User &sender, const Message &msg);
 
-	void				broadcast(const Channel &channel, const std::string &message, User *except = NULL);
-	void				disconnect(TcpSocket *socket) throw();
-	void				disconnect(User *connection) throw();
-	void				disconnect(RemoteServer *connection) throw();
-	void				exec(BasicConnection *sender, const Message &msg);
+	void	disconnect(TcpSocket *socket) throw();
+	void	disconnect(User *connection) throw();
+	void	disconnect(RemoteServer *connection) throw();
+	void	exec(BasicConnection *sender, const Message &msg);
+	void	writeNum(User &dst, IrcNumeric code, const std::string &content);
+	void	writeWelcome(User &user);
+	void	writeMotd(User &user);
 
 	IrcServer(const IrcServer& copy);
 	IrcServer &operator=(const IrcServer& copy);

@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Param.hpp                                          :+:      :+:    :+:   */
+/*   Command.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/19 19:24:26 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 13:51:31 by asoursou         ###   ########.fr       */
+/*   Created: 2021/04/01 13:46:15 by asoursou          #+#    #+#             */
+/*   Updated: 2021/04/01 13:46:50 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <vector>
-#include "Context.hpp"
+#include "IrcServer.hpp"
 
-class Param : public std::string
+class Command
 {
 public:
-	Param(const std::string &value);
-	virtual ~Param();
+	Command(const std::string &value);
+	virtual ~Command();
 
 	bool				isChannel() const;
-	bool				isMask() const;
 	bool				isNickname() const;
 	bool				isKey() const;
-	std::vector<Param>	split(char delimiter = ',') const;
+	std::vector<Command>	split(char delimiter = ',') const;
 
 private:
 	bool	check(bool (*parsing_func)(Context &, std::string &)) const;
 };
+

@@ -1,17 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IrcError.hpp                                       :+:      :+:    :+:   */
+/*   IrcNumeric.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/27 14:00:28 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/26 12:56:05 by asoursou         ###   ########.fr       */
+/*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
+/*   Updated: 2021/04/01 16:11:21 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <string>
+
+enum IrcNumeric
+{
+	// Add ERR_XXX for each errors
+	RPL_WELCOME = 1,
+	RPL_YOURHOST = 2,
+	RPL_CREATED = 3,
+	RPL_MYINFO = 4,
+	RPL_MOTD = 372,
+	RPL_MOTDSTART = 375,
+	RPL_ENDOFMOTD = 376
+};
 
 namespace IrcError
 {
@@ -59,4 +71,15 @@ namespace IrcError
 	std::string nooperhost(const std::string &hostname);
 	std::string umodeunknownflag(const std::string &hostname);
 	std::string usersdontmatch(const std::string &hostname);
+}
+
+namespace IrcReply
+{
+	std::string welcome(const std::string &userPrefix);
+	std::string yourhost(const std::string &servername, const std::string &version);
+	std::string created(const std::string &date);
+	std::string myinfo(const std::string &servername, const std::string &version, const std::string &availableUserModes, const std::string &availableChannelModes);
+	std::string motdstart(const std::string &servername);
+	std::string motd(const std::string &text);
+	std::string endofmotd();
 }

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IrcError.cpp                                       :+:      :+:    :+:   */
+/*   IrcNumeric.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/27 14:00:28 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/25 15:50:23 by asoursou         ###   ########.fr       */
+/*   Created: 2021/04/01 16:04:19 by asoursou          #+#    #+#             */
+/*   Updated: 2021/04/01 16:10:13 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string>
+#include "IrcNumeric.hpp"
 
 namespace IrcError
 {
@@ -145,5 +145,44 @@ namespace IrcError
 	}
 	std::string usersdontmatch(const std::string &hostname) {
 		return (':' + hostname + " 502 :Can't change mode for other users");
+	}
+}
+
+
+namespace IrcReply
+{
+	std::string welcome(const std::string &userPrefix)
+	{
+		return ("Welcome to the Internet Relay Network " + userPrefix);
+	}
+
+	std::string yourhost(const std::string &servername, const std::string &version)
+	{
+		return ("Your host is " + servername + ", running version " + version);
+	}
+
+	std::string created(const std::string &date)
+	{
+		return ("This server was created " + date);
+	}
+
+	std::string myinfo(const std::string &servername, const std::string &version, const std::string &availableUserModes, const std::string &availableChannelModes)
+	{
+		return (servername + ' ' + version + ' ' + availableUserModes + ' ' + availableChannelModes);
+	}
+
+	std::string motdstart(const std::string &servername)
+	{
+		return ("- " + servername + " Message of the day - ");
+	}
+
+	std::string motd(const std::string &text)
+	{
+		return ("- " + text);
+	}
+
+	std::string endofmotd()
+	{
+		return ("End of MOTD command");
 	}
 }

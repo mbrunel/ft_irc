@@ -6,16 +6,17 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/27 15:10:36 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/31 16:45:24 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 13:50:27 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcError.hpp"
 #include "IrcServer.hpp"
 
-static bool check(User &u, const Message &m)
+static bool check(const std::string &prefix, User &u, const Message &m)
 {
-	if (!u.isRegistered());
+	if (!u.isRegistered())
+		u.writeLine(IrcError::notregistered(prefix));
 	else if (!m.params().size())
 		u.writeLine(IrcError::needmoreparams(u.nickname(), m.command()));
 	else
@@ -25,7 +26,7 @@ static bool check(User &u, const Message &m)
 
 void IrcServer::topic(User &u, const Message &m)
 {
-	if (!check(u, m))
+	if (!check(prefix, u, m))
 		return ;
 	const Param	&target(m.params()[0]);
 	Channel		*chan;

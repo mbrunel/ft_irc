@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/30 03:00:39 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/01 15:57:52 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "MessageBuilder.hpp"
 #include "User.hpp"
 
 UserRequirement::UserRequirement(unsigned flags) :
@@ -48,6 +49,11 @@ RemoteServer *User::makeRemoteServer()
 void User::unsetRequirement(UserRequirement::Flag requirement)
 {
 	_requirements.unset(requirement);
+}
+
+void User::writeNum(const std::string &origin, IrcNumeric code, const std::string &content)
+{
+	writeLine(MessageBuilder(nickname(), origin, code, content).str());
 }
 
 const UserRequirement &User::requirements() const
