@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 16:09:31 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 18:54:36 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ void IrcServer::exec(BasicConnection *sender, const Message &msg)
 {
 	if (!msg.isValid())
 		return ;
-	log() << msg << std::endl;
 	if (sender->type() == BasicConnection::USER)
 	{
 		userCommandsMap::iterator i;
@@ -120,25 +119,25 @@ void IrcServer::exec(BasicConnection *sender, const Message &msg)
 	sender->writeLine("Unknown Command");
 }
 
-void IrcServer::writeNum(User &dst, IrcNumeric code, const std::string &content)
+void IrcServer::writeNum(User &dst, const IrcNumeric &response)
 {
-	dst.writeNum(prefix, code, content);
+	dst.writeNum(prefix, response);
 }
 
 void IrcServer::writeMotd(User &u)
 {
-	writeNum(u, RPL_MOTDSTART, IrcReply::motdstart(prefix));
-	writeNum(u, RPL_MOTD, IrcReply::motd("Welcome to our broken IRC server!"));
-	writeNum(u, RPL_MOTD, IrcReply::motd("Don't forget to install Discord on your computer next time :)"));
-	writeNum(u, RPL_ENDOFMOTD, IrcReply::endofmotd());
+	writeNum(u, IrcReply::motdstart(prefix));
+	writeNum(u, IrcReply::motd("Welcome to our broken IRC server!"));
+	writeNum(u, IrcReply::motd("Don't forget to install Discord on your computer next time :)"));
+	writeNum(u, IrcReply::endofmotd());
 }
 
 void IrcServer::writeWelcome(User &u)
 {
-	writeNum(u, RPL_WELCOME, IrcReply::welcome(u.prefix()));
-	writeNum(u, RPL_YOURHOST, IrcReply::yourhost(prefix, config.version));
-	writeNum(u, RPL_CREATED, IrcReply::created("in the past (for sure)"));
-	writeNum(u, RPL_MYINFO, IrcReply::myinfo(prefix, config.version, "<available user modes>", "<available channel modes>"));
+	writeNum(u, IrcReply::welcome(u.prefix()));
+	writeNum(u, IrcReply::yourhost(prefix, config.version));
+	writeNum(u, IrcReply::created("in the past (for sure)"));
+	writeNum(u, IrcReply::myinfo(prefix, config.version, "<available user modes>", "<available channel modes>"));
 	writeMotd(u);
 }
 

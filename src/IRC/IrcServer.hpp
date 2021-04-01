@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 15:59:03 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 18:16:10 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class IrcServer
 	void	join(User &sender, const Message &msg);
 	void	motd(User &sender, const Message &msg);
 	void	nick(User &sender, const Message &msg);
+	void	part(User &sender, const Message &msg);
 	void	privmsg(User &sender, const Message &msg);
 	void	topic(User &sender, const Message &msg);
 	void	user(User &sender, const Message &msg);
@@ -60,7 +61,7 @@ class IrcServer
 	void	disconnect(User *connection) throw();
 	void	disconnect(RemoteServer *connection) throw();
 	void	exec(BasicConnection *sender, const Message &msg);
-	void	writeNum(User &dst, IrcNumeric code, const std::string &content);
+	void	writeNum(User &dst, const IrcNumeric &response);
 	void	writeWelcome(User &user);
 	void	writeMotd(User &user);
 

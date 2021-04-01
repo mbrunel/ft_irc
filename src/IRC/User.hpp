@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 15:58:24 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 18:16:23 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ public:
 	bool					isRegistered() const;
 	RemoteServer			*makeRemoteServer();
 	void					unsetRequirement(UserRequirement::Flag requirement);
-	void					writeNum(const std::string &origin, IrcNumeric code, const std::string &content);
+	void					writeNum(const std::string &origin, const IrcNumeric &response);
 	const UserRequirement	&requirements() const;
 	const std::string		&nickname() const;
 	const std::string		&username() const;

@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 15:57:52 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 18:34:30 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ void User::unsetRequirement(UserRequirement::Flag requirement)
 	_requirements.unset(requirement);
 }
 
-void User::writeNum(const std::string &origin, IrcNumeric code, const std::string &content)
+void User::writeNum(const std::string &origin, const IrcNumeric &response)
 {
-	writeLine(MessageBuilder(nickname(), origin, code, content).str());
+	writeLine(MessageBuilder::create(origin, nickname(), response));
 }
 
 const UserRequirement &User::requirements() const

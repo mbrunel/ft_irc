@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 16:33:00 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 18:15:24 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 static bool check(const std::string &prefix, User &u, const Message &m)
 {
 	if (!u.isRegistered())
-		u.writeLine(IrcError::notregistered(prefix));
+		u.writeNum(prefix, IrcError::notregistered());
 	if (!m.params().size())
-		u.writeLine(IrcError::norecipient(prefix, m.command()));
+		u.writeNum(prefix, IrcError::norecipient(m.command()));
 	else if (m.params().size() < 2)
-		u.writeLine("No text to send");
+		u.writeNum(prefix, IrcError::notexttosend());
 	else
 		return true;
 	return false;

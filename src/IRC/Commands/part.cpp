@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   join.cpp                                           :+:      :+:    :+:   */
+/*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 19:04:55 by asoursou         ###   ########.fr       */
+/*   Created: 2021/04/01 16:40:29 by asoursou          #+#    #+#             */
+/*   Updated: 2021/04/01 18:12:24 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static bool check(const std::string &prefix, User &u, const Message &m)
 	return false;
 }
 
-void IrcServer::join(User &u, const Message &m)
+void IrcServer::part(User &u, const Message &m)
 {
 	if (!check(prefix, u, m))
 		return ;
@@ -55,8 +55,7 @@ void IrcServer::join(User &u, const Message &m)
 				continue ;
 			c->addMember(&u, MemberMode(c->count() ? 0 : MemberMode::CREATOR | MemberMode::OPERATOR));
 			topic(u, Message("TOPIC " + *chan));
-			network.msgToChan(c, MessageBuilder::create(u.prefix(), c->name(), m.command()));
-			//':' + u.prefix() + ' ' + m.command() + " :" + *chan);
+			network.msgToChan(c, ':' + u.prefix() + ' ' + m.command() + " :" + *chan);
 			// Add NAMES
 		}
 		else
