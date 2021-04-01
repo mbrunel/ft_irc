@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 17:08:56 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/01 17:22:35 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,52 +79,59 @@ enum IrcNumeric
 
 };
 
+struct numeric
+{
+	IrcNumeric			num;
+	const std::string	content;
+	numeric(IrcNumeric num, const std::string &content);
+};
+
 namespace IrcError
 {
-	std::string nosuchnick(const std::string &nickname);
-	std::string nosuchserver(const std::string &servername);
-	std::string nosuchchannel(const std::string &channelname);
-	std::string cannotsendtochan(const std::string &channelname);
-	std::string toomanychannels(const std::string &channelname);
-	std::string wasnosuchnick(const std::string &nickname);
-	std::string toomanytargets(const std::string &target);
-	std::string noorigin();
-	std::string norecipient(const std::string &command);
-	std::string notexttosend();
-	std::string notoplevel(const std::string &mask);
-	std::string wildtoplevel(const std::string &mask);
-	std::string unknowncommand(const std::string &command);
-	std::string nomotd();
-	std::string noadmininfo();
-	std::string fillerror(const std::string &file_op, const std::string &file);
-	std::string nonicknamegiven();
-	std::string erroneusnickname(const std::string &nickname);
-	std::string nicknameinuse(const std::string &nickname);
-	std::string nickcollision(const std::string &nickname);
-	std::string usernotinchannel(const std::string &nickname, const std::string &channel);
-	std::string notonchannel(const std::string &channel);
-	std::string useronchannel(const std::string &nickname, const std::string &channel);
-	std::string nologin(const std::string &user);
-	std::string summondisabled();
-	std::string usersdisabled();
-	std::string notregistered();
-	std::string needmoreparams(const std::string &command);
-	std::string alreadyregistred();
-	std::string nopermforhost();
-	std::string passwdmissmatch();
-	std::string yourebannedcreep();
-	std::string keyset(const std::string &channel);
-	std::string channelisfull(const std::string &channel);
-	std::string unknownmode(const std::string &c);
-	std::string inviteonlychan(const std::string &channel);
-	std::string bannedfromchan(const std::string &channel);
-	std::string badchannelkey(const std::string &channel);
-	std::string noprivileges();
-	std::string chanoprisneeded(const std::string &channel);
-	std::string cantkillserver();
-	std::string nooperhost();
-	std::string umodeunknownflag();
-	std::string usersdontmatch();
+	numeric nosuchnick(const std::string &nickname);
+	numeric nosuchserver(const std::string &servername);
+	numeric nosuchchannel(const std::string &channelname);
+	numeric cannotsendtochan(const std::string &channelname);
+	numeric toomanychannels(const std::string &channelname);
+	numeric wasnosuchnick(const std::string &nickname);
+	numeric toomanytargets(const std::string &target);
+	numeric noorigin();
+	numeric norecipient(const std::string &command);
+	numeric notexttosend();
+	numeric notoplevel(const std::string &mask);
+	numeric wildtoplevel(const std::string &mask);
+	numeric unknowncommand(const std::string &command);
+	numeric nomotd();
+	numeric noadmininfo();
+	numeric fillerror(const std::string &file_op, const std::string &file);
+	numeric nonicknamegiven();
+	numeric erroneusnickname(const std::string &nickname);
+	numeric nicknameinuse(const std::string &nickname);
+	numeric nickcollision(const std::string &nickname);
+	numeric usernotinchannel(const std::string &nickname, const std::string &channel);
+	numeric notonchannel(const std::string &channel);
+	numeric useronchannel(const std::string &nickname, const std::string &channel);
+	numeric nologin(const std::string &user);
+	numeric summondisabled();
+	numeric usersdisabled();
+	numeric notregistered();
+	numeric needmoreparams(const std::string &command);
+	numeric alreadyregistred();
+	numeric nopermforhost();
+	numeric passwdmissmatch();
+	numeric yourebannedcreep();
+	numeric keyset(const std::string &channel);
+	numeric channelisfull(const std::string &channel);
+	numeric unknownmode(const std::string &c);
+	numeric inviteonlychan(const std::string &channel);
+	numeric bannedfromchan(const std::string &channel);
+	numeric badchannelkey(const std::string &channel);
+	numeric noprivileges();
+	numeric chanoprisneeded(const std::string &channel);
+	numeric cantkillserver();
+	numeric nooperhost();
+	numeric umodeunknownflag();
+	numeric usersdontmatch();
 }
 
 namespace IrcReply

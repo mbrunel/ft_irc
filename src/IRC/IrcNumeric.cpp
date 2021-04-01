@@ -6,145 +6,147 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 16:37:09 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/01 17:35:14 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcNumeric.hpp"
 
+numeric::numeric(IrcNumeric num, const std::string &content):num(num), content(content) {}
+
 namespace IrcError
 {
-	std::string nosuchnick(const std::string &nickname) {
-		return  (nickname + " :No such nick/channel");
+	numeric nosuchnick(const std::string &nickname) {
+		return (numeric(ERR_NOSUCHNICK, nickname + "No such nick/channel"));
 	}
-	std::string nosuchserver(const std::string &servername) {
-		return  (servername + " :No such server");
+	numeric nosuchserver(const std::string &servername) {
+		return (numeric(ERR_NOSUCHSERVER, servername + "No such server"));
 	}
-	std::string nosuchchannel(const std::string &channelname) {
-		return  (channelname + " :No such channel");
+	numeric nosuchchannel(const std::string &channelname) {
+		return (numeric(ERR_NOSUCHCHANNEL, channelname + "No such channel"));
 	}
-	std::string cannotsendtochan(const std::string &channelname) {
-		return  (channelname + " :Cannot send to channel");
+	numeric cannotsendtochan(const std::string &channelname) {
+		return (numeric(ERR_CANNOTSENDTOCHAN, channelname + "Cannot send to channel"));
 	}
-	std::string toomanychannels(const std::string &channelname) {
-		return  (channelname + " :You have joined too many channels");
+	numeric toomanychannels(const std::string &channelname) {
+		return (numeric(ERR_TOOMANYCHANNELS, channelname + "You have joined too many channels"));
 	}
-	std::string wasnosuchnick(const std::string &nickname) {
-		return  (nickname + " :There was no such nickname");
+	numeric wasnosuchnick(const std::string &nickname) {
+		return (numeric(ERR_WASNOSUCHNICK, nickname + "There was no such nickname"));
 	}
-	std::string toomanytargets(const std::string &target) {
-		return  (target + " :Duplicate recipients. No message delivered");
+	numeric toomanytargets(const std::string &target) {
+		return (numeric(ERR_TOOMANYTARGETS, target + "Duplicate recipients. No message delivered"));
 	}
-	std::string noorigin() {
-		return (" :No origin specified");
+	numeric noorigin() {
+		return (numeric(ERR_NOORIGIN, "No origin specified"));
 	}
-	std::string norecipient(const std::string &command) {
-		return (" :No recipient given " + command);
+	numeric norecipient(const std::string &command) {
+		return (numeric(ERR_NORECIPIENT, "No recipient given " + command));
 	}
-	std::string notexttosend() {
-		return (" :No text to send");
+	numeric notexttosend() {
+		return (numeric(ERR_NOTEXTTOSEND, "No text to send"));
 	}
-	std::string notoplevel(const std::string &mask) {
-		return  (mask + " :No top level domain specified");
+	numeric notoplevel(const std::string &mask) {
+		return (numeric(ERR_NOTOPLEVEL, mask + "No top level domain specified"));
 	}
-	std::string wildtoplevel(const std::string &mask) {
-		return  (mask + " :Wildcard in top level domain");
+	numeric wildtoplevel(const std::string &mask) {
+		return (numeric(ERR_WILDTOPLEVEL, mask + "Wildcard in top level domain"));
 	}
-	std::string unknowncommand(const std::string &command) {
-		return  (command + " :Unknown command");
+	numeric unknowncommand(const std::string &command) {
+		return (numeric(ERR_UNKNOWNCOMMAND, command + "Unknown command"));
 	}
-	std::string nomotd() {
-		return (" :MOTD file is missing");
+	numeric nomotd() {
+		return (numeric(ERR_NOMOTD, "MOTD file is missing"));
 	}
-	std::string noadmininfo() {
-		return (" :No administrative info available");
+	numeric noadmininfo() {
+		return (numeric(ERR_NOADMINFO, "No administrative info available"));
 	}
-	std::string fillerror(const std::string &file_op, const std::string &file) {
-		return ( " :File error doing " + file_op + " on " + file);
+	numeric fillerror(const std::string &file_op, const std::string &file) {
+		return (numeric(ERR_FILERROR, "File error doing " + file_op + " on " + file));
 	}
-	std::string nonicknamegiven() {
-		return (" :No nickame given");
+	numeric nonicknamegiven() {
+		return (numeric(ERR_NONICKNAMEGIVEN, "No nickame given"));
 	}
-	std::string erroneusnickname(const std::string &nickname) {
-		return  (nickname + " :Erroneus nickname");
+	numeric erroneusnickname(const std::string &nickname) {
+		return (numeric(ERR_ERRONEUSNICKNAME, nickname + "Erroneus nickname"));
 	}
-	std::string nicknameinuse(const std::string &nickname) {
-		return  (nickname + " :Nickname is already in use");
+	numeric nicknameinuse(const std::string &nickname) {
+		return (numeric(ERR_NICKNAMEINUSE, nickname + "Nickname is already in use"));
 	}
-	std::string nickcollision(const std::string &nickname) {
-		return  (nickname + " :Nickname collision KILL");
+	numeric nickcollision(const std::string &nickname) {
+		return (numeric(ERR_NICKCOLLISION, nickname + "Nickname collision KILL"));
 	}
-	std::string usernotinchannel(const std::string &nickname, const std::string &channel) {
-		return  (nickname + " " + channel + " :They aren't on that channel");
+	numeric usernotinchannel(const std::string &nickname, const std::string &channel) {
+		return (numeric(ERR_USERNOTINCHANNEL, nickname + " " + channel + "They aren't on that channel"));
 	}
-	std::string notonchannel(const std::string &channel) {
-		return  (channel + " :You're not on that channel");
+	numeric notonchannel(const std::string &channel) {
+		return (numeric(ERR_NOTONCHANNEL, channel + "You're not on that channel"));
 	}
-	std::string useronchannel(const std::string &nickname, const std::string &channel) {
-		return  (nickname + " " + channel + " :is already on channel");
+	numeric useronchannel(const std::string &nickname, const std::string &channel) {
+		return (numeric(ERR_USERONCHANNEL, nickname + " " + channel + "is already on channel"));
 	}
-	std::string nologin(const std::string &user) {
-		return  (user + " :User not logged in");
+	numeric nologin(const std::string &user) {
+		return (numeric(ERR_NOLOGIN, user + "User not logged in"));
 	}
-	std::string summondisabled() {
-		return (" :Summon has been disabled");
+	numeric summondisabled() {
+		return (numeric(ERR_SUMMONDISABLED, "Summon has been disabled"));
 	}
-	std::string usersdisabled() {
-		return (" :USERS has been disabled");
+	numeric usersdisabled() {
+		return (numeric(ERR_USERDISABLED, "USERS has been disabled"));
 	}
-	std::string notregistered() {
-		return (":You have not registered");
+	numeric notregistered() {
+		return (numeric(ERR_NOTREGISTERED, ":You have not registered"));
 	}
-	std::string needmoreparams(const std::string &command) {
-		return  (command + " :Not enough parameters");
+	numeric needmoreparams(const std::string &command) {
+		return (numeric(ERR_NEEDMOREPARAMS, command + "Not enough parameters"));
 	}
-	std::string alreadyregistred() {
-		return (" :You may not reregister");
+	numeric alreadyregistred() {
+		return (numeric(ERR_ALREADYREGISTERED, "You may not reregister"));
 	}
-	std::string nopermforhost() {
-		return (" :Your host is not among the privileged");
+	numeric nopermforhost() {
+		return (numeric(ERR_NOPERMFORHOST, "Your host is not among the privileged"));
 	}
-	std::string passwdmissmatch() {
-		return (" :Password incorrect");
+	numeric passwdmissmatch() {
+		return (numeric(ERR_PASSWDMISSMATCH, "Password incorrect"));
 	}
-	std::string yourebannedcreep() {
-		return ( " :you're banned from this server");
+	numeric yourebannedcreep() {
+		return (numeric(ERR_YOUREBANNEDCREEP, "you're banned from this server"));
 	}
-	std::string keyset(const std::string &channel) {
-		return  (channel + " :Channel key already set");
+	numeric keyset(const std::string &channel) {
+		return (numeric(ERR_KEYSET, channel + "Channel key already set"));
 	}
-	std::string channelisfull(const std::string &channel) {
-		return  (channel + " :Channel is full");
+	numeric channelisfull(const std::string &channel) {
+		return (numeric(ERR_CHANNELISFULL, channel + "Channel is full"));
 	}
-	std::string unknownmode(const std::string &c) {
-		return  (c + " :is unknown mode char to me");
+	numeric unknownmode(const std::string &c) {
+		return (numeric(ERR_UNKNOWNMODE, c + "is unknown mode char to me"));
 	}
-	std::string inviteonlychan(const std::string &channel) {
-		return  (channel + " :Cannot join channel (+i)");
+	numeric inviteonlychan(const std::string &channel) {
+		return (numeric(ERR_INVITEONLYCHAN, channel + "Cannot join channel (+i)"));
 	}
-	std::string bannedfromchan(const std::string &channel) {
-		return  (channel + " :Cannot join channel (+b)");
+	numeric bannedfromchan(const std::string &channel) {
+		return (numeric(ERR_BANNEDFROMCHAN, channel + "Cannot join channel (+b)"));
 	}
-	std::string badchannelkey(const std::string &channel) {
-		return  (channel + " :Cannot join channel (+k)");
+	numeric badchannelkey(const std::string &channel) {
+		return (numeric(ERR_BADCHANNELKEY, channel + "Cannot join channel (+k)"));
 	}
-	std::string noprivileges() {
-		return ( " :Permission Denied- You're not an IRC operator");
+	numeric noprivileges() {
+		return (numeric(ERR_NOPRIVILEGES, "Permission Denied- You're not an IRC operator"));
 	}
-	std::string chanoprisneeded(const std::string &channel) {
-		return  (channel + " :You're not channel operator");
+	numeric chanoprisneeded(const std::string &channel) {
+		return (numeric(ERR_CHANOPRIVISNEED, channel + "You're not channel operator"));
 	}
-	std::string cantkillserver() {
-		return ( " :You can't kill a server");
+	numeric cantkillserver() {
+		return (numeric(ERR_CANTKILLSERVER, "You can't kill a server"));
 	}
-	std::string nooperhost() {
-		return ( " :No O-lines for your host");
+	numeric nooperhost() {
+		return (numeric(ERR_NOPERMFORHOST, "No O-lines for your host"));
 	}
-	std::string umodeunknownflag() {
-		return (" :Unknown MODE flag");
+	numeric umodeunknownflag() {
+		return (numeric(ERR_UMODEUNKNOWNFLAG, "Unknown MODE flag"));
 	}
-	std::string usersdontmatch() {
-		return (" :Can't change mode for other users");
+	numeric usersdontmatch() {
+		return (numeric(ERR_USERSDONTMATCH, "Can't change mode for other users"));
 	}
 }
 
