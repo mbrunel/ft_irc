@@ -6,11 +6,11 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 13:41:15 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 15:55:46 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 16:33:06 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcError.hpp"
+#include "IrcNumeric.hpp"
 #include "IrcServer.hpp"
 
 void IrcServer::motd(User &u, const Message &m)

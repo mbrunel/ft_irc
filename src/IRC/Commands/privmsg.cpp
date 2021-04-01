@@ -6,11 +6,11 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/31 15:58:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 16:33:00 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcError.hpp"
+#include "IrcNumeric.hpp"
 #include "IrcServer.hpp"
 
 static bool check(const std::string &prefix, User &u, const Message &m)
