@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 18:15:24 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 19:57:05 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void IrcServer::privmsg(User &u, const Message &m)
 		{
 			User *receiver = network.getByNickname(*target);
 			if (!receiver)
-				u.writeLine("No such nick");
+				writeNum(u, IrcError::nosuchnick(*target));
 			else
 			{
 				if (receiver->umode().isSet(UserMode::AWAY))
@@ -52,7 +52,7 @@ void IrcServer::privmsg(User &u, const Message &m)
 		{
 			Channel *chan = network.getByChannelname(*target);
 			if (!chan)
-				u.writeLine("No such channel");
+				writeNum(u, IrcError::nosuchchannel(*target));
 			else
 				network.msgToChan(chan, ":" + u.prefix() + " PRIVMSG " + chan->name() + " :" + text, &u);
 		}
@@ -61,6 +61,6 @@ void IrcServer::privmsg(User &u, const Message &m)
 			u.writeLine("MASKS NOT SUPPORTED YET");
 		}
 		else
-			u.writeLine(*target + " :No such nick/channel");
+			writeNum(u, IrcError::nosuchnick(*target));
 	}
 }

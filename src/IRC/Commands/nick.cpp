@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:14:24 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 18:06:47 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 20:08:37 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void IrcServer::nick(User &u, const Message &m)
 			else
 				return ;
 		}
+		else
+			u.writeLine(":" + u.prefix() + " NICK " + m.params()[0]);
 	}
 	// Add broadcast to all servers
 }
