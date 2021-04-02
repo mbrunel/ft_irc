@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 18:16:10 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 21:09:27 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class IrcServer
 {
   public:
 	typedef std::map<std::string, void (IrcServer::*)(User &, const Message &)> userCommandsMap;
-	typedef std::map<std::string, void (IrcServer::*)(RemoteServer &, const Message &)> serverCommandsMap;
+	typedef std::map<std::string, void (IrcServer::*)(Server &, const Message &)> serverCommandsMap;
 	typedef std::vector<Param> Params;
 
 	IrcServer();
@@ -59,7 +59,7 @@ class IrcServer
 
 	void	disconnect(TcpSocket *socket) throw();
 	void	disconnect(User *connection) throw();
-	void	disconnect(RemoteServer *connection) throw();
+	void	disconnect(Server *connection) throw();
 	void	exec(BasicConnection *sender, const Message &msg);
 	void	writeNum(User &dst, const IrcNumeric &response);
 	void	writeWelcome(User &user);

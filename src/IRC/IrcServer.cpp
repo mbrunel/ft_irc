@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 18:54:36 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 21:09:54 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void IrcServer::disconnect(User *connection) throw()
 	delete (connection);
 }
 
-void IrcServer::disconnect(RemoteServer *connection) throw()
+void IrcServer::disconnect(Server *connection) throw()
 {
 	network.remove(connection);
 	// Must remove all Users using same socket too
@@ -110,7 +110,7 @@ void IrcServer::exec(BasicConnection *sender, const Message &msg)
 		serverCommandsMap::iterator i;
 		if ((i = serverCommands.find(msg.command())) != serverCommands.end())
 		{
-			(this->*(i->second))(*static_cast<RemoteServer*>(sender), msg);
+			(this->*(i->second))(*static_cast<Server*>(sender), msg);
 			return ;
 		}
 	}

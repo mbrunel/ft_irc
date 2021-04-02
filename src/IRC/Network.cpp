@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Network.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/31 16:18:10 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 22:22:29 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void Network::add(User *u)
 		users[u->nickname()] = u;
 }
 
-void Network::add(RemoteServer *s)
+void Network::add(Server *s)
 {
 	connections[s->socket()] = s;
 	servers[s->name()] = s;
@@ -60,7 +60,7 @@ User *Network::getByNickname(const std::string &key)
 	return (i == users.end() ? NULL : i->second);
 }
 
-RemoteServer *Network::getByServername(const std::string &key)
+Server *Network::getByServername(const std::string &key)
 {
 	ServerMap::iterator i = servers.find(key);
 	return (i == servers.end() ? NULL : i->second);
@@ -79,7 +79,7 @@ void Network::remove(User *u) throw()
 	users.erase(u->nickname());
 }
 
-void Network::remove(RemoteServer *s) throw()
+void Network::remove(Server *s) throw()
 {
 	connections.erase(s->socket());
 	servers.erase(s->name());
@@ -90,10 +90,11 @@ void Network::remove(const Channel *c) throw()
 	channels.erase(c->name());
 }
 
-void Network::msgToNetwork(const std::string &msg)
+void Network::msgToNetwork(const std::string &msg, BasicConnection *sender)
 {
 	for (ServerMap::iterator it = servers.begin(); it != servers.end(); ++it)
-		it->second->writeLine(msg);
+		if (!it->second->hopcount() && it->second->socket() != sender->socket())
+			it->second->writeLine(msg);
 }
 
 void Network::msgToChan(Channel *chan, const std::string &msg, User *sender)
@@ -106,5 +107,5 @@ void Network::msgToChan(Channel *chan, const std::string &msg, User *sender)
 		if (!user->hopcount() && user != sender)
 			user->writeLine(msg);
 	}
-	msgToNetwork(msg);
+	msgToNetwork(msg, sender);
 }

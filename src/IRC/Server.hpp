@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RemoteServer.cpp                                   :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/28 03:23:29 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/28 20:00:29 by mbrunel          ###   ########.fr       */
+/*   Created: 2021/04/01 21:04:26 by mbrunel           #+#    #+#             */
+/*   Updated: 2021/04/01 21:06:14 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RemoteServer.hpp"
+#pragma once
+#include "BasicConnection.hpp"
 
-RemoteServer::RemoteServer(TcpSocket *socket):
-BasicConnection(socket, SERVER)
-{}
-
-RemoteServer::~RemoteServer() {}
-
-const std::string &RemoteServer::name() const
+class Server : public BasicConnection
 {
-	return _name;
-}
+  public:
+	Server(TcpSocket *socket);
+	virtual ~Server();
 
-void RemoteServer::setName(const std::string &name)
-{
-	_name = name;
-}
+	void setName(const std::string &name);
+	const std::string &name() const;
+
+  private:
+
+	std::string _name;
+
+	Server(const Server &other);
+	Server	&operator=(const Server &other);
+};

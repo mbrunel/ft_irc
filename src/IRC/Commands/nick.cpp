@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:14:24 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 20:08:37 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/02 05:09:12 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,23 @@ void IrcServer::nick(User &u, const Message &m)
 	else
 	{
 		network.remove(&u);
+		std::string oldprefix = u.prefix();
 		u.setNickname(m.params()[0]);
 		network.add(&u);
 		if (u.requirements().isSet(UserRequirement::NICK))
 		{
 			u.unsetRequirement(UserRequirement::NICK);
 			if (u.isRegistered())
+			{
 				writeWelcome(u);
-			else
-				return ;
+				network.msgToNetwork(":" + prefix + " NICK " + u.nickname() + " ... " + /* hopcount et tout le reste */ u.realname(), &u);
+			}
 		}
 		else
-			u.writeLine(":" + u.prefix() + " NICK " + m.params()[0]);
+		{
+			std::string msg = ":" + oldprefix + " NICK " + m.params()[0];
+			u.writeLine(msg);
+			network.msgToNetwork(msg, &u);
+		}
 	}
-	// Add broadcast to all servers
 }
