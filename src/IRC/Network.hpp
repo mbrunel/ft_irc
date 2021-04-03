@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Network.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:16 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 21:18:34 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/02 12:46:33 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class Network
   public:
 	typedef std::map<TcpSocket *, BasicConnection *>	ConnectionMap;
 	typedef std::map<std::string, User *>				UserMap;
-	typedef std::map<std::string, Server *>		ServerMap;
+	typedef std::map<std::string, Server *>				ServerMap;
 	typedef std::map<std::string, Channel *>			ChannelMap;
 
 	Network();
@@ -35,8 +35,9 @@ class Network
 	User			*getByNickname(const std::string &nickname);
 	Server			*getByServername(const std::string &servername);
 	Channel			*getByChannelname(const std::string &channelname);
-	void			msgToChan(Channel *chan, const std::string &msg, User * sender = NULL);
-	void			msgToNetwork(const std::string &msg, BasicConnection *origin);
+	void			msgToAll(const std::string &msg, BasicConnection *origin = NULL);
+	void			msgToChan(Channel *chan, const std::string &msg, User *origin = NULL);
+	void			msgToNetwork(const std::string &msg, BasicConnection *origin = NULL);
 	void			remove(User *user) throw();
 	void			remove(Server *srv) throw();
 	void			remove(const Channel *chan) throw();

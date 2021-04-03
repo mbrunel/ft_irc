@@ -3,44 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:14:24 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/02 05:09:12 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/03 14:34:53 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcNumeric.hpp"
 #include "IrcServer.hpp"
+#include "MessageBuilder.hpp"
 
-void IrcServer::nick(User &u, const Message &m)
+int IrcServer::nick(User &u, const Message &m)
 {
 	if (!m.params().size())
-		writeNum(u, IrcError::nonicknamegiven());
-	else if (!m.params()[0].isNickname())
-		writeNum(u, IrcError::erroneusnickname(m.params()[0]));
-	else if (network.getByNickname(m.params()[0]))
-		writeNum(u, IrcError::nicknameinuse(m.params()[0]));
-	else
+		return (writeNum(u, IrcError::nonicknamegiven()));
+	if (!m.params()[0].isNickname())
+		return (writeNum(u, IrcError::erroneusnickname(m.params()[0])));
+	if (network.getByNickname(m.params()[0]))
+		return (writeNum(u, IrcError::nicknameinuse(m.params()[0])));
+	network.remove(&u);
+	std::string oldprefix = u.prefix();
+	u.setNickname(m.params()[0]);
+	network.add(&u);
+	if (u.requirements().isSet(UserRequirement::NICK))
 	{
-		network.remove(&u);
-		std::string oldprefix = u.prefix();
-		u.setNickname(m.params()[0]);
-		network.add(&u);
-		if (u.requirements().isSet(UserRequirement::NICK))
+		u.unsetRequirement(UserRequirement::NICK);
+		if (u.isRegistered())
 		{
-			u.unsetRequirement(UserRequirement::NICK);
-			if (u.isRegistered())
-			{
-				writeWelcome(u);
-				network.msgToNetwork(":" + prefix + " NICK " + u.nickname() + " ... " + /* hopcount et tout le reste */ u.realname(), &u);
-			}
-		}
-		else
-		{
-			std::string msg = ":" + oldprefix + " NICK " + m.params()[0];
-			u.writeLine(msg);
-			network.msgToNetwork(msg, &u);
+			writeWelcome(u);
+			network.msgToNetwork((MessageBuilder(prefix, "NICK") << u.nickname() <<
+			u.hopcount() << u.username() << prefix << "34" << u.umode().flags() << u.realname()).str(), &u);
 		}
 	}
+	else
+	{
+		std::string msg((MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
+		u.writeLine(msg);
+		network.msgToNetwork(msg, &u);
+	}
+	return (0);
 }

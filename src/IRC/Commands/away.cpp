@@ -6,14 +6,15 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:22:52 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 18:41:58 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:40:50 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 
-void IrcServer::away(User &u, const Message &m)
+int IrcServer::away(User &u, const Message &m)
 {
 	(void)u;
 	(void)m;
+	return (-1);
 }

@@ -6,28 +6,19 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/27 15:10:36 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 18:09:41 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:36:35 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcNumeric.hpp"
 #include "IrcServer.hpp"
 
-static bool check(const std::string &prefix, User &u, const Message &m)
+int IrcServer::topic(User &u, const Message &m)
 {
 	if (!u.isRegistered())
-		u.writeNum(prefix, IrcError::notregistered());
-	else if (!m.params().size())
-		u.writeNum(prefix, IrcError::needmoreparams(m.command()));
-	else
-		return true;
-	return false;
-}
-
-void IrcServer::topic(User &u, const Message &m)
-{
-	if (!check(prefix, u, m))
-		return ;
+		return (writeNum(u, IrcError::notregistered()));
+	if (!m.params().size())
+		return (writeNum(u, IrcError::needmoreparams(m.command())));
 	const Param	&target(m.params()[0]);
 	Channel		*c;
 
@@ -57,4 +48,5 @@ void IrcServer::topic(User &u, const Message &m)
 	}
 	else
 		writeNum(u, IrcError::nosuchchannel(target));
+	return (0);
 }

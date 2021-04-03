@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Network.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 22:22:29 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/02 13:58:31 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Network::~Network() throw()
 void Network::add(User *u)
 {
 	connections[u->socket()] = u;
-	if (u->isRegistered())
+	if (u->nickname().size())
 		users[u->nickname()] = u;
 }
 
@@ -90,22 +90,33 @@ void Network::remove(const Channel *c) throw()
 	channels.erase(c->name());
 }
 
-void Network::msgToNetwork(const std::string &msg, BasicConnection *sender)
+void Network::msgToAll(const std::string &msg, BasicConnection *origin)
 {
-	for (ServerMap::iterator it = servers.begin(); it != servers.end(); ++it)
-		if (!it->second->hopcount() && it->second->socket() != sender->socket())
-			it->second->writeLine(msg);
+	for (UserMap::iterator i = users.begin(); i != users.end(); ++i)
+	{
+		User *u(i->second);
+		if (!u->hopcount() && u->isRegistered() && u->socket() != origin->socket())
+			u->writeLine(msg);
+	}
+	msgToNetwork(msg, origin);
 }
 
-void Network::msgToChan(Channel *chan, const std::string &msg, User *sender)
+void Network::msgToChan(Channel *chan, const std::string &msg, User *origin)
 {
 	const MemberMap &map(chan->members());
 
 	for (MemberMap::const_iterator i = map.begin(); i != map.end(); ++i)
 	{
 		User *user = i->first;
-		if (!user->hopcount() && user != sender)
+		if (!user->hopcount() && user != origin)
 			user->writeLine(msg);
 	}
-	msgToNetwork(msg, sender);
+	msgToNetwork(msg, origin);
+}
+
+void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
+{
+	for (ServerMap::iterator it = servers.begin(); it != servers.end(); ++it)
+		if (!it->second->hopcount() && it->second->socket() != origin->socket())
+			it->second->writeLine(msg);
 }

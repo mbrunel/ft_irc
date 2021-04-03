@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 21:09:27 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/03 14:59:55 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#include "IrcNumeric.hpp"
 #include "Network.hpp"
 #include "TcpServer.hpp"
 #include "Message.hpp"
@@ -26,10 +27,6 @@ struct IrcServerConfig
 class IrcServer
 {
   public:
-	typedef std::map<std::string, void (IrcServer::*)(User &, const Message &)> userCommandsMap;
-	typedef std::map<std::string, void (IrcServer::*)(Server &, const Message &)> serverCommandsMap;
-	typedef std::vector<Param> Params;
-
 	IrcServer();
 	~IrcServer();
 
@@ -41,6 +38,10 @@ class IrcServer
 	void			setVerbose(bool verbose);
 
   private:
+	typedef std::map<std::string, int (IrcServer::*)(User &, const Message &)> userCommandsMap;
+	typedef std::map<std::string, int (IrcServer::*)(Server &, const Message &)> serverCommandsMap;
+	typedef std::vector<Param> Params;
+
 	IrcServerConfig		config;
 	TcpServer			srv;
 	Network				network;
@@ -48,20 +49,21 @@ class IrcServer
 	serverCommandsMap	serverCommands;
 	std::string			prefix;
 
-	void	away(User &sender, const Message &msg);
-	void	join(User &sender, const Message &msg);
-	void	motd(User &sender, const Message &msg);
-	void	nick(User &sender, const Message &msg);
-	void	part(User &sender, const Message &msg);
-	void	privmsg(User &sender, const Message &msg);
-	void	topic(User &sender, const Message &msg);
-	void	user(User &sender, const Message &msg);
+	int	away(User &sender, const Message &msg);
+	int	join(User &sender, const Message &msg);
+	int	motd(User &sender, const Message &msg);
+	int	nick(User &sender, const Message &msg);
+	int	part(User &sender, const Message &msg);
+	int	privmsg(User &sender, const Message &msg);
+	int	topic(User &sender, const Message &msg);
+	int	user(User &sender, const Message &msg);
 
 	void	disconnect(TcpSocket *socket) throw();
 	void	disconnect(User *connection) throw();
 	void	disconnect(Server *connection) throw();
 	void	exec(BasicConnection *sender, const Message &msg);
-	void	writeNum(User &dst, const IrcNumeric &response);
+	void	writeMessage(User &dst, const std::string &command, const std::string &content);
+	int		writeNum(User &dst, const IrcNumeric &response);
 	void	writeWelcome(User &user);
 	void	writeMotd(User &user);
 

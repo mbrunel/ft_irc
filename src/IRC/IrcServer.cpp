@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/01 21:09:54 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/03 14:59:16 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcNumeric.hpp"
 #include "IrcServer.hpp"
+#include "MessageBuilder.hpp"
 
 IrcServerConfig::IrcServerConfig(const std::string &version, size_t maxChannels) :
 version(version),
@@ -45,9 +45,10 @@ void IrcServer::run() throw()
 		TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{
-			newSocket->writeLine("Connection established");
 			// Add check if connection is an authorized server
-			network.add(new User(newSocket, UserRequirement::ALL_EXCEPT_PASS));
+			User *u = new User(newSocket, UserRequirement::ALL_EXCEPT_PASS);
+			writeMessage(*u, "NOTICE", "Connection established");
+			network.add(u);
 		}
 		TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()))
@@ -96,6 +97,7 @@ void IrcServer::exec(BasicConnection *sender, const Message &msg)
 {
 	if (!msg.isValid())
 		return ;
+	log() << "Message received: " << msg << std::endl;
 	if (sender->type() == BasicConnection::USER)
 	{
 		userCommandsMap::iterator i;
@@ -119,9 +121,15 @@ void IrcServer::exec(BasicConnection *sender, const Message &msg)
 	sender->writeLine("Unknown Command");
 }
 
-void IrcServer::writeNum(User &dst, const IrcNumeric &response)
+void IrcServer::writeMessage(User &dst, const std::string &command, const std::string &content)
 {
-	dst.writeNum(prefix, response);
+	dst.writeLine((MessageBuilder(prefix, command) << dst.nickname() << content).str());
+}
+ 
+int IrcServer::writeNum(User &dst, const IrcNumeric &response)
+{
+	dst.writeLine(MessageBuilder(prefix, response, dst.nickname()).str());
+	return (-1);
 }
 
 void IrcServer::writeMotd(User &u)

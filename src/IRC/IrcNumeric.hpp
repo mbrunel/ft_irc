@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 18:39:05 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/03 14:25:33 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,67 +81,67 @@ enum IrcNumericCode
 
 struct IrcNumeric
 {
-	IrcNumericCode		code;
-	const std::string	content;
-	IrcNumeric(IrcNumericCode code, const std::string &content);
+	const IrcNumericCode	code;
+	const std::string		content;
+	IrcNumeric(const IrcNumericCode code, const std::string &content);
 };
 
 namespace IrcError
 {
-	IrcNumeric nosuchnick(const std::string &nickname);
-	IrcNumeric nosuchserver(const std::string &servername);
-	IrcNumeric nosuchchannel(const std::string &channelname);
-	IrcNumeric cannotsendtochan(const std::string &channelname);
-	IrcNumeric toomanychannels(const std::string &channelname);
-	IrcNumeric wasnosuchnick(const std::string &nickname);
-	IrcNumeric toomanytargets(const std::string &target);
-	IrcNumeric noorigin();
-	IrcNumeric norecipient(const std::string &command);
-	IrcNumeric notexttosend();
-	IrcNumeric notoplevel(const std::string &mask);
-	IrcNumeric wildtoplevel(const std::string &mask);
-	IrcNumeric unknowncommand(const std::string &command);
-	IrcNumeric nomotd();
-	IrcNumeric noadmininfo();
-	IrcNumeric fillerror(const std::string &file_op, const std::string &file);
-	IrcNumeric nonicknamegiven();
-	IrcNumeric erroneusnickname(const std::string &nickname);
-	IrcNumeric nicknameinuse(const std::string &nickname);
-	IrcNumeric nickcollision(const std::string &nickname);
-	IrcNumeric usernotinchannel(const std::string &nickname, const std::string &channel);
-	IrcNumeric notonchannel(const std::string &channel);
-	IrcNumeric useronchannel(const std::string &nickname, const std::string &channel);
-	IrcNumeric nologin(const std::string &user);
-	IrcNumeric summondisabled();
-	IrcNumeric usersdisabled();
-	IrcNumeric notregistered();
-	IrcNumeric needmoreparams(const std::string &command);
-	IrcNumeric alreadyregistred();
-	IrcNumeric nopermforhost();
-	IrcNumeric passwdmissmatch();
-	IrcNumeric yourebannedcreep();
-	IrcNumeric keyset(const std::string &channel);
-	IrcNumeric channelisfull(const std::string &channel);
-	IrcNumeric unknownmode(const std::string &c);
-	IrcNumeric inviteonlychan(const std::string &channel);
-	IrcNumeric bannedfromchan(const std::string &channel);
-	IrcNumeric badchannelkey(const std::string &channel);
-	IrcNumeric noprivileges();
-	IrcNumeric chanoprisneeded(const std::string &channel);
-	IrcNumeric cantkillserver();
-	IrcNumeric nooperhost();
-	IrcNumeric umodeunknownflag();
-	IrcNumeric usersdontmatch();
+	const IrcNumeric nosuchnick(const std::string &nickname);
+	const IrcNumeric nosuchserver(const std::string &servername);
+	const IrcNumeric nosuchchannel(const std::string &channelname);
+	const IrcNumeric cannotsendtochan(const std::string &channelname);
+	const IrcNumeric toomanychannels(const std::string &channelname);
+	const IrcNumeric wasnosuchnick(const std::string &nickname);
+	const IrcNumeric toomanytargets(const std::string &target);
+	const IrcNumeric noorigin();
+	const IrcNumeric norecipient(const std::string &command);
+	const IrcNumeric notexttosend();
+	const IrcNumeric notoplevel(const std::string &mask);
+	const IrcNumeric wildtoplevel(const std::string &mask);
+	const IrcNumeric unknowncommand(const std::string &command);
+	const IrcNumeric nomotd();
+	const IrcNumeric noadmininfo();
+	const IrcNumeric fillerror(const std::string &file_op, const std::string &file);
+	const IrcNumeric nonicknamegiven();
+	const IrcNumeric erroneusnickname(const std::string &nickname);
+	const IrcNumeric nicknameinuse(const std::string &nickname);
+	const IrcNumeric nickcollision(const std::string &nickname);
+	const IrcNumeric usernotinchannel(const std::string &nickname, const std::string &channel);
+	const IrcNumeric notonchannel(const std::string &channel);
+	const IrcNumeric useronchannel(const std::string &nickname, const std::string &channel);
+	const IrcNumeric nologin(const std::string &user);
+	const IrcNumeric summondisabled();
+	const IrcNumeric usersdisabled();
+	const IrcNumeric notregistered();
+	const IrcNumeric needmoreparams(const std::string &command);
+	const IrcNumeric alreadyregistred();
+	const IrcNumeric nopermforhost();
+	const IrcNumeric passwdmissmatch();
+	const IrcNumeric yourebannedcreep();
+	const IrcNumeric keyset(const std::string &channel);
+	const IrcNumeric channelisfull(const std::string &channel);
+	const IrcNumeric unknownmode(const std::string &c);
+	const IrcNumeric inviteonlychan(const std::string &channel);
+	const IrcNumeric bannedfromchan(const std::string &channel);
+	const IrcNumeric badchannelkey(const std::string &channel);
+	const IrcNumeric noprivileges();
+	const IrcNumeric chanoprisneeded(const std::string &channel);
+	const IrcNumeric cantkillserver();
+	const IrcNumeric nooperhost();
+	const IrcNumeric umodeunknownflag();
+	const IrcNumeric usersdontmatch();
 }
 
 namespace IrcReply
 {
-	IrcNumeric welcome(const std::string &userPrefix);
-	IrcNumeric yourhost(const std::string &servername, const std::string &version);
-	IrcNumeric created(const std::string &date);
-	IrcNumeric myinfo(const std::string &servername, const std::string &version, const std::string &availableUserModes, const std::string &availableChannelModes);
-	IrcNumeric bounce(const std::string &servername, const std::string &port);
-	IrcNumeric motd(const std::string &text);
-	IrcNumeric motdstart(const std::string &servername);
-	IrcNumeric endofmotd();
+	const IrcNumeric welcome(const std::string &userPrefix);
+	const IrcNumeric yourhost(const std::string &servername, const std::string &version);
+	const IrcNumeric created(const std::string &date);
+	const IrcNumeric myinfo(const std::string &servername, const std::string &version, const std::string &availableUserModes, const std::string &availableChannelModes);
+	const IrcNumeric bounce(const std::string &servername, const std::string &port);
+	const IrcNumeric motd(const std::string &text);
+	const IrcNumeric motdstart(const std::string &servername);
+	const IrcNumeric endofmotd();
 }

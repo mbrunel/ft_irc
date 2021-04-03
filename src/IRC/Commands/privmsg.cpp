@@ -3,33 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 19:57:05 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/04/03 14:43:40 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcNumeric.hpp"
 #include "IrcServer.hpp"
+#include "MessageBuilder.hpp"
 
-static bool check(const std::string &prefix, User &u, const Message &m)
+int IrcServer::privmsg(User &u, const Message &m)
 {
 	if (!u.isRegistered())
-		u.writeNum(prefix, IrcError::notregistered());
+		return (writeNum(u, IrcError::notregistered()));
 	if (!m.params().size())
-		u.writeNum(prefix, IrcError::norecipient(m.command()));
-	else if (m.params().size() < 2)
-		u.writeNum(prefix, IrcError::notexttosend());
-	else
-		return true;
-	return false;
-}
-
-void IrcServer::privmsg(User &u, const Message &m)
-{
-	if (!check(prefix, u, m))
-		return ;
+		return (writeNum(u, IrcError::norecipient(m.command())));
+	if (m.params().size() < 2)
+		return (writeNum(u, IrcError::notexttosend()));
 	Params		targets(m.params()[0].split());
 	const Param	&text(m.params()[1]);
 
@@ -45,7 +36,7 @@ void IrcServer::privmsg(User &u, const Message &m)
 				if (receiver->umode().isSet(UserMode::AWAY))
 					u.writeLine("reply away");
 				else
-					receiver->writeLine(":" + u.prefix() + " PRIVMSG " + receiver->nickname() + " :" + text);
+					receiver->writeLine((MessageBuilder(u.prefix(), m.command()) << text).str());
 			}
 		}
 		else if (target->isChannel())
@@ -60,7 +51,6 @@ void IrcServer::privmsg(User &u, const Message &m)
 		{
 			u.writeLine("MASKS NOT SUPPORTED YET");
 		}
-		else
-			writeNum(u, IrcError::nosuchnick(*target));
 	}
+	return (0);
 }
