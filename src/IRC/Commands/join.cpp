@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/03 15:08:57 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 14:14:07 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int IrcServer::join(User &u, const Message &m)
 			c->addMember(&u, MemberMode(c->count() ? 0 : MemberMode::CREATOR | MemberMode::OPERATOR));
 			topic(u, Message("TOPIC " + *chan));
 			network.msgToChan(c, (MessageBuilder(u.prefix(), m.command()) << *chan).str());
-			// Add NAMES
+			// names(u, Message("NAMES " + *chan));
 		}
 		else
 			writeNum(u, IrcError::toomanychannels(*chan));

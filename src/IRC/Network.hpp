@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:16 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/02 12:46:33 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 13:47:38 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Network
 	Server			*getByServername(const std::string &servername);
 	Channel			*getByChannelname(const std::string &channelname);
 	void			msgToAll(const std::string &msg, BasicConnection *origin = NULL);
-	void			msgToChan(Channel *chan, const std::string &msg, User *origin = NULL);
+	void			msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin = NULL);
 	void			msgToNetwork(const std::string &msg, BasicConnection *origin = NULL);
 	void			remove(User *user) throw();
 	void			remove(Server *srv) throw();

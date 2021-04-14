@@ -160,7 +160,7 @@ namespace IrcError
 
 	const IrcNumeric alreadyregistred()
 	{
-		return (IrcNumeric(ERR_ALREADYREGISTERED, ":You may not reregister"));
+		return (IrcNumeric(ERR_ALREADYREGISTRED, ":Unauthorized command (already registered)"));
 	}
 
 	const IrcNumeric nopermforhost()

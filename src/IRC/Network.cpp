@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/02 13:58:31 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 13:49:53 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,25 @@ void Network::clear() throw()
 
 BasicConnection *Network::getBySocket(TcpSocket *socket)
 {
-	ConnectionMap::iterator i = connections.find(socket);
+	ConnectionMap::const_iterator i = connections.find(socket);
 	return (i == connections.end() ? NULL : i->second);
 }
 
 User *Network::getByNickname(const std::string &key)
 {
-	UserMap::iterator i = users.find(key);
+	UserMap::const_iterator i = users.find(key);
 	return (i == users.end() ? NULL : i->second);
 }
 
 Server *Network::getByServername(const std::string &key)
 {
-	ServerMap::iterator i = servers.find(key);
+	ServerMap::const_iterator i = servers.find(key);
 	return (i == servers.end() ? NULL : i->second);
 }
 
 Channel *Network::getByChannelname(const std::string &key)
 {
-	ChannelMap::iterator i = channels.find(key);
+	ChannelMap::const_iterator i = channels.find(key);
 	return (i == channels.end() ? NULL : i->second);
 }
 
@@ -92,7 +92,7 @@ void Network::remove(const Channel *c) throw()
 
 void Network::msgToAll(const std::string &msg, BasicConnection *origin)
 {
-	for (UserMap::iterator i = users.begin(); i != users.end(); ++i)
+	for (UserMap::const_iterator i = users.begin(); i != users.end(); ++i)
 	{
 		User *u(i->second);
 		if (!u->hopcount() && u->isRegistered() && u->socket() != origin->socket())
@@ -101,22 +101,19 @@ void Network::msgToAll(const std::string &msg, BasicConnection *origin)
 	msgToNetwork(msg, origin);
 }
 
-void Network::msgToChan(Channel *chan, const std::string &msg, User *origin)
+void Network::msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin)
 {
-	const MemberMap &map(chan->members());
-
-	for (MemberMap::const_iterator i = map.begin(); i != map.end(); ++i)
-	{
-		User *user = i->first;
-		if (!user->hopcount() && user != origin)
-			user->writeLine(msg);
-	}
-	msgToNetwork(msg, origin);
+	channel->send(msg, origin);
+	if (!channel->isLocal())
+		msgToNetwork(msg, origin);
 }
 
 void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
 {
-	for (ServerMap::iterator it = servers.begin(); it != servers.end(); ++it)
-		if (!it->second->hopcount() && it->second->socket() != origin->socket())
-			it->second->writeLine(msg);
+	for (ServerMap::const_iterator i = servers.begin(); i != servers.end(); ++i)
+	{
+		Server *server(i->second);
+		if (!server->hopcount() && (!origin || server->socket() != origin->socket()))
+			server->writeLine(msg);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/02 18:28:30 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 15:28:28 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,12 @@ bool User::isRegistered() const
 	return (!_requirements.flags());
 }
 
-/*
-RemoteServer *User::makeRemoteServer()
-{}
-*/
+RemoteServer *User::makeRemoteServer(int hopcount)
+{
+	//return (new RemoteServer(_socket, hopcount));
+	(void)hopcount;
+	return (NULL);
+}
 
 void User::unsetRequirement(UserRequirement::Flag requirement)
 {
@@ -56,24 +58,9 @@ const UserRequirement &User::requirements() const
 	return (_requirements);
 }
 
-const std::string &User::nickname() const
-{
-	return (_nickname);
-}
-
-const std::string &User::username() const
-{
-	return (_username);
-}
-
 const std::string &User::realname() const
 {
 	return (_realname);
-}
-
-std::string User::prefix() const
-{
-	return nickname() + "!" + username() + "@" + _socket->host();
 }
 
 const UserMode &User::umode() const
@@ -86,14 +73,19 @@ size_t User::joinedChannels() const
 	return (_joinedChannels);
 }
 
-void User::setNickname(const std::string &nickname)
+const std::string &User::prefix() const
 {
-	_nickname = nickname;
+	return (_prefix);
 }
 
-void User::setUsername(const std::string &username)
+const std::string &User::nickname() const
 {
-	_username = username;
+	return (_nickname);
+}
+
+const std::string &User::username() const
+{
+	return (_username);
 }
 
 void User::setRealname(const std::string &realname)
@@ -109,4 +101,24 @@ void User::setUmode(const UserMode &umode)
 void User::setJoinedChannels(size_t joinedChannels)
 {
 	_joinedChannels = joinedChannels;
+}
+
+void User::setNickname(const std::string &nickname)
+{
+	_nickname = nickname;
+	updatePrefix();
+}
+
+void User::setUsername(const std::string &username)
+{
+	_username = username;
+	updatePrefix();
+}
+
+void User::updatePrefix()
+{
+	_prefix = nickname();
+	if (_username.size())
+		_prefix += "!~" + username();
+	_prefix += "@" + _socket->host();
 }

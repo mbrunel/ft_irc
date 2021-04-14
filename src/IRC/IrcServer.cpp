@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/03 14:59:16 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 15:47:59 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,32 +93,26 @@ void IrcServer::disconnect(Server *connection) throw()
 	delete (connection);
 }
 
-void IrcServer::exec(BasicConnection *sender, const Message &msg)
+int IrcServer::exec(BasicConnection *sender, const Message &msg)
 {
 	if (!msg.isValid())
-		return ;
-	log() << "Message received: " << msg << std::endl;
+		return (-1);
+	log() << "Message: " << msg << std::endl;
 	if (sender->type() == BasicConnection::USER)
 	{
-		userCommandsMap::iterator i;
-		if ((i = userCommands.find(msg.command())) != userCommands.end())
-		{
-			(this->*(i->second))(*static_cast<User*>(sender), msg);
-			return ;
-		}
+		User &u(*static_cast<User*>(sender));
+		userCommandsMap::const_iterator i(userCommands.find(msg.command()));
+		if (i == userCommands.end())
+			return (writeNum(u, IrcError::unknowncommand(msg.command())));
+		return ((this->*(i->second))(u, msg));
 	}
-	else if (sender->type() == BasicConnection::SERVER)
+	if (sender->type() == BasicConnection::SERVER)
 	{
-		serverCommandsMap::iterator i;
-		if ((i = serverCommands.find(msg.command())) != serverCommands.end())
-		{
-			(this->*(i->second))(*static_cast<Server*>(sender), msg);
-			return ;
-		}
+		serverCommandsMap::iterator i(serverCommands.find(msg.command()));
+		if (i != serverCommands.end())
+			return ((this->*(i->second))(*static_cast<Server*>(sender), msg));
 	}
-	else
-		return ;
-	sender->writeLine("Unknown Command");
+	return (-1);
 }
 
 void IrcServer::writeMessage(User &dst, const std::string &command, const std::string &content)

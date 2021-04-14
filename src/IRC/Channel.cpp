@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/31 15:26:47 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 13:46:51 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,21 @@ const MemberMode *Channel::findMember(User *user) const
 {
 	MemberMap::const_iterator i(_members.find(user));
 	return (i != _members.end() ? &i->second : NULL);
+}
+
+bool Channel::isLocal() const
+{
+	return (_name.size() && _name[0] == '&');
+}
+
+void Channel::send(const std::string &msg, BasicConnection *origin) const
+{
+	for (MemberMap::const_iterator i = _members.begin(); i != _members.end(); ++i)
+	{
+		User *user(i->first);
+		if (!user->hopcount() && (!origin || user->socket() != origin->socket()))
+			user->writeLine(msg);
+	}
 }
 
 const std::string &Channel::name() const

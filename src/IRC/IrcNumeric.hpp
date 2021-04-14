@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/03 14:25:33 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 15:00:07 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ enum IrcNumericCode
 	ERR_USERDISABLED = 446,
 	ERR_NOTREGISTERED = 447,
 	ERR_NEEDMOREPARAMS = 461,
-	ERR_ALREADYREGISTERED = 462,
+	ERR_ALREADYREGISTRED = 462,
 	ERR_NOPERMFORHOST = 463,
 	ERR_PASSWDMISSMATCH = 464,
 	ERR_YOUREBANNEDCREEP = 465,

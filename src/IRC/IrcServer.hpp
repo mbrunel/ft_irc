@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/03 14:59:55 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 15:47:50 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,10 @@ class IrcServer
 	void			setVerbose(bool verbose);
 
   private:
-	typedef std::map<std::string, int (IrcServer::*)(User &, const Message &)> userCommandsMap;
-	typedef std::map<std::string, int (IrcServer::*)(Server &, const Message &)> serverCommandsMap;
+	typedef int (IrcServer::*UserCommandPointer)(User &, const Message &);
+	typedef int (IrcServer::*ServerCommandPointer)(Server &, const Message &);
+	typedef std::map<std::string, UserCommandPointer> userCommandsMap;
+	typedef std::map<std::string, ServerCommandPointer> serverCommandsMap;
 	typedef std::vector<Param> Params;
 
 	IrcServerConfig		config;
@@ -61,7 +63,7 @@ class IrcServer
 	void	disconnect(TcpSocket *socket) throw();
 	void	disconnect(User *connection) throw();
 	void	disconnect(Server *connection) throw();
-	void	exec(BasicConnection *sender, const Message &msg);
+	int		exec(BasicConnection *sender, const Message &msg);
 	void	writeMessage(User &dst, const std::string &command, const std::string &content);
 	int		writeNum(User &dst, const IrcNumeric &response);
 	void	writeWelcome(User &user);

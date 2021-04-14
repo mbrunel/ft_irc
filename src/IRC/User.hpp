@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/03 13:36:08 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 15:06:11 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,26 +65,31 @@ public:
 	virtual ~User();
 
 	bool					isRegistered() const;
-	RemoteServer			*makeRemoteServer();
+	RemoteServer			*makeRemoteServer(int hopcount);
 	void					unsetRequirement(UserRequirement::Flag requirement);
 	const UserRequirement	&requirements() const;
+	const std::string		&realname() const;
+	const UserMode			&umode() const;
+	const std::string		&prefix() const;
 	const std::string		&nickname() const;
 	const std::string		&username() const;
-	const std::string		&realname() const;
-	std::string				prefix() const;
-	const UserMode			&umode() const;
 	size_t					joinedChannels() const;
-	void					setNickname(const std::string &nickname);
-	void					setUsername(const std::string &username);
 	void					setRealname(const std::string &realname);
 	void					setUmode(const UserMode &umode);
 	void					setJoinedChannels(size_t joinedChannels);
+	void					setNickname(const std::string &nickname);
+	void					setUsername(const std::string &username);
 
 protected:
 	UserRequirement	_requirements;
-	std::string		_nickname;
-	std::string		_username;
 	std::string		_realname;
 	UserMode		_umode;
 	size_t			_joinedChannels;
+
+private:
+	std::string		_prefix;
+	std::string		_nickname;
+	std::string		_username;
+
+	void	updatePrefix();
 };

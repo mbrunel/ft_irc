@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/31 16:14:03 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/14 13:39:04 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ public:
 	size_t				count() const;
 	void				delMember(User *user);
 	const MemberMode	*findMember(User *user) const;
+	bool				isLocal() const;
+	void				send(const std::string &msg, BasicConnection *origin) const;
 	const std::string	&name() const;
 	Type				type() const;
 	const MemberMap		&members() const;
