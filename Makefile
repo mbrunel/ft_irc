@@ -6,7 +6,7 @@
 #    By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/07 11:33:08 by asoursou          #+#    #+#              #
-#    Updated: 2021/05/19 15:33:17 by asoursou         ###   ########.fr        #
+#    Updated: 2021/05/19 16:14:04 by asoursou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ LIBC4S_DIR	:= lib/config4cpp
 LIBC4S_LDIR	:= $(LIBC4S_DIR)/lib
 LIBC4S_NAME	:= libconfig4cpp.a
 LIBC4S		:= $(LIBC4S_LDIR)/$(LIBC4S_NAME)
+CERT		:= ircserv.ssl.crt
 BUILD_DIR	:= .build
 SUB_DIR		:= $(dir $(wildcard src/*/.))
 SRC			:= $(wildcard src/*/*/*.cpp) $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
@@ -47,8 +48,8 @@ clean:
 	@$(REMOVE_MSG) $(BUILD_DIR)
 
 fclean: clean
-	@rm -f $(NAME)
-	@$(REMOVE_MSG) $(NAME)
+	@rm -f $(NAME) $(CERT)
+	@$(REMOVE_MSG) $(NAME) $(CERT)
 
 re: fclean all
 
@@ -59,6 +60,10 @@ $(BUILD_DIR)/%.o: src/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 	@$(BUILD_MSG) $(@F)
+
+$(CERT):
+	openssl req -newkey rsa:2048 -nodes -keyout ircserv.ssl.key -x509 -days 365 -out $@ \
+	-subj "/C=FR/ST=France/L=Paris/O=42/OU=Archeology/CN=42.fr/emailAddress=mbrunel@student.42.fr"
 
 $(LIBC4S):
 	@make -C $(LIBC4S_DIR) BUILD_TYPE=release CXX=$(CXX) > /dev/null 2>&1

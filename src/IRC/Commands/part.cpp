@@ -6,11 +6,12 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:40:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/14 18:22:27 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/19 16:29:44 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
+#include "MessageBuilder.hpp"
 
 int IrcServer::part(User &u, const Message &m)
 {
@@ -18,10 +19,25 @@ int IrcServer::part(User &u, const Message &m)
 		return (writeNum(u, IrcError::notregistered()));
 	if (!m.params().size())
 		return (writeNum(u, IrcError::needmoreparams(m.command())));
-	if (m.params()[0] == "0")
+	std::vector<Param> channels(m.params()[0].split());
+
+	for (Params::const_iterator chan(channels.begin()); chan != channels.end(); ++chan)
 	{
-		u.writeLine(':' + prefix + " :Requested PART on all channels");
-		return (0);
+		Channel *c;
+		if (!chan->isChannel() || !(c = network.getByChannelname(*chan)))
+			writeNum(u, IrcError::nosuchchannel(*chan));
+		else if (!c->findMember(&u))
+			writeNum(u, IrcError::notonchannel(*chan));
+		else
+		{
+			c->delMember(&u);
+			network.msgToChan(c, (MessageBuilder(u.prefix(), m.command()) << *chan).str());
+			if (!c->count())
+			{
+				network.remove(c);
+				assert(network.getByChannelname(*chan) == NULL);
+			}
+		}
 	}
 	return (0);
 }

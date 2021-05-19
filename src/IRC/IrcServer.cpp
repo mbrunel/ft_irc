@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/14 15:47:59 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/19 16:20:43 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ prefix("irc.server.local")
 	userCommands["JOIN"] = &IrcServer::join;
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NICK"] = &IrcServer::nick;
+	userCommands["PART"] = &IrcServer::part;
 	userCommands["PRIVMSG"] = &IrcServer::privmsg;
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
