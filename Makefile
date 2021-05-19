@@ -3,22 +3,25 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+         #
+#    By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/07 11:33:08 by asoursou          #+#    #+#              #
-#    Updated: 2021/03/23 13:35:08 by mbrunel          ###   ########.fr        #
+#    Updated: 2021/05/19 15:33:17 by asoursou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		:= ircserv
+LIBC4S_DIR	:= lib/config4cpp
+LIBC4S_LDIR	:= $(LIBC4S_DIR)/lib
+LIBC4S_NAME	:= libconfig4cpp.a
+LIBC4S		:= $(LIBC4S_LDIR)/$(LIBC4S_NAME)
 BUILD_DIR	:= .build
 SUB_DIR		:= $(dir $(wildcard src/*/.))
 SRC			:= $(wildcard src/*/*/*.cpp) $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
 CXX			:= clang++
 CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -std=c++98 -MMD -MP -g \
-			   $(foreach i,$(SUB_DIR:src/%=%),-I./src/$i)
-LDFLAGS		:= -lcrypto -lssl
-DOC_DIR		:= doc/html
+			   $(foreach i,$(SUB_DIR:src/%=%),-I./src/$i) -I./$(LIBC4S_DIR)/include
+LDFLAGS		:= -lcrypto -lssl -L./$(LIBC4S_LDIR) -lconfig4cpp
 OBJ			:= $(SRC:src/%.cpp=$(BUILD_DIR)/%.o)
 C_RED		:= \033[31m
 C_GREEN		:= \033[32m
@@ -29,7 +32,7 @@ CHECK		:= ✔
 BUILD_MSG	:= @echo "$(C_GREEN)$(CHECK)$(C_NONE)"
 REMOVE_MSG	:= @echo "$(C_RED)$(CROSS)$(C_NONE)"
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(LIBC4S)
 	@$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 	@$(BUILD_MSG) $@
 
@@ -38,12 +41,10 @@ all: $(NAME)
 bonus: all
 
 clean:
-	@rm -rf $(DOC_DIR) $(BUILD_DIR)
-	@$(REMOVE_MSG) $(DOC_DIR) $(BUILD_DIR)
-
-doc:
-	@doxygen doxygen.conf
-	$(BUILD_MSG) "Doxygen documentation"
+	@make -C $(LIBC4S_DIR) clean > /dev/null 2>&1
+	@$(REMOVE_MSG) $(LIBC4S)
+	@rm -rf $(BUILD_DIR)
+	@$(REMOVE_MSG) $(BUILD_DIR)
 
 fclean: clean
 	@rm -f $(NAME)
@@ -59,6 +60,10 @@ $(BUILD_DIR)/%.o: src/%.cpp
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 	@$(BUILD_MSG) $(@F)
 
+$(LIBC4S):
+	@make -C $(LIBC4S_DIR) BUILD_TYPE=release CXX=$(CXX) > /dev/null 2>&1
+	@$(BUILD_MSG) $(@F)
+
 -include $(OBJ:.o=.d)
 
-.PHONY: all bonus clean doc fclean re run
+.PHONY: all bonus clean fclean re run
