@@ -1,11 +1,30 @@
-03/23/21 - 03:22:49 127.0.0.1 CONNECTED
-03/23/21 - 03:22:50 adf
-03/23/21 - 03:22:50 1 : [command: adf]
-03/23/21 - 03:22:50 a
-03/23/21 - 03:22:50 1 : [command: a]
-03/23/21 - 03:22:50 ds
-03/23/21 - 03:22:50 1 : [command: ds]
-03/23/21 - 03:22:50 adf
-03/23/21 - 03:22:50 1 : [command: adf]
-03/23/21 - 03:22:51 127.0.0.1 DISCONNECTED
-03/23/21 - 03:22:52 SIGINT catched, exiting properly
+05/19/21 - 04:33:53 127.0.0.1 CONNECTED
+05/19/21 - 04:34:02 Message: [command: NICK, params: [hop]]
+05/19/21 - 04:34:04 Message: [command: USER]
+05/19/21 - 04:34:13 Message: [command: USER, params: [asdlkjf, 0, *, askdfj]]
+05/19/21 - 04:34:40 Message: [command: PART, params: [lskdfj]]
+05/19/21 - 04:34:46 Message: [command: PART, params: [#kdjf]]
+05/19/21 - 04:34:59 127.0.0.1 CONNECTED
+05/19/21 - 04:35:02 Message: [command: NICK, params: [slkdfj]]
+05/19/21 - 04:35:07 Message: [command: USER, params: [lkfj, 0, *, sdkfj]]
+05/19/21 - 04:35:12 127.0.0.1 CONNECTED
+05/19/21 - 04:35:20 Message: [command: NICK, params: [asldfkj]]
+05/19/21 - 04:35:25 Message: [command: USER, params: [alsdfkj, 0, *, sdkjf]]
+05/19/21 - 04:35:30 127.0.0.1 CONNECTED
+05/19/21 - 04:35:33 Message: [command: NIXK, params: [skldfj]]
+05/19/21 - 04:35:37 Message: [command: USER, params: [0, *, skdfj]]
+05/19/21 - 04:35:44 Message: [command: sdf]
+05/19/21 - 04:35:50 Message: [command: NICK, params: [skldfj]]
+05/19/21 - 04:35:58 Message: [command: USER, params: [skfj, 0, *, dskjf]]
+05/19/21 - 04:36:06 127.0.0.1 CONNECTED
+05/19/21 - 04:36:08 Message: [command: NICK, params: [kdlfjg]]
+05/19/21 - 04:36:19 Message: [command: USER, params: [asdfj, 0, *, sdkfj]]
+05/19/21 - 04:36:29 Too many connections
+05/19/21 - 04:36:43 Too many connections
+05/19/21 - 04:37:03 Too many connections
+05/19/21 - 04:37:44 SIGINT catched, exiting properly
+05/19/21 - 04:37:44 127.0.0.1 DISCONNECTED
+05/19/21 - 04:37:44 127.0.0.1 DISCONNECTED
+05/19/21 - 04:37:44 127.0.0.1 DISCONNECTED
+05/19/21 - 04:37:44 127.0.0.1 DISCONNECTED
+05/19/21 - 04:37:44 127.0.0.1 DISCONNECTED
