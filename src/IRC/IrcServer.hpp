@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/14 15:47:50 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 13:21:19 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Network.hpp"
 #include "TcpServer.hpp"
 #include "Message.hpp"
+#include "Config.hpp"
 
 struct IrcServerConfig
 {
@@ -36,6 +37,7 @@ class IrcServer
 	void			setLogDestination(const std::string &destfile);
 	void			setMaxConnections(size_t setMaxConnections);
 	void			setVerbose(bool verbose);
+	void			setOpers(std::map<std::string, Oper> opers);
 
   private:
 	typedef int (IrcServer::*UserCommandPointer)(User &, const Message &);

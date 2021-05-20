@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+         #
+#    By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/07 11:33:08 by asoursou          #+#    #+#              #
-#    Updated: 2021/05/19 16:14:04 by asoursou         ###   ########.fr        #
+#    Updated: 2021/05/20 13:18:08 by mbrunel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ BUILD_DIR	:= .build
 SUB_DIR		:= $(dir $(wildcard src/*/.))
 SRC			:= $(wildcard src/*/*/*.cpp) $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
 CXX			:= clang++
-CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -std=c++98 -MMD -MP -g \
+CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -std=c++98 -MMD -MP -g -Isrc\
 			   $(foreach i,$(SUB_DIR:src/%=%),-I./src/$i) -I./$(LIBC4S_DIR)/include
 LDFLAGS		:= -lcrypto -lssl -L./$(LIBC4S_LDIR) -lconfig4cpp
 OBJ			:= $(SRC:src/%.cpp=$(BUILD_DIR)/%.o)

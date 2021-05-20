@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/07 11:30:18 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/19 16:33:22 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 14:52:41 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int main(int ac, char **av)
 	SslContext ctx(cfg.certFile().c_str(), cfg.keyFile().c_str());
 	irc.listen(cfg.tcpPort().c_str());
 	irc.listen(cfg.sslPort().c_str(), ctx.ctx());
+	irc.setOpers(cfg.opers());
 	irc.run();
   } catch (std::exception &e) {
 		irc.log() << e.what() << std::endl;

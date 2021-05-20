@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/19 16:20:43 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 13:23:46 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ std::ostream &IrcServer::log() throw() { return srv.log(); }
 
 void IrcServer::run() throw()
 {
+	log() << network.checkOper("mbrunel", "la") << std::endl;
+	log() << network.checkOper("mbrunel", "la") << std::endl;
 	while (1)
 	{
 		try { srv.select(); } catch(TcpServer::SigintException &e) { log() << "\rSIGINT catched, exiting properly" << std::endl; return ; }
@@ -69,6 +71,8 @@ void IrcServer::setLogDestination(const std::string &destfile) { srv.setLogDesti
 void IrcServer::setMaxConnections(size_t MaxConnections) { srv.setMaxConnections(MaxConnections); }
 
 void IrcServer::setVerbose(bool verbose) { srv.setVerbose(verbose); }
+
+void IrcServer::setOpers(std::map<std::string, Oper> opers) { network.setOpers(opers); }
 
 void IrcServer::disconnect(TcpSocket *socket) throw()
 {
@@ -120,7 +124,7 @@ void IrcServer::writeMessage(User &dst, const std::string &command, const std::s
 {
 	dst.writeLine((MessageBuilder(prefix, command) << dst.nickname() << content).str());
 }
- 
+
 int IrcServer::writeNum(User &dst, const IrcNumeric &response)
 {
 	dst.writeLine(MessageBuilder(prefix, response, dst.nickname()).str());

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Network.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:16 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/14 13:47:38 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 13:16:59 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <map>
 #include "Channel.hpp"
 #include "RemoteServer.hpp"
+#include "Config.hpp"
 
 class Network
 {
@@ -23,6 +24,7 @@ class Network
 	typedef std::map<std::string, User *>				UserMap;
 	typedef std::map<std::string, Server *>				ServerMap;
 	typedef std::map<std::string, Channel *>			ChannelMap;
+	typedef std::map<std::string, Oper>					OperMap;
 
 	Network();
 	~Network() throw();
@@ -41,12 +43,15 @@ class Network
 	void			remove(User *user) throw();
 	void			remove(Server *srv) throw();
 	void			remove(const Channel *chan) throw();
+	void			setOpers(OperMap &opers);
+	bool			checkOper(std::string login, std::string pass);
 
   private:
 	ConnectionMap	connections;
 	UserMap			users;
 	ServerMap		servers;
 	ChannelMap		channels;
+	OperMap			opers;
 
 	Network(const Network &);
 	Network &operator=(const Network &);

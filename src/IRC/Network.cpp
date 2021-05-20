@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Network.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/14 13:49:53 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 15:24:17 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,4 +116,16 @@ void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
 		if (!server->hopcount() && (!origin || server->socket() != origin->socket()))
 			server->writeLine(msg);
 	}
+}
+
+void Network::setOpers(OperMap &o) { opers = o; }
+
+bool Network::checkOper(std::string login, std::string pass)
+{
+	Oper o = opers[login];
+	std::cout << o.login << " " << o.pass << o.registered << std::endl;
+	if (o.pass != pass || o.registered)
+		return false;
+	opers[login].registered = true;
+	return true;
 }
