@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 13:23:46 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 15:31:44 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ prefix("irc.server.local")
 	userCommands["PRIVMSG"] = &IrcServer::privmsg;
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
+	userCommands["OPER"] = &IrcServer::oper;
 }
 
 IrcServer::~IrcServer() {}
@@ -40,8 +41,6 @@ std::ostream &IrcServer::log() throw() { return srv.log(); }
 
 void IrcServer::run() throw()
 {
-	log() << network.checkOper("mbrunel", "la") << std::endl;
-	log() << network.checkOper("mbrunel", "la") << std::endl;
 	while (1)
 	{
 		try { srv.select(); } catch(TcpServer::SigintException &e) { log() << "\rSIGINT catched, exiting properly" << std::endl; return ; }

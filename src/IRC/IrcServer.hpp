@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 13:21:19 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 15:32:07 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ class IrcServer
 	int	privmsg(User &sender, const Message &msg);
 	int	topic(User &sender, const Message &msg);
 	int	user(User &sender, const Message &msg);
+	int oper(User &sender, const Message &msg);
 
 	void	disconnect(TcpSocket *socket) throw();
 	void	disconnect(User *connection) throw();
