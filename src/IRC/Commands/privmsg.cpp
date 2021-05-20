@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/03 14:43:40 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 18:11:46 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,8 @@ int IrcServer::privmsg(User &u, const Message &m)
 			else
 			{
 				if (receiver->umode().isSet(UserMode::AWAY))
-					u.writeLine("reply away");
-				else
-					receiver->writeLine((MessageBuilder(u.prefix(), m.command()) << text).str());
+					writeNum(u, IrcReply::away(receiver->nickname(), receiver->awayReason()));
+				receiver->writeLine((MessageBuilder(u.prefix(), m.command()) << text).str());
 			}
 		}
 		else if (target->isChannel())

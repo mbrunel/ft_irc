@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 16:37:38 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 17:49:09 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,15 @@ public:
 	const UserRequirement	&requirements() const;
 	const std::string		&realname() const;
 	const UserMode			&umode() const;
+	size_t					joinedChannels() const;
+	const std::string		&awayReason() const;
 	const std::string		&prefix() const;
 	const std::string		&nickname() const;
 	const std::string		&username() const;
-	size_t					joinedChannels() const;
 	void					setRealname(const std::string &realname);
 	void					setUmode(const UserMode &umode);
 	void					setJoinedChannels(size_t joinedChannels);
+	void					setAway(const std::string &reason);
 	void					setNickname(const std::string &nickname);
 	void					setUsername(const std::string &username);
 
@@ -85,12 +87,12 @@ protected:
 	std::string		_realname;
 	UserMode		_umode;
 	size_t			_joinedChannels;
+	std::string		_awayReason;
 
 private:
 	std::string		_prefix;
 	std::string		_nickname;
 	std::string		_username;
-	
 
 	void	updatePrefix();
 };

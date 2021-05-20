@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/14 15:28:28 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 17:42:59 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,11 @@ size_t User::joinedChannels() const
 	return (_joinedChannels);
 }
 
+const std::string &User::awayReason() const
+{
+	return (_awayReason);
+}
+
 const std::string &User::prefix() const
 {
 	return (_prefix);
@@ -101,6 +106,11 @@ void User::setUmode(const UserMode &umode)
 void User::setJoinedChannels(size_t joinedChannels)
 {
 	_joinedChannels = joinedChannels;
+}
+
+void User::setAway(const std::string &reason)
+{
+	_awayReason = reason;
 }
 
 void User::setNickname(const std::string &nickname)

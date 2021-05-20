@@ -272,6 +272,21 @@ namespace IrcReply
 		return (IrcNumeric(RPL_UMODEIS, '+' + modes));
 	}
 
+	const IrcNumeric away(const std::string &nickname, const std::string &reason)
+	{
+		return (IrcNumeric(RPL_AWAY, nickname + " :" + reason));
+	}
+
+	const IrcNumeric unaway()
+	{
+		return (IrcNumeric(RPL_UNAWAY, ":You are no longer marked as being away"));
+	}
+
+	const IrcNumeric nowaway()
+	{
+		return (IrcNumeric(RPL_AWAY, ":You have been marked as being away"));
+	}
+
 	const IrcNumeric motd(const std::string &text)
 	{
 		return (IrcNumeric(RPL_MOTD, ":- " + text));
