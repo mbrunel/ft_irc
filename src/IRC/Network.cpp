@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 15:53:47 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 17:12:58 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,4 +137,10 @@ void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
 
 void Network::setOpers(OperMap &o) { _opers = o; }
 
-Oper &Network::getOper(std::string login) { return _opers[login]; }
+Oper *Network::getOper(std::string login)
+{
+	OperMap::iterator it = _opers.find(login);
+	if (it == _opers.end())
+		return (NULL);
+	return &it->second;
+}
