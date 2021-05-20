@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 12:00:42 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 15:39:27 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,4 +133,16 @@ void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
 		if (!server->hopcount() && (!origin || server->socket() != origin->socket()))
 			server->writeLine(msg);
 	}
+}
+
+void Network::setOpers(OperMap &o) { _opers = o; }
+
+bool Network::checkOper(std::string login, std::string pass)
+{
+	Oper o = _opers[login];
+	std::cout << o.login << " " << o.pass << o.registered << std::endl;
+	if (o.pass != pass || o.registered)
+		return false;
+	_opers[login].registered = true;
+	return true;
 }

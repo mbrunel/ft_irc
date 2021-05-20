@@ -1,12 +1,0 @@
-05/20/21 - 01:19:29 127.0.0.1 CONNECTED
-05/20/21 - 01:19:32 Message: [command: USER, params: [dsnd, nqd, t, qdt]]
-05/20/21 - 01:19:34 Message: [command: NICK, params: [dt,n]]
-05/20/21 - 01:19:37 Message: [command: NICK, params: [dfgn,]]
-05/20/21 - 01:19:39 Message: [command: NICK, params: [ft,n]]
-05/20/21 - 01:19:41 Message: [command: NICK, params: [dsrh]]
-05/20/21 - 01:20:00 Message: [command: MODE, params: [dsrh, ++-a]]
-05/20/21 - 01:20:18 Message: [command: MODE, params: [dsrh, -i+i]]
-05/20/21 - 01:20:33 Message: [command: MODE, params: [dsrh, -i+i+i]]
-05/20/21 - 01:20:54 Message: [command: MODE, params: [dsrh, -abcd]]
-05/20/21 - 01:21:41 SIGINT catched, exiting properly
-05/20/21 - 01:21:41 127.0.0.1 DISCONNECTED
