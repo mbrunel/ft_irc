@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/14 15:00:07 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 13:14:32 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,6 @@
 
 enum IrcNumericCode
 {
-	RPL_WELCOME = 1,
-	RPL_YOURHOST = 2,
-	RPL_CREATED = 3,
-	RPL_MYINFO = 4,
-	RPL_BOUNCE = 5,
-	RPL_MOTD = 372,
-	RPL_MOTDSTART = 375,
-	RPL_ENDOFMOTD = 376,
-
 	ERR_NOSUCHNICK = 401,
 	ERR_NOSUCHSERVER = 402,
 	ERR_NOSUCHCHANNEL = 403,
@@ -53,7 +44,7 @@ enum IrcNumericCode
 	ERR_NOLOGIN = 444,
 	ERR_SUMMONDISABLED = 445,
 	ERR_USERDISABLED = 446,
-	ERR_NOTREGISTERED = 447,
+	ERR_NOTREGISTERED = 451,
 	ERR_NEEDMOREPARAMS = 461,
 	ERR_ALREADYREGISTRED = 462,
 	ERR_NOPERMFORHOST = 463,
@@ -76,7 +67,16 @@ enum IrcNumericCode
 	ERR_UNIQOPPRIVSNEEDED = 485,
 	ERR_NOOPERHOST = 491,
 	ERR_UMODEUNKNOWNFLAG = 501,
-	ERR_USERSDONTMATCH = 502
+	ERR_USERSDONTMATCH = 502,
+
+	RPL_WELCOME = 1,
+	RPL_YOURHOST = 2,
+	RPL_CREATED = 3,
+	RPL_MYINFO = 4,
+	RPL_BOUNCE = 5,
+	RPL_MOTD = 372,
+	RPL_MOTDSTART = 375,
+	RPL_ENDOFMOTD = 376
 };
 
 struct IrcNumeric

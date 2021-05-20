@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/14 15:47:50 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 11:50:28 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class IrcServer
 
 	int	away(User &sender, const Message &msg);
 	int	join(User &sender, const Message &msg);
+	int mode(User &sender, const Message &msg);
 	int	motd(User &sender, const Message &msg);
 	int	nick(User &sender, const Message &msg);
 	int	part(User &sender, const Message &msg);

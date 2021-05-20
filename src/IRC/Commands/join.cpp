@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/14 14:14:07 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 12:08:04 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,15 @@ int IrcServer::join(User &u, const Message &m)
 		return (writeNum(u, IrcError::needmoreparams(m.command())));
 	if (m.params()[0] == "0")
 	{
-		u.writeLine(':' + prefix + " :Requested PART on all channels");
+		const Network::ChannelMap &channels = network.channels();
+		Network::ChannelMap::const_iterator i = channels.begin();
+		while (i != channels.end())
+		{
+			Channel *c = i->second;
+			++i;
+			if (c->findMember(&u))
+				part(u, Message("PART " + c->name()));
+		}
 		return (0);
 	}
 	std::vector<Param>	channels(m.params()[0].split());

@@ -6,7 +6,7 @@
 #    By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/07 11:33:08 by asoursou          #+#    #+#              #
-#    Updated: 2021/05/19 16:14:04 by asoursou         ###   ########.fr        #
+#    Updated: 2021/05/20 14:51:03 by asoursou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ $(NAME): $(OBJ) $(LIBC4S)
 	@$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 	@$(BUILD_MSG) $@
 
-all: $(NAME)
+all: $(NAME) $(CERT)
 
 bonus: all
 
@@ -53,7 +53,7 @@ fclean: clean
 
 re: fclean all
 
-run: $(NAME)
+run: $(NAME) $(CERT)
 	./$<
 
 $(BUILD_DIR)/%.o: src/%.cpp

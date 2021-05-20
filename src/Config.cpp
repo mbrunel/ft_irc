@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/26 12:23:02 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/19 16:30:04 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 13:23:06 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ bool Config::verbose()
 
 std::string Config::logfile()
 {
-	return(cfg->lookupString("logs", "logfile"));
+	return(cfg->lookupString("logs", "logfile", ""));
 }
 
 int Config::maxConnections()
