@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 01:29:06 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 14:52:23 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 16:22:51 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ std::string timestamp() throw()
 void TcpServer::setLogDestination(const std::string &destfile)
 {
 	_logfile.open(destfile.c_str(), std::ios::out);
-	if (_logfile.fail())
+	if (!_logfile.fail())
 		_log.rdbuf(_logfile.rdbuf());
 }
 
