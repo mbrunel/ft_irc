@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 15:43:17 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 15:48:33 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,80 +19,97 @@ Network::~Network() throw()
 	clear();
 }
 
+
+const Network::ChannelMap &Network::channels() const
+{
+	return (_channels);
+}
+const Network::ConnectionMap &Network::connections() const
+{
+	return (_connections);
+}
+const Network::ServerMap &Network::servers() const
+{
+	return (_servers);
+}
+const Network::UserMap &Network::users() const
+{
+	return (_users);
+}
 void Network::add(User *u)
 {
-	connections[u->socket()] = u;
+	_connections[u->socket()] = u;
 	if (u->nickname().size())
-		users[u->nickname()] = u;
+		_users[u->nickname()] = u;
 }
 
 void Network::add(Server *s)
 {
-	connections[s->socket()] = s;
-	servers[s->name()] = s;
+	_connections[s->socket()] = s;
+	_servers[s->name()] = s;
 }
 
 void Network::add(Channel *c)
 {
-	channels[c->name()] = c;
+	_channels[c->name()] = c;
 }
 
 void Network::clear() throw()
 {
-	for (UserMap::iterator i = users.begin(); i != users.end(); ++i)
+	for (UserMap::iterator i = _users.begin(); i != _users.end(); ++i)
 		if (i->second->hopcount())
 			delete i->second;
-	for (ServerMap::iterator i = servers.begin(); i != servers.end(); ++i)
+	for (ServerMap::iterator i = _servers.begin(); i != _servers.end(); ++i)
 		delete i->second;
-	for (ChannelMap::iterator i = channels.begin(); i != channels.end(); ++i)
+	for (ChannelMap::iterator i = _channels.begin(); i != _channels.end(); ++i)
 		delete i->second;
 }
 
 BasicConnection *Network::getBySocket(TcpSocket *socket)
 {
-	ConnectionMap::const_iterator i = connections.find(socket);
-	return (i == connections.end() ? NULL : i->second);
+	ConnectionMap::const_iterator i = _connections.find(socket);
+	return (i == _connections.end() ? NULL : i->second);
 }
 
 User *Network::getByNickname(const std::string &key)
 {
-	UserMap::const_iterator i = users.find(key);
-	return (i == users.end() ? NULL : i->second);
+	UserMap::const_iterator i = _users.find(key);
+	return (i == _users.end() ? NULL : i->second);
 }
 
 Server *Network::getByServername(const std::string &key)
 {
-	ServerMap::const_iterator i = servers.find(key);
-	return (i == servers.end() ? NULL : i->second);
+	ServerMap::const_iterator i = _servers.find(key);
+	return (i == _servers.end() ? NULL : i->second);
 }
 
 Channel *Network::getByChannelname(const std::string &key)
 {
-	ChannelMap::const_iterator i = channels.find(key);
-	return (i == channels.end() ? NULL : i->second);
+	ChannelMap::const_iterator i = _channels.find(key);
+	return (i == _channels.end() ? NULL : i->second);
 }
 
 void Network::remove(User *u) throw()
 {
 	if (u->hopcount())
-		connections.erase(u->socket());
-	users.erase(u->nickname());
+		_connections.erase(u->socket());
+	_users.erase(u->nickname());
 }
 
 void Network::remove(Server *s) throw()
 {
-	connections.erase(s->socket());
-	servers.erase(s->name());
+	_connections.erase(s->socket());
+	_servers.erase(s->name());
 }
 
 void Network::remove(const Channel *c) throw()
 {
-	channels.erase(c->name());
+	_channels.erase(c->name());
 }
 
 void Network::msgToAll(const std::string &msg, BasicConnection *origin)
 {
-	for (UserMap::const_iterator i = users.begin(); i != users.end(); ++i)
+	for (UserMap::const_iterator i = _users.begin(); i != _users.end(); ++i)
 	{
 		User *u(i->second);
 		if (!u->hopcount() && u->isRegistered() && u->socket() != origin->socket())
@@ -110,7 +127,7 @@ void Network::msgToChan(const Channel *channel, const std::string &msg, BasicCon
 
 void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
 {
-	for (ServerMap::const_iterator i = servers.begin(); i != servers.end(); ++i)
+	for (ServerMap::const_iterator i = _servers.begin(); i != _servers.end(); ++i)
 	{
 		Server *server(i->second);
 		if (!server->hopcount() && (!origin || server->socket() != origin->socket()))
@@ -118,14 +135,14 @@ void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
 	}
 }
 
-void Network::setOpers(OperMap &o) { opers = o; }
+void Network::setOpers(OperMap &o) { _opers = o; }
 
 bool Network::getOper(std::string login, std::string pass)
 {
-	Oper o = opers[login];
+	Oper o = _opers[login];
 	std::cout << o.login << " " << o.pass << o.registered << std::endl;
 	if (o.pass != pass || o.registered)
 		return false;
-	opers[login].registered = true;
+	_opers[login].registered = true;
 	return true;
 }

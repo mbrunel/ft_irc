@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 15:31:44 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 15:46:53 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ prefix("irc.server.local")
 {
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["JOIN"] = &IrcServer::join;
+	userCommands["MODE"] = &IrcServer::mode;
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NICK"] = &IrcServer::nick;
 	userCommands["PART"] = &IrcServer::part;
