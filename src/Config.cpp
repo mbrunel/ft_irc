@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/26 12:23:02 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 15:39:51 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 15:57:45 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Oper::Oper(){}
 
-Oper::Oper(std::string login, std::string pass):login(login), pass(pass), registered(false){}
+Oper::Oper(std::string login, std::string pass, std::string host):login(login), pass(pass), host(host){}
 
 Config::Config(int ac, char **av)
 {
@@ -45,7 +45,7 @@ std::string Config::keyFile()
 
 std::string Config::tcpPort()
 {
-	return (cfg->lookupString("ircserv", "tcpport", 0));
+	return (cfg->lookupString("ircserv", "tcpport"));
 }
 
 std::string Config::sslPort()
@@ -65,7 +65,7 @@ std::string Config::logfile()
 
 int Config::maxConnections()
 {
-	return (cfg->lookupInt("ircserv", "maxconnections", 0));
+	return (cfg->lookupInt("ircserv", "maxconnections"));
 }
 
 std::map<std::string, Oper> Config::opers()
@@ -75,9 +75,10 @@ std::map<std::string, Oper> Config::opers()
 
 	cfg->listLocallyScopedNames("", "", cfg->CFG_SCOPE, false, "uid-operator", names);
 	for (int i = 0; i < names.length(); i++) {
-		std::string login = cfg->lookupString(names[i], "login", "");
+		std::string login = cfg->lookupString(names[i], "login");
 		std::string pass = cfg->lookupString(names[i], "password");
-		opers[login] = Oper(login, pass);
+		std::string host = cfg->lookupString(names[i], "host", "");
+		opers[login] = Oper(login, pass, host);
 	}
 	return opers;
 }

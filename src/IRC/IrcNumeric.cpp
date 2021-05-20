@@ -281,4 +281,9 @@ namespace IrcReply
 	{
 		return (IrcNumeric(RPL_ENDOFMOTD, ":End of MOTD command"));
 	}
+
+	const IrcNumeric youreoper()
+	{
+		return (IrcNumeric(RPL_YOUREOPER, "You are now an IRC operator"));
+	}
 }

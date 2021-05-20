@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcNumeric.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 13:14:32 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 16:04:00 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ enum IrcNumericCode
 	RPL_BOUNCE = 5,
 	RPL_MOTD = 372,
 	RPL_MOTDSTART = 375,
-	RPL_ENDOFMOTD = 376
+	RPL_ENDOFMOTD = 376,
+	RPL_YOUREOPER = 381
 };
 
 struct IrcNumeric
@@ -144,4 +145,5 @@ namespace IrcReply
 	const IrcNumeric motd(const std::string &text);
 	const IrcNumeric motdstart(const std::string &servername);
 	const IrcNumeric endofmotd();
+	const IrcNumeric youreoper();
 }

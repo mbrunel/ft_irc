@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/26 12:07:27 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 13:19:21 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 15:57:20 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ typedef config4cpp::Configuration Configuration;
 struct Oper
 {
 	Oper();
-	Oper(std::string login, std::string pass);
+	Oper(std::string login, std::string pass, std::string host);
 	std::string login;
 	std::string pass;
-	bool registered;
+	std::string host;
 };
 
 class Config

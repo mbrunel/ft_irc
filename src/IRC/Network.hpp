@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:16 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 15:48:45 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 15:53:31 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Network
 	void				remove(Server *srv) throw();
 	void				remove(const Channel *chan) throw();
 	void				setOpers(OperMap &opers);
-	bool				getOper(std::string login, std::string pass);
+	Oper				&getOper(std::string login);
 
   private:
 	ConnectionMap	_connections;
