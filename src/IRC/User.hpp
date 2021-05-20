@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/14 15:06:11 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 16:37:38 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ private:
 	std::string		_prefix;
 	std::string		_nickname;
 	std::string		_username;
+	
 
 	void	updatePrefix();
 };

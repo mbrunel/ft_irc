@@ -267,6 +267,11 @@ namespace IrcReply
 		return (IrcNumeric(RPL_BOUNCE, ":Try server " + servername + ", port " + port));
 	}
 
+	const IrcNumeric umodeis(const std::string &modes)
+	{
+		return (IrcNumeric(RPL_UMODEIS, '+' + modes));
+	}
+
 	const IrcNumeric motd(const std::string &text)
 	{
 		return (IrcNumeric(RPL_MOTD, ":- " + text));

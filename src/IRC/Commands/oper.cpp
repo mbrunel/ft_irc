@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   oper.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 15:32:22 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 16:30:15 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 17:01:14 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,6 @@ int IrcServer::oper(User &u, const Message &m)
 	if (o.pass != m.params()[1])
 		return (writeNum(u, IrcError::passwdmissmatch()));
 	writeNum(u, IrcReply::youreoper());
+	u.setUmode(UserMode(u.umode().flags() | UserMode::OPERATOR));
 	return true;
 }

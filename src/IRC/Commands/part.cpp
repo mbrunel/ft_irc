@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:40:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 12:29:13 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 16:30:28 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,7 @@ int IrcServer::part(User &u, const Message &m)
 			network.msgToChan(c, (MessageBuilder(u.prefix(), m.command()) << *chan).str());
 			c->delMember(&u);
 			if (!c->count())
-			{
 				network.remove(c);
-				assert(network.getByChannelname(*chan) == NULL);
-			}
 		}
 	}
 	return (0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcNumeric.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 16:04:00 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/20 17:09:25 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ enum IrcNumericCode
 	RPL_CREATED = 3,
 	RPL_MYINFO = 4,
 	RPL_BOUNCE = 5,
+	RPL_UMODEIS = 221,
 	RPL_MOTD = 372,
 	RPL_MOTDSTART = 375,
 	RPL_ENDOFMOTD = 376,
@@ -142,6 +143,7 @@ namespace IrcReply
 	const IrcNumeric created(const std::string &date);
 	const IrcNumeric myinfo(const std::string &servername, const std::string &version, const std::string &availableUserModes, const std::string &availableChannelModes);
 	const IrcNumeric bounce(const std::string &servername, const std::string &port);
+	const IrcNumeric umodeis(const std::string &modes);
 	const IrcNumeric motd(const std::string &text);
 	const IrcNumeric motdstart(const std::string &servername);
 	const IrcNumeric endofmotd();
