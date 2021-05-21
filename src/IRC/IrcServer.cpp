@@ -3,24 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 16:10:02 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/21 18:01:35 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 #include "MessageBuilder.hpp"
 
-IrcServerConfig::IrcServerConfig(const std::string &version, size_t maxChannels) :
-version(version),
-maxChannels(maxChannels)
+IrcServerConfig::IrcServerConfig(){}
+
+IrcServerConfig::IrcServerConfig(Config &cfg):
+version(cfg.version()),
+servername(cfg.servername()),
+maxChannels(cfg.maxChannels()),
+ping(cfg.ping()),
+pong(cfg.pong()),
+flood(cfg.floodControl())
 {}
 
-IrcServer::IrcServer() :
-config(IrcServerConfig("ircserv-1.0.0", 5)),
-prefix("irc.server.local")
+IrcServer::IrcServer()
 {
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["JOIN"] = &IrcServer::join;
@@ -32,6 +36,8 @@ prefix("irc.server.local")
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
 	userCommands["OPER"] = &IrcServer::oper;
+	userCommands["PING"] = &IrcServer::ping;
+	userCommands["PONG"] = &IrcServer::pong;
 }
 
 IrcServer::~IrcServer() {}
@@ -63,16 +69,18 @@ void IrcServer::run() throw()
 				continue ;
 			exec(network.getBySocket(socket), Message(line));
 		}
+		Police();
 	}
 }
 
-void IrcServer::setLogDestination(const std::string &destfile) { srv.setLogDestination(destfile); }
-
-void IrcServer::setMaxConnections(size_t MaxConnections) { srv.setMaxConnections(MaxConnections); }
-
-void IrcServer::setVerbose(bool verbose) { srv.setVerbose(verbose); }
-
-void IrcServer::setOpers(std::map<std::string, Oper> opers) { network.setOpers(opers); }
+void IrcServer::setConfig(Config &cfg)
+{
+	srv.setMaxConnections(cfg.maxConnections());
+	srv.setVerbose(cfg.verbose());
+	srv.setLogDestination(cfg.logfile());
+	network.setOpers(cfg.opers());
+	config = IrcServerConfig(cfg);
+}
 
 void IrcServer::disconnect(TcpSocket *socket) throw()
 {
@@ -106,6 +114,8 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 	if (sender->type() == BasicConnection::USER)
 	{
 		User &u(*static_cast<User*>(sender));
+		if (!floodControl(u))
+			return (0);
 		userCommandsMap::const_iterator i(userCommands.find(msg.command()));
 		if (i == userCommands.end())
 			return (writeNum(u, IrcError::unknowncommand(msg.command())));
@@ -122,18 +132,18 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 
 void IrcServer::writeMessage(User &dst, const std::string &command, const std::string &content)
 {
-	dst.writeLine((MessageBuilder(prefix, command) << dst.nickname() << content).str());
+	dst.writeLine((MessageBuilder(config.servername, command) << dst.nickname() << content).str());
 }
 
 int IrcServer::writeNum(User &dst, const IrcNumeric &response)
 {
-	dst.writeLine(MessageBuilder(prefix, response, dst.nickname()).str());
+	dst.writeLine(MessageBuilder(config.servername, response, dst.nickname()).str());
 	return (-1);
 }
 
 void IrcServer::writeMotd(User &u)
 {
-	writeNum(u, IrcReply::motdstart(prefix));
+	writeNum(u, IrcReply::motdstart(config.servername));
 	writeNum(u, IrcReply::motd("Welcome to our broken IRC server!"));
 	writeNum(u, IrcReply::motd("Don't forget to install Discord on your computer next time :)"));
 	writeNum(u, IrcReply::endofmotd());
@@ -142,9 +152,47 @@ void IrcServer::writeMotd(User &u)
 void IrcServer::writeWelcome(User &u)
 {
 	writeNum(u, IrcReply::welcome(u.prefix()));
-	writeNum(u, IrcReply::yourhost(prefix, config.version));
+	writeNum(u, IrcReply::yourhost(config.servername, config.version));
 	writeNum(u, IrcReply::created("in the past (for sure)"));
-	writeNum(u, IrcReply::myinfo(prefix, config.version, "<available user modes>", "<available channel modes>"));
+	writeNum(u, IrcReply::myinfo(config.servername, config.version, "<available user modes>", "<available channel modes>"));
 	writeMotd(u);
 }
 
+void IrcServer::Police()
+{
+	static time_t ptime = 0;
+	time_t ctime = time(NULL);
+	if (ctime - ptime < 5)
+		return ;
+	ptime = ctime;
+	for (Network::ConnectionMap::const_iterator it = network.connections().begin(); it != network.connections().end();) {
+		BasicConnection *c = it->second;
+		it++;
+		if (c->pongExpected() && ctime - c->clock() > config.pong)
+		{
+		//	c->writeLine(":" + config.servername + " ERROR :Closing Link: (Ping Timeout)"); can't send msg before disconnection
+			log() << "A connection has not pong in time" << std::endl;
+			disconnect(c->socket());
+		}
+		else if (!c->pongExpected() && ctime - c->clock() > config.ping)
+		{
+			c->writeLine("PING :" + config.servername);
+			c->clock() = ctime;
+			c->pongExpected() = true;
+			log() << "Ping has been sent" << std::endl;
+		}
+	}
+}
+
+bool IrcServer::floodControl(User &u)
+{
+	if (u.pongExpected() || config.flood == false)
+		return true;
+	time_t ctime = time(NULL);
+	if (u.clock() - ctime >= 10)
+		return false;
+	if (u.clock() < ctime)
+		u.clock() = ctime;
+	u.clock() += 2;
+	return true;
+}

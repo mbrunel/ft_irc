@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/27 15:10:36 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/14 15:46:11 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/20 19:28:42 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ int IrcServer::topic(User &u, const Message &m)
 				}
 			}
 			else if (c->topic().size())
-				u.writeLine(':' + prefix + " 332 " + target + " :" + c->topic());
+				u.writeLine(':' + config.servername + " 332 " + target + " :" + c->topic());
 			else
-				u.writeLine(':' + prefix + " 331 " + target + " :No topic is set");
+				u.writeLine(':' + config.servername + " 331 " + target + " :No topic is set");
 		}
 		else
 			writeNum(u, IrcError::notonchannel(target));

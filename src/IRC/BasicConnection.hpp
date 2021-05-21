@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BasicConnection.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 18:50:36 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/29 19:11:58 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/21 17:00:42 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,15 @@ class BasicConnection
 	TcpSocket		*socket() const;
 	unsigned		hopcount() const;
 	void			writeLine(const std::string &content);
+	time_t			&clock();
+	bool					&pongExpected();
 
   protected:
 	TcpSocket	*_socket;
 	Type		_type;
 	unsigned	_hopcount;
+	time_t		_clock;
+	bool		_pongExpected;
 
 	BasicConnection(TcpSocket *socket, Type type, unsigned hopcount = 0);
 };

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BasicConnection.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 19:04:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/03/29 18:12:10 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/21 17:47:59 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,20 @@ void BasicConnection::writeLine(const std::string &content)
 	_socket->writeLine(content);
 }
 
+time_t &BasicConnection::clock()
+{
+	return _clock;
+}
+
+bool &BasicConnection::pongExpected()
+{
+	return _pongExpected;
+}
+
 BasicConnection::BasicConnection(TcpSocket *socket, Type type, unsigned hopcount) :
 _socket(socket),
 _type(type),
-_hopcount(hopcount)
+_hopcount(hopcount),
+_clock(time(NULL)),
+_pongExpected(false)
 {}

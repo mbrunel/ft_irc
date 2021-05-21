@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/26 12:23:02 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 15:57:45 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/21 15:31:46 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,16 @@ Config::Config(int ac, char **av)
 	cfg->parse(Configuration::INPUT_FILE, configFile.c_str());
 }
 
+std::string Config::version()
+{
+	return (cfg->lookupString("ircserv", "version"));
+}
+
+std::string Config::servername()
+{
+	return (cfg->lookupString("ircserv", "servername"));
+}
+
 std::string Config::certFile()
 {
 	return (cfg->lookupString("ssl", "certfile", ""));
@@ -45,12 +55,12 @@ std::string Config::keyFile()
 
 std::string Config::tcpPort()
 {
-	return (cfg->lookupString("ircserv", "tcpport"));
+	return (cfg->lookupString("tcp", "port"));
 }
 
 std::string Config::sslPort()
 {
-	return (cfg->lookupString("ircserv", "sslport", 0));
+	return (cfg->lookupString("ssl", "port", 0));
 }
 
 bool Config::verbose()
@@ -68,6 +78,11 @@ int Config::maxConnections()
 	return (cfg->lookupInt("ircserv", "maxconnections"));
 }
 
+int Config::maxChannels()
+{
+	return (cfg->lookupInt("ircserv", "maxchannels"));
+}
+
 std::map<std::string, Oper> Config::opers()
 {
 	std::map<std::string, Oper> opers;
@@ -81,6 +96,21 @@ std::map<std::string, Oper> Config::opers()
 		opers[login] = Oper(login, pass, host);
 	}
 	return opers;
+}
+
+time_t Config::ping()
+{
+	return (cfg->lookupDurationSeconds("ircserv", "ping_interval"));
+}
+
+time_t Config::pong()
+{
+	return (cfg->lookupDurationSeconds("ircserv", "ping_timeout"));
+}
+
+bool Config::floodControl()
+{
+	return (cfg->lookupBoolean("ircserver", "flood_control", "yes"));
 }
 
 void Config::usage() const

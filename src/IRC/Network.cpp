@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 17:12:58 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/21 17:42:21 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ Channel *Network::getByChannelname(const std::string &key)
 
 void Network::remove(User *u) throw()
 {
-	if (u->hopcount())
+	if (!u->hopcount())
 		_connections.erase(u->socket());
 	_users.erase(u->nickname());
 }
@@ -135,7 +135,7 @@ void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
 	}
 }
 
-void Network::setOpers(OperMap &o) { _opers = o; }
+void Network::setOpers(OperMap o) { _opers = o; }
 
 Oper *Network::getOper(std::string login)
 {

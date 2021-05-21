@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/09 01:29:06 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 16:22:51 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/21 16:28:42 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ void TcpServer::select()
 {
 	fd_set readSet;
 	fd_set writeSet;
+	struct timeval timeout = {5, 0};
 
 	FD_ZERO(&readSet);
 	FD_ZERO(&writeSet);
@@ -162,7 +163,7 @@ void TcpServer::select()
 	}
 	abortFd = _listeners.front()->fd();
 	if (abortFd != -2)
-		::select(FD_SETSIZE + 1, &readSet, &writeSet, NULL, NULL);
+		::select(FD_SETSIZE + 1, &readSet, &writeSet, NULL, &timeout);
 	if (abortFd == -2)
 		throw SigintException();
 	abortFd = -1;

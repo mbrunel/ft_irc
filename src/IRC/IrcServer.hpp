@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/20 15:46:48 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/21 15:59:21 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,14 @@
 struct IrcServerConfig
 {
 	std::string	version;
+	std::string servername;
 	size_t		maxChannels;
+	time_t		ping;
+	time_t		pong;
+	bool		flood;
 
-	IrcServerConfig(const std::string &version, size_t maxChannels = 0);
+	IrcServerConfig();
+	IrcServerConfig(Config &cfg);
 };
 
 class IrcServer
@@ -34,10 +39,7 @@ class IrcServer
 	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
 	std::ostream	&log() throw();
 	void			run() throw();
-	void			setLogDestination(const std::string &destfile);
-	void			setMaxConnections(size_t setMaxConnections);
-	void			setVerbose(bool verbose);
-	void			setOpers(std::map<std::string, Oper> opers);
+	void			setConfig(Config &cfg);
 
   private:
 	typedef int (IrcServer::*UserCommandPointer)(User &, const Message &);
@@ -51,7 +53,6 @@ class IrcServer
 	Network				network;
 	userCommandsMap		userCommands;
 	serverCommandsMap	serverCommands;
-	std::string			prefix;
 
 	int	away(User &sender, const Message &msg);
 	int	join(User &sender, const Message &msg);
@@ -63,6 +64,8 @@ class IrcServer
 	int	topic(User &sender, const Message &msg);
 	int	user(User &sender, const Message &msg);
 	int oper(User &sender, const Message &msg);
+	int ping(User &sender, const Message &msg);
+	int pong(User &sender, const Message &msg);
 
 	void	disconnect(TcpSocket *socket) throw();
 	void	disconnect(User *connection) throw();
@@ -72,6 +75,8 @@ class IrcServer
 	int		writeNum(User &dst, const IrcNumeric &response);
 	void	writeWelcome(User &user);
 	void	writeMotd(User &user);
+	void	Police();
+	bool	floodControl(User &u);
 
 	IrcServer(const IrcServer& copy);
 	IrcServer &operator=(const IrcServer& copy);
