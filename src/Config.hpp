@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/26 12:07:27 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/21 15:31:23 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/24 00:35:32 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Config
 	std::string tcpPort();
 	std::string sslPort();
 	std::string logfile();
+	std::string motdfile();
 	time_t ping();
 	time_t pong();
 	bool floodControl();

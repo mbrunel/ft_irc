@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/21 15:59:21 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/24 00:46:07 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ struct IrcServerConfig
 	time_t		ping;
 	time_t		pong;
 	bool		flood;
+	std::list<std::string> motd;
 
 	IrcServerConfig();
 	IrcServerConfig(Config &cfg);

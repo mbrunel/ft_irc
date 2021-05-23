@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/21 18:01:35 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/24 01:04:43 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,12 @@ maxChannels(cfg.maxChannels()),
 ping(cfg.ping()),
 pong(cfg.pong()),
 flood(cfg.floodControl())
-{}
+{
+	std::ifstream f(cfg.motdfile().c_str(), std::ios_base::in);
+	std::string line;
+	while (std::getline(f, line))
+		motd.push_back(line);
+}
 
 IrcServer::IrcServer()
 {
@@ -144,8 +149,12 @@ int IrcServer::writeNum(User &dst, const IrcNumeric &response)
 void IrcServer::writeMotd(User &u)
 {
 	writeNum(u, IrcReply::motdstart(config.servername));
-	writeNum(u, IrcReply::motd("Welcome to our broken IRC server!"));
-	writeNum(u, IrcReply::motd("Don't forget to install Discord on your computer next time :)"));
+	if (config.motd.size())
+	{
+		writeNum(u, IrcReply::motd(config.motd.front()));
+		for (std::list<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
+			writeNum(u, IrcReply::motd(*it));
+	}
 	writeNum(u, IrcReply::endofmotd());
 }
 

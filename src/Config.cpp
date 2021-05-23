@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/26 12:23:02 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/21 15:31:46 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/24 00:29:33 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,11 @@ bool Config::verbose()
 std::string Config::logfile()
 {
 	return(cfg->lookupString("logs", "logfile", ""));
+}
+
+std::string Config::motdfile()
+{
+	return(cfg->lookupString("logs", "motdfile"));
 }
 
 int Config::maxConnections()
