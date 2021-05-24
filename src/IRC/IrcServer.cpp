@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/24 01:04:43 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/24 19:29:51 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ IrcServer::IrcServer()
 	userCommands["OPER"] = &IrcServer::oper;
 	userCommands["PING"] = &IrcServer::ping;
 	userCommands["PONG"] = &IrcServer::pong;
+	userCommands["TIME"] = &IrcServer::time;
 }
 
 IrcServer::~IrcServer() {}
@@ -170,7 +171,7 @@ void IrcServer::writeWelcome(User &u)
 void IrcServer::Police()
 {
 	static time_t ptime = 0;
-	time_t ctime = time(NULL);
+	time_t ctime = ::time(NULL);
 	if (ctime - ptime < 5)
 		return ;
 	ptime = ctime;
@@ -197,7 +198,7 @@ bool IrcServer::floodControl(User &u)
 {
 	if (u.pongExpected() || config.flood == false)
 		return true;
-	time_t ctime = time(NULL);
+	time_t ctime = ::time(NULL);
 	if (u.clock() - ctime >= 10)
 		return false;
 	if (u.clock() < ctime)

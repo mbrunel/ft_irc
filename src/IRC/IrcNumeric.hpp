@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/22 16:08:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/24 19:27:49 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ enum IrcNumericCode
 	RPL_MOTD = 372,
 	RPL_MOTDSTART = 375,
 	RPL_ENDOFMOTD = 376,
-	RPL_YOUREOPER = 381
+	RPL_YOUREOPER = 381,
+	RPL_TIME = 391
 };
 
 struct IrcNumeric
@@ -157,4 +158,5 @@ namespace IrcReply
 	const IrcNumeric motdstart(const std::string &servername);
 	const IrcNumeric endofmotd();
 	const IrcNumeric youreoper();
+	const IrcNumeric time();
 }

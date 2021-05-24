@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 17:53:40 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/21 17:53:20 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/24 19:28:49 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ int IrcServer::pong(User &u, const Message &m) //for when a client sends a pong 
 	if (!m.params().size())
 		return (writeNum(u, IrcError::needmoreparams("PONG")));
 	u.pongExpected() = false;
-	time(&u.clock());
+	::time(&u.clock());
 	return true;
 }

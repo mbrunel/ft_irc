@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MessageBuilder.cpp                                     :+:      :+:    :+:   */
+/*   IrcNumeric.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/04/02 18:35:24 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/24 19:27:01 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,5 +315,14 @@ namespace IrcReply
 	const IrcNumeric youreoper()
 	{
 		return (IrcNumeric(RPL_YOUREOPER, "You are now an IRC operator"));
+	}
+	const IrcNumeric time()
+	{
+		char stamp[80];
+
+		time_t rawtime;
+		::time(&rawtime);
+		strftime(stamp, 80, "%x - %I:%M:%S", localtime(&rawtime));
+		return (IrcNumeric(RPL_TIME, stamp));
 	}
 }
