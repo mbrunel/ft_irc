@@ -6,68 +6,101 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/22 13:20:27 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/24 12:28:48 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <string>
+#include "IrcNumeric.hpp"
+#include "Mode.hpp"
 #include "RemoteServer.hpp"
+#include "BasicConnection.hpp"
 
-class TcpSocket;
-
-class UserMode
+class UserMode : public Mode
 {
 public:
 	enum Flag
 	{
+		/** 'a' - User is flagged as away */
 		AWAY = 1,
-		INVISIBLE = 1 << 2,
-		WALLOPS = 1 << 3,
-		RESTRICTED = 1 << 4,
-		OPERATOR = 1 << 5,
-		LOCAL_OPERATOR = 1 << 6,
-		MARK = 1 << 7
+		/** 'i' - Marks a User as invisible */
+		INVISIBLE = 1 << 1,
+		/** 'w' - User receives wallops */
+		WALLOPS = 1 << 2,
+		/** 'r' - Restricted User connection */
+		RESTRICTED = 1 << 3,
+		/** 'o' - Operator flag */
+		OPERATOR = 1 << 4,
+		/** 'O' - Local operator flag */
+		LOCAL_OPERATOR = 1 << 5,
+		/** 's' - Marks a User for receipt of server notices */
+		MARK = 1 << 6
 	};
 
-	UserMode();
+	UserMode(unsigned flags = 0);
 	~UserMode();
 
-	const Flag	isSet(const Flag flag) const;
-	void		setFlag(const Flag flag);
-	void		unsetFlag(const Flag flag);
+	static Flag	parse(char c);
+
+	std::string	toString() const;
 
 private:
-	unsigned _flags;
+	/** Quick lookup table for lower alphabet */
+	static const unsigned short _lowerFlagTable[26];
 };
 
-class User
+class UserRequirement : public Mode
 {
 public:
-	enum State { NEED_PASS, NEED_NICK, NEED_USER, READY };
+	enum Flag
+	{
+		PASS = 1,
+		NICK = 1 << 1,
+		USER = 1 << 2,
+		ALL_EXCEPT_PASS = NICK | USER,
+		ALL = PASS | ALL_EXCEPT_PASS
+	};
 
-	User(TcpSocket *socket);
+	UserRequirement(unsigned flags = 0);
+	virtual ~UserRequirement();
+};
+
+class User : public BasicConnection
+{
+public:
+	User(TcpSocket *socket, UserRequirement::Flag requirements);
 	virtual ~User();
 
-	bool			isAway() const;
-	RemoteServer	*makeRemoteServer();
-	void			setState(const State state);
-	const State		state() const;
-	const UserMode	&umode() const;
+	bool					isRegistered() const;
+	RemoteServer			*makeRemoteServer(int hopcount);
+	void					unsetRequirement(UserRequirement::Flag requirement);
+	const UserRequirement	&requirements() const;
+	const std::string		&realname() const;
+	const UserMode			&umode() const;
+	size_t					joinedChannels() const;
+	const std::string		&awayReason() const;
+	const std::string		&prefix() const;
+	const std::string		&nickname() const;
+	const std::string		&username() const;
+	void					setRealname(const std::string &realname);
+	void					setUmode(const UserMode &umode);
+	void					setJoinedChannels(size_t joinedChannels);
+	void					setAway(const std::string &reason);
+	void					setNickname(const std::string &nickname);
+	void					setUsername(const std::string &username);
 
 protected:
-	TcpSocket	*_socket;
-	std::string	_nickname;
-	std::string _username;
-	std::string _host;
-	std::string _realname;
-	unsigned	_servertoken;
-	unsigned	_umode;
-	unsigned	_hopcount;
-	State		_state;
+	UserRequirement	_requirements;
+	std::string		_realname;
+	UserMode		_umode;
+	size_t			_joinedChannels;
+	std::string		_awayReason;
 
 private:
-	User(const User &other);
+	std::string		_prefix;
+	std::string		_nickname;
+	std::string		_username;
 
-	User	&operator=(const User &other);
+	void	updatePrefix();
 };

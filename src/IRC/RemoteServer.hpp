@@ -11,17 +11,15 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "TcpSocket.hpp"
+#include "Server.hpp"
 
-class RemoteServer
+class RemoteServer : public Server
 {
 public:
-	RemoteServer(TcpSocket *socket);
+	RemoteServer(TcpSocket *socket, int hopcount);
 	virtual ~RemoteServer();
 
-protected:
-	TcpSocket	*_socket;
-
+private:
 	RemoteServer(const RemoteServer &other);
 
 	RemoteServer	&operator=(const RemoteServer &other);

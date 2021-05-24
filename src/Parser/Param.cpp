@@ -6,11 +6,13 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:30 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/20 15:56:53 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 13:55:43 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstring>
 #include "Param.hpp"
+#include "Parser.hpp"
 
 Param::Param(const std::string &value) :
 std::string(value)
@@ -19,37 +21,71 @@ std::string(value)
 Param::~Param()
 {}
 
-MsgTo Param::asMsgTo() const
+bool Param::isChannel() const
 {
-	MsgTo	m;
-	Context	c(*this);
-
-	if (!m.interpret(c) || *c)
-		return (MsgTo());
-	return (m);
+	return (check(Parser::asChannel));
 }
 
-std::list<MsgTo> Param::asMultipleMsgTo() const
+bool Param::isMask() const
 {
-	std::list<MsgTo>	l;
+	Param::const_iterator	i;
+	bool					prevIsEsc;
+
+	for (i = begin(), prevIsEsc = false; i != end(); ++i)
+		if ((*i == '*' || *i == '?'))
+		{
+			if (!prevIsEsc)
+				return (true);
+		}
+		else
+			prevIsEsc = *i == '\\';
+	return (false);
+}
+
+bool Param::isNickname() const
+{
+	return (check(Parser::asNickname));
+}
+
+bool Param::isKey() const
+{
+	Context	c(*this);
+
+	while (c.distance() < 24 && *c && !!std::strchr(" \f\t\v", *c))
+		++c;
+	return (c.distance() > 0 && !*c);
+}
+
+std::vector<Param> Param::split(char d) const
+{
+	std::vector<Param>	v;
 	Context				c(*this);
 
-	while (*c)
+	if (*c == d)
 	{
-		try
-		{
-			l.push_back(MsgTo());
-		}
-		catch(const std::exception &e)
-		{
-			(void)e;
-		}
-		if (!l.back().interpret(c) || (*c && *c != ','))
-		{
-			l.clear();
-			break ;
-		}
+		v.push_back(Param(""));
 		++c;
 	}
-	return (l);
+	while (*c)
+	{
+		c.resetDistance();
+		while (*c && *c != d)
+			++c;
+		v.push_back(Param(c.extract()));
+		if (*c == d)
+		{
+			++c;
+			if (!*c)
+				v.push_back(Param(""));
+		}
+	}
+	return (v);
+}
+
+bool Param::check(bool (*parsing_func)(Context &, std::string &)) const
+{
+	std::string	s;
+	Context		c(*this);
+
+	return (parsing_func(c, s) && !*c);
 }

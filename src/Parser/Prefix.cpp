@@ -6,10 +6,11 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 19:40:19 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/19 17:46:44 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/23 18:26:07 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Parser.hpp"
 #include "Prefix.hpp"
 
 Prefix::Prefix()
@@ -22,8 +23,8 @@ bool Prefix::interpret(Context &o)
 {
 	Context oServername(o);
 
-	asHostname(oServername, _servername);
-	if (!asNickname(o, _nickname) && !_servername.size())
+	Parser::asHostname(oServername, _servername);
+	if (!Parser::asNickname(o, _nickname) && !_servername.size())
 		return (reject());
 	if (_servername.size() > _nickname.size())
 	{
@@ -32,11 +33,11 @@ bool Prefix::interpret(Context &o)
 		return (accept());
 	}
 	_servername.clear();
-	if (*o == '!' && !asUser(++o, _user))
+	if (*o == '!' && !Parser::asUser(++o, _user))
 		return (reject());
 	if (*o == '@')
 	{
-		if (!asHost(++o, _host))
+		if (!Parser::asHost(++o, _host))
 			return (reject());
 	}
 	else if (_user.size())

@@ -6,11 +6,12 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 14:02:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/20 15:37:12 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/03/29 19:40:06 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
+#include "Parser.hpp"
 
 Message::Message(const std::string &entry) : _entry(entry)
 {
@@ -38,7 +39,7 @@ const std::string &Message::command() const
 	return (_command);
 }
 
-const std::list<Param> &Message::params() const
+const std::vector<Param> &Message::params() const
 {
 	return (_params);
 }
@@ -64,8 +65,8 @@ void Message::parseTrailing(Context &o)
 
 bool Message::interpret(Context &o)
 {
-	if ((*o == ':' && (!_prefix.interpret(++o) || *o != ' ')) ||
-	!asCommand(++o, _command))
+	if ((*o == ':' && (!_prefix.interpret(++o) || *(o++) != ' ')) ||
+	!Parser::asCommand(o, _command))
 		return (reject());
 	for (size_t i = 14; *o == ' '; --i)
 		if (*(++o) == ':' || !i)
@@ -93,10 +94,10 @@ std::ostream &operator<<(std::ostream &o, const Message &m)
 	if (m.params().size())
 	{
 		o << ", params: [";
-		std::list<Param>::const_iterator i = m.params().begin();
+		std::vector<Param>::const_iterator i = m.params().begin();
 		o << *i;
 		for (++i; i != m.params().end(); ++i)
-			std::cout << ", " << *i;
+			o << ", " << *i;
 		o << ']';
 	}
 	return (o << ']');
