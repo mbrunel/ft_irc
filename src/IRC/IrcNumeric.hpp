@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 18:07:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/22 16:08:17 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ enum IrcNumericCode
 	RPL_AWAY = 301,
 	RPL_UNAWAY = 305,
 	RPL_NOWAWAY = 306,
+	RPL_CHANNELMODEIS = 324,
 	RPL_MOTD = 372,
 	RPL_MOTDSTART = 375,
 	RPL_ENDOFMOTD = 376,
@@ -131,6 +132,7 @@ namespace IrcError
 	const IrcNumeric inviteonlychan(const std::string &channel);
 	const IrcNumeric bannedfromchan(const std::string &channel);
 	const IrcNumeric badchannelkey(const std::string &channel);
+	const IrcNumeric nochanmodes(const std::string &channel);
 	const IrcNumeric noprivileges();
 	const IrcNumeric chanoprisneeded(const std::string &channel);
 	const IrcNumeric cantkillserver();
@@ -150,6 +152,7 @@ namespace IrcReply
 	const IrcNumeric away(const std::string &nickname, const std::string &reason);
 	const IrcNumeric unaway();
 	const IrcNumeric nowaway();
+	const IrcNumeric channelmodeis(const std::string &channel, const std::string &modes);
 	const IrcNumeric motd(const std::string &text);
 	const IrcNumeric motdstart(const std::string &servername);
 	const IrcNumeric endofmotd();

@@ -208,6 +208,11 @@ namespace IrcError
 		return (IrcNumeric(ERR_BADCHANNELKEY, channel + " :Cannot join channel (+k)"));
 	}
 
+	const IrcNumeric nochanmodes(const std::string &channel)
+	{
+		return (IrcNumeric(ERR_NOCHANMODES, channel + " :Channel doesn't support modes"));
+	}
+
 	const IrcNumeric noprivileges()
 	{
 		return (IrcNumeric(ERR_NOPRIVILEGES, ":Permission Denied- You're not an IRC operator"));
@@ -285,6 +290,11 @@ namespace IrcReply
 	const IrcNumeric nowaway()
 	{
 		return (IrcNumeric(RPL_AWAY, ":You have been marked as being away"));
+	}
+
+	const IrcNumeric channelmodeis(const std::string &channel, const std::string &modes)
+	{
+		return (IrcNumeric(RPL_CHANNELMODEIS, channel + " +" + modes));
 	}
 
 	const IrcNumeric motd(const std::string &text)

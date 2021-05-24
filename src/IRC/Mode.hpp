@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 13:47:34 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/29 13:15:51 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:21:59 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ public:
 	/**
 	 * Checks if all bits are set to true using a mask.
 	 * \param mask The mask used to perform the check
-	 * \return Positive if all bits from the mask are set to true
+	 * \return 1 if all bits from the mask are set to true
 	*/
 	bool areSet(unsigned mask) const;
 
@@ -36,7 +36,7 @@ public:
 	/**
 	 * Checks if at least one bit is set to true using a mask.
 	 * \param mask The mask used to perform the check
-	 * \return Positive if at least one bit from the mask is set to true
+	 * \return 1 if at least one bit from the mask is set to true
 	*/
 	bool isSet(unsigned mask) const;
 

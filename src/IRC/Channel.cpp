@@ -6,18 +6,12 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/14 13:46:51 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/24 15:45:49 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cctype>
 #include "Channel.hpp"
-
-ChannelMode::ChannelMode(unsigned flags) :
-Mode(flags)
-{}
-
-ChannelMode::~ChannelMode()
-{}
 
 MemberMode::MemberMode(unsigned flags) :
 Mode(flags)
@@ -26,16 +20,68 @@ Mode(flags)
 MemberMode::~MemberMode()
 {}
 
-Channel::Channel(const std::string &name) :
-_name(name), _type(UNKNOWN)
+MemberMode::Flag MemberMode::parse(char c)
 {
+	if (c == 'O')
+		return (CREATOR);
+	if (c == 'o')
+		return (OPERATOR);
+	return (static_cast<Flag>((c == 'v') * VOICE));
+}
+
+ChannelMode::ChannelMode(unsigned flags) :
+Mode(flags)
+{}
+
+ChannelMode::~ChannelMode()
+{}
+
+ChannelMode::Flag ChannelMode::parse(char c)
+{
+	unsigned f;
+	f = islower(c) ? _lowerFlagTable[c - 'a'] : (c == 'I') * INVITATION_MASK;
+	return (static_cast<Flag>(f));
+}
+
+std::string ChannelMode::toString() const
+{
+	std::string s;
+	if (isSet(ANONYMOUS))
+		s.push_back('a');
+	if (isSet(INVITE_ONLY))
+		s.push_back('i');
+	if (isSet(NO_OUTSIDE_MSG))
+		s.push_back('n');
+	if (isSet(QUIET))
+		s.push_back('q');
+	if (isSet(PRIVATE))
+		s.push_back('p');
+	if (isSet(SECRET))
+		s.push_back('s');
+	if (isSet(REOP))
+		s.push_back('r');
+	if (isSet(TOPIC_SETTABLE_BY_CHANOP))
+		s.push_back('t');
+	if (isSet(KEY))
+		s.push_back('k');
+	if (isSet(LIMIT))
+		s.push_back('l');
+	return (s);
+}
+
+const unsigned short ChannelMode::_lowerFlagTable[] =
+{
+	ANONYMOUS, BAN_MASK, 0, 0, EXCEPTION_MASK, 0, 0, 0, INVITE_ONLY, 0, KEY,
+	LIMIT, MODERATED, NO_OUTSIDE_MSG, 0, PRIVATE, QUIET, REOP, SECRET,
+	TOPIC_SETTABLE_BY_CHANOP, 0, 0, 0, 0, 0, 0
+};
+
+Channel::Channel(const std::string &name) :
+_name(name), _type(GLOBAL)
+{
+	const char *types = "#&!+";
 	if (name.size())
-	{
-		if (name[0] == '#')
-			_type = GLOBAL;
-		else if (name[0] == '&')
-			_type = LOCAL;
-	}
+		_type = static_cast<Type>(strchrnul(types, name[0]) - types);
 }
 
 Channel::~Channel()
@@ -58,15 +104,15 @@ void Channel::delMember(User *user)
 	user->setJoinedChannels(user->joinedChannels() - 1);
 }
 
-const MemberMode *Channel::findMember(User *user) const
+MemberMode *Channel::findMember(User *user)
 {
-	MemberMap::const_iterator i(_members.find(user));
+	MemberMap::iterator i(_members.find(user));
 	return (i != _members.end() ? &i->second : NULL);
 }
 
 bool Channel::isLocal() const
 {
-	return (_name.size() && _name[0] == '&');
+	return (_type == LOCAL);
 }
 
 void Channel::send(const std::string &msg, BasicConnection *origin) const
@@ -99,14 +145,39 @@ const ChannelMode &Channel::mode() const
 	return (_mode);
 }
 
+const std::string &Channel::topic() const
+{
+	return (_topic);
+}
+
 const std::string &Channel::key() const
 {
 	return (_key);
 }
 
-const std::string &Channel::topic() const
+size_t Channel::limit() const
 {
-	return (_topic);
+	return (_limit);
+}
+
+Channel::MasksList &Channel::banMasks()
+{
+	return (_banMasks);
+}
+
+Channel::MasksList &Channel::exceptionMasks()
+{
+	return (_exceptionMasks);
+}
+
+Channel::MasksList &Channel::invitationMasks()
+{
+	return (_invitationMasks);
+}
+
+void Channel::setMode(const ChannelMode &mode)
+{
+	_mode = mode;
 }
 
 void Channel::setTopic(const std::string &topic)
@@ -117,4 +188,9 @@ void Channel::setTopic(const std::string &topic)
 void Channel::setKey(const std::string &key)
 {
 	_key = key;
+}
+
+void Channel::setLimit(size_t limit)
+{
+	_limit = limit;
 }

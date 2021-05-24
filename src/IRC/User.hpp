@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/21 17:00:35 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/24 12:28:48 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,32 @@ class UserMode : public Mode
 public:
 	enum Flag
 	{
-		/** User is flagged as away */
+		/** 'a' - User is flagged as away */
 		AWAY = 1,
-		/** Marks a User as invisible */
+		/** 'i' - Marks a User as invisible */
 		INVISIBLE = 1 << 1,
-		/** User receives wallops */
+		/** 'w' - User receives wallops */
 		WALLOPS = 1 << 2,
-		/** Restricted User connection */
+		/** 'r' - Restricted User connection */
 		RESTRICTED = 1 << 3,
-		/** Operator flag */
+		/** 'o' - Operator flag */
 		OPERATOR = 1 << 4,
-		/** Local operator flag */
+		/** 'O' - Local operator flag */
 		LOCAL_OPERATOR = 1 << 5,
-		/** Marks a User for receipt of server notices */
+		/** 's' - Marks a User for receipt of server notices */
 		MARK = 1 << 6
 	};
 
 	UserMode(unsigned flags = 0);
-	virtual ~UserMode();
+	~UserMode();
+
+	static Flag	parse(char c);
+
+	std::string	toString() const;
+
+private:
+	/** Quick lookup table for lower alphabet */
+	static const unsigned short _lowerFlagTable[26];
 };
 
 class UserRequirement : public Mode

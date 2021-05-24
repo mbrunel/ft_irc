@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/21 16:59:56 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/05/24 12:32:17 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,35 @@ Mode(flags)
 
 UserMode::~UserMode()
 {}
+
+UserMode::Flag UserMode::parse(char c)
+{
+	unsigned f;
+	f = islower(c) ? _lowerFlagTable[c - 'a'] : (c == 'O') * LOCAL_OPERATOR;
+	return (static_cast<Flag>(f));
+}
+
+std::string UserMode::toString() const
+{
+	std::string s;
+	if (isSet(INVISIBLE))
+		s.push_back('i');
+	if (isSet(WALLOPS))
+		s.push_back('w');
+	if (isSet(RESTRICTED))
+		s.push_back('r');
+	if (isSet(OPERATOR))
+		s.push_back('o');
+	if (isSet(LOCAL_OPERATOR))
+		s.push_back('O');
+	return (s);
+}
+
+const unsigned short UserMode::_lowerFlagTable[] =
+{
+	AWAY, 0, 0, 0, 0, 0, 0, 0, INVISIBLE, 0, 0, 0, 0, 0, OPERATOR, 0, 0,
+	RESTRICTED, MARK, 0, 0, 0, WALLOPS, 0, 0, 0
+};
 
 User::User(TcpSocket *socket, UserRequirement::Flag requirements) :
 BasicConnection(socket, USER),
