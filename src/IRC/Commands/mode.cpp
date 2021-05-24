@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 11:48:50 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/24 15:52:11 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/24 16:24:40 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,14 +153,17 @@ int IrcServer::mode(User &u, const Message &m)
 					if (f == ChannelMode::BAN_MASK)
 					{
 						// Prints bans list
+						writeNum(u, IrcReply::endofbanlist(s));
 					}
 					else if (f == ChannelMode::EXCEPTION_MASK)
 					{
 						// Prints exceptions list
+						writeNum(u, IrcReply::endofexceptlist(s));
 					}
 					else
 					{
 						// Prints invitations list
+						writeNum(u, IrcReply::endofinvitelist(s));
 					}
 				}
 				else

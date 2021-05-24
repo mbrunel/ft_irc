@@ -297,6 +297,21 @@ namespace IrcReply
 		return (IrcNumeric(RPL_CHANNELMODEIS, channel + " +" + modes));
 	}
 
+	const IrcNumeric endofinvitelist(const std::string &channel)
+	{
+		return (IrcNumeric(RPL_ENDOFINVITELIST, channel + " :End of channel invite list"));
+	}
+
+	const IrcNumeric endofexceptlist(const std::string &channel)
+	{
+		return (IrcNumeric(RPL_ENDOFEXCEPTLIST, channel + " :End of channel exception list"));
+	}
+
+	const IrcNumeric endofbanlist(const std::string &channel)
+	{
+		return (IrcNumeric(RPL_ENDOFBANLIST, channel + " :End of channel ban list"));
+	}
+
 	const IrcNumeric motd(const std::string &text)
 	{
 		return (IrcNumeric(RPL_MOTD, ":- " + text));
