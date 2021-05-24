@@ -1,0 +1,3 @@
+Welcome to our broken IRC server!
+Be careful of the ping
+Don't forget to install Discord on your computer next time :)

@@ -37,3 +37,6 @@ doc/html
 
 # SSL
 *.ssl.*
+
+# Logs
+logfile.txt

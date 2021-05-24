@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RemoteUser.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:46:03 by asoursou          #+#    #+#             */
-/*   Updated: 2021/03/22 13:15:50 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/04/01 22:19:36 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 class RemoteUser : public User
 {
 public:
-	RemoteUser(TcpSocket *socket);
+	RemoteUser(TcpSocket *socket, int hopcount);
 	virtual ~RemoteUser();
 
 private:
