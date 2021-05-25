@@ -40,3 +40,6 @@ doc/html
 
 # Logs
 logfile.txt
+
+# Libraries
+lib/*
