@@ -1,13 +1,7 @@
-SUBDIRS = src tests demos
-
-.PHONY: all clean clobber
-
 all:
-	for dir in $(SUBDIRS); do $(MAKE) all -C $$dir $@; done
+	$(MAKE) -C src $@
 
 clean:
-	for dir in $(SUBDIRS); do $(MAKE) clean -C $$dir $@; done
+	$(MAKE) -C src $@
 
-clobber:
-	for dir in $(SUBDIRS); do $(MAKE) clobber -C $$dir $@; done
-
+.PHONY: all clean

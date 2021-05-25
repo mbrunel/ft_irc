@@ -129,12 +129,9 @@ config4cpp.o:	config4cpp.cpp 	$(LIB_HDR_FILES)
 $(LIB_OBJ_FILES):	$(LIB_HDR_FILES)
 
 clean:
-	rm -f *.o config2cpp$(EXE_EXT) config4cpp$(EXE_EXT) core
+	rm -f *.o config2cpp$(EXE_EXT) config4cpp$(EXE_EXT)
 	rm -f config2cpp-nocheck$(EXE_EXT)
 	rm -f libconfig4cpp*.a
-
-clobber: clean
 	rm -f $(BIN_DIR)/config2cpp$(EXE_EXT)
 	rm -f $(BIN_DIR)/config4cpp$(EXE_EXT)
 	rm -f $(LIB_DIR)/libconfig4cpp*.a
-
