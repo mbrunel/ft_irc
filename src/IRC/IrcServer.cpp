@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/24 19:29:51 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/05/26 15:24:54 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,45 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 			return ((this->*(i->second))(*static_cast<Server*>(sender), msg));
 	}
 	return (-1);
+}
+
+// std::string goes brrr
+static bool match(const char *mask, const char *str)
+{
+	const char m = *mask;
+	const char c = *str;
+	if (!m)
+		return (!c);
+	if (m == '\\') // escape character (only if next is a special character)
+	{
+		const char m1 = mask[1];
+		if (m1 == '*' || m1 == '?')
+			return (m1 == c ? match(mask + 2, str + 1) : 0);
+	}
+	if (m == '*') // wildcard matching
+	{
+		if (match(mask + 1, str))
+			return (1);
+		if (!c)
+			return (0);
+	}
+	else
+	{
+		if (m == '?') // any character matching
+		{
+			if (!c)
+				return (0);
+		}
+		else if (m != c) // else character must match
+			return (0);
+		++mask;
+	}
+	return (match(mask, str + 1));
+}
+
+bool IrcServer::match(const std::string &mask, const std::string &str)
+{
+	return (::match(mask.c_str(), str.c_str()));
 }
 
 void IrcServer::writeMessage(User &dst, const std::string &command, const std::string &content)

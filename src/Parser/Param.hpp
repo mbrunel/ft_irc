@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:26 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 13:51:31 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/26 13:29:09 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ public:
 	bool				isMask() const;
 	bool				isNickname() const;
 	bool				isKey() const;
+	std::string			mask() const;
 	std::vector<Param>	split(char delimiter = ',') const;
 
 private:

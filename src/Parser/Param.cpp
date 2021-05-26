@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:30 by asoursou          #+#    #+#             */
-/*   Updated: 2021/04/01 13:55:43 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/26 13:30:08 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,26 @@ bool Param::isKey() const
 	while (c.distance() < 24 && *c && !!std::strchr(" \f\t\v", *c))
 		++c;
 	return (c.distance() > 0 && !*c);
+}
+
+std::string Param::mask() const
+{
+	std::string		dst;
+	bool			prevIsEsc = 0;
+	const_iterator	i = begin();
+
+	dst.reserve(size() + 1);
+	while (i != end())
+	{
+		char c = *i;
+		dst.push_back(c);
+		if (!prevIsEsc && c == '*')
+			while (i + 1 != end() && i[1] == '*') // * == two or more wildcards
+				++i;
+		prevIsEsc = c == '\\';
+		++i;
+	}
+	return (dst);
 }
 
 std::vector<Param> Param::split(char d) const
