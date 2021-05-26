@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/26 14:01:45 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/26 15:56:41 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ class IrcServer
 	serverCommandsMap	serverCommands;
 
 	int	away(User &sender, const Message &msg);
+	int	invite(User &sender, const Message &msg);
 	int	join(User &sender, const Message &msg);
 	int mode(User &sender, const Message &msg);
 	int	motd(User &sender, const Message &msg);
