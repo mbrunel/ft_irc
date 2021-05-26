@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/24 15:45:49 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/26 16:15:12 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ void Channel::addMember(User *user, const MemberMode &mode)
 {
 	_members[user] = mode;
 	user->setJoinedChannels(user->joinedChannels() + 1);
+	if (isInvited(user))
+		_invitations.erase(_invitations.find(user->nickname()));
 }
 
 size_t Channel::count() const
@@ -108,6 +110,16 @@ MemberMode *Channel::findMember(User *user)
 {
 	MemberMap::iterator i(_members.find(user));
 	return (i != _members.end() ? &i->second : NULL);
+}
+
+void Channel::invite(User *user)
+{
+	_invitations.insert(user->nickname());
+}
+
+bool Channel::isInvited(User *user) const
+{
+	return (_invitations.find(user->nickname()) != _invitations.end());
 }
 
 bool Channel::isLocal() const
@@ -135,7 +147,7 @@ Channel::Type Channel::type() const
 	return (_type);
 }
 
-const MemberMap &Channel::members() const
+const Channel::MemberMap &Channel::members() const
 {
 	return (_members);
 }
@@ -160,17 +172,17 @@ size_t Channel::limit() const
 	return (_limit);
 }
 
-Channel::MasksList &Channel::banMasks()
+Channel::MaskSet &Channel::banMasks()
 {
 	return (_banMasks);
 }
 
-Channel::MasksList &Channel::exceptionMasks()
+Channel::MaskSet &Channel::exceptionMasks()
 {
 	return (_exceptionMasks);
 }
 
-Channel::MasksList &Channel::invitationMasks()
+Channel::MaskSet &Channel::invitationMasks()
 {
 	return (_invitationMasks);
 }

@@ -6,13 +6,13 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/24 15:55:40 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/26 16:22:34 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <list>
 #include <map>
+#include <set>
 #include "User.hpp"
 
 class MemberMode : public Mode
@@ -81,12 +81,11 @@ private:
 	static const unsigned short _lowerFlagTable[26];
 };
 
-typedef std::map<User*, MemberMode>	MemberMap;
-
 class Channel
 {
 public:
-	typedef std::list<std::string> MasksList;
+	typedef std::set<std::string>		MaskSet;
+	typedef std::map<User*, MemberMode>	MemberMap;
 
 	enum Type
 	{
@@ -107,6 +106,8 @@ public:
 	size_t				count() const;
 	void				delMember(User *user);
 	MemberMode			*findMember(User *user);
+	void				invite(User *user);
+	bool				isInvited(User *user) const;
 	bool				isLocal() const;
 	void				send(const std::string &msg, BasicConnection *origin) const;
 	const std::string	&name() const;
@@ -116,9 +117,9 @@ public:
 	const std::string	&topic() const;
 	const std::string	&key() const;
 	size_t				limit() const;
-	MasksList			&banMasks();
-	MasksList			&exceptionMasks();
-	MasksList			&invitationMasks();
+	MaskSet				&banMasks();
+	MaskSet				&exceptionMasks();
+	MaskSet				&invitationMasks();
 	void				setMode(const ChannelMode &mode);
 	void				setTopic(const std::string &topic);
 	void				setKey(const std::string &key);
@@ -132,7 +133,8 @@ private:
 	std::string			_topic;
 	std::string			_key;
 	size_t				_limit;
-	MasksList			_banMasks;
-	MasksList			_exceptionMasks;
-	MasksList			_invitationMasks;
+	MaskSet				_banMasks;
+	MaskSet				_exceptionMasks;
+	MaskSet				_invitationMasks;
+	MaskSet				_invitations;
 };

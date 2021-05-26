@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/26 15:24:54 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/26 15:57:31 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ flood(cfg.floodControl())
 IrcServer::IrcServer()
 {
 	userCommands["AWAY"] = &IrcServer::away;
+	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
 	userCommands["MODE"] = &IrcServer::mode;
 	userCommands["MOTD"] = &IrcServer::motd;
