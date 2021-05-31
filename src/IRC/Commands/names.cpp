@@ -1,18 +1,6 @@
 #include "IrcServer.hpp"
 #include <algorithm>
 
-int	findUserInChan(User &u, Channel const *c)
-{
-	Channel::MemberMap::const_iterator ic = c->members().begin();
-	while (ic != c->members().end())
-	{
-		if (ic->first->nickname().compare(u.nickname()) == 0)
-			return (1);
-		++ic;
-	}
-	return (0);
-}
-
 int IrcServer::names(User &u, const Message &m)
 {
 
@@ -31,7 +19,7 @@ int IrcServer::names(User &u, const Message &m)
 		{
 			std::string listName = "";
 		
-			if (ic->second->nbUserVisible() > 0 || ::findUserInChan(u, ic->second))
+			if (ic->second->nbUserVisible() > 0 || ic->second->findMember(&u))
 			{
 
 				ChannelMode cmode = ic->second->mode();
@@ -80,7 +68,7 @@ int IrcServer::names(User &u, const Message &m)
 			Network::ChannelMap::const_iterator ic = channels.begin();
 			while (ic != channels.end())
 			{
-				if (ic->first.compare((*ip)) == 0)
+				if (ic->first == (*ip))
 				{
 					paramInChannels = 1;
 					break;
@@ -92,7 +80,7 @@ int IrcServer::names(User &u, const Message &m)
 			if (paramInChannels)
 			{
 
-				if (ic->second->nbUserVisible() > 0 || ::findUserInChan(u, ic->second))
+				if (ic->second->nbUserVisible() > 0 || ic->second->findMember(&u))
 				{
 					ChannelMode cmode = ic->second->mode();
 					if (cmode.isSet(ChannelMode::SECRET))
