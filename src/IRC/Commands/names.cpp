@@ -8,6 +8,8 @@ int IrcServer::names(User &u, const Message &m)
 	// Gerer les targets
 	//===========TO-DO===========//
 
+	if (!u.isRegistered())
+		return (writeNum(u, IrcError::notregistered()));
 
 	const Network::ChannelMap &channels = network.channels();
 
