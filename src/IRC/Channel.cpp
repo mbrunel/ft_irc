@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/31 11:54:42 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/05/31 13:58:32 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,18 +139,17 @@ void Channel::send(const std::string &msg, BasicConnection *origin) const
 
 unsigned int Channel::nbUserVisible() const
 {
-       unsigned int nb = 0;
-       const MemberMap &members = _members;
-       MemberMap::const_iterator im = members.begin();
+	unsigned int nb = 0;
+	MemberMap::const_iterator im = _members.begin();
 
-       while (im != members.end())
-       {
-               UserMode umode = im->first->umode();
-               if (umode.isSet(UserMode::INVISIBLE))
-                       nb++;
-               ++im;
-       }
-       return (nb);
+	while (im != _members.end())
+	{
+		const UserMode &umode = im->first->umode();
+		if (!umode.isSet(UserMode::INVISIBLE))
+				nb++;
+		++im;
+	}
+	return (nb);
 }
 
 const std::string &Channel::name() const

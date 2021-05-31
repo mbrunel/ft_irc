@@ -6,10 +6,11 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/31 11:57:44 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/05/31 14:06:17 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sstream>
 #include "IrcNumeric.hpp"
 
 IrcNumeric::IrcNumeric(const IrcNumericCode code, const std::string &content) :
@@ -292,6 +293,18 @@ namespace IrcReply
 		return (IrcNumeric(RPL_AWAY, ":You have been marked as being away"));
 	}
 
+	const IrcNumeric list(const std::string &channel, size_t visible, const std::string &topic)
+	{
+		std::stringstream ss;
+		ss << visible;
+		return (IrcNumeric(RPL_LIST, channel + ' ' + ss.str() + " :" + topic));
+	}
+
+	const IrcNumeric listend()
+	{
+		return (IrcNumeric(RPL_LISTEND, ":End of LIST"));
+	}
+
 	const IrcNumeric channelmodeis(const std::string &channel, const std::string &modes)
 	{
 		return (IrcNumeric(RPL_CHANNELMODEIS, channel + " +" + modes));
@@ -330,11 +343,11 @@ namespace IrcReply
 		strftime(stamp, 80, "%x - %I:%M:%S", localtime(&rawtime));
 		return (IrcNumeric(RPL_TIME, stamp));
 	}
-	const IrcNumeric namreply(std::string &names)
+	const IrcNumeric namreply(const std::string &names)
 	{
 		return (IrcNumeric(RPL_NAMREPLY, names));
 	}
-	const IrcNumeric endofnames(std::string name)
+	const IrcNumeric endofnames(const std::string &name)
 	{
 		return (IrcNumeric(RPL_ENDOFNAMES, name + " :End of NAMES list"));
 	}

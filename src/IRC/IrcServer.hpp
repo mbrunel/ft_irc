@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/31 12:01:21 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/05/31 14:08:18 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,18 +58,19 @@ class IrcServer
 	int	away(User &sender, const Message &msg);
 	int	invite(User &sender, const Message &msg);
 	int	join(User &sender, const Message &msg);
-	int mode(User &sender, const Message &msg);
+	int	list(User &sender, const Message &msg);
 	int	motd(User &sender, const Message &msg);
+	int	names(User &sender, const Message &msg);
 	int	nick(User &sender, const Message &msg);
 	int	part(User &sender, const Message &msg);
 	int	privmsg(User &sender, const Message &msg);
+	int	time(User &sender, const Message &msg);
 	int	topic(User &sender, const Message &msg);
 	int	user(User &sender, const Message &msg);
+	int mode(User &sender, const Message &msg);
 	int oper(User &sender, const Message &msg);
 	int ping(User &sender, const Message &msg);
 	int pong(User &sender, const Message &msg);
-	int	time(User &sender, const Message &msg);
-	int	names(User &sender, const Message &msg);
 
 	void	disconnect(TcpSocket *socket) throw();
 	void	disconnect(User *connection) throw();
