@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/26 16:45:27 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/31 11:57:44 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,5 +329,13 @@ namespace IrcReply
 		::time(&rawtime);
 		strftime(stamp, 80, "%x - %I:%M:%S", localtime(&rawtime));
 		return (IrcNumeric(RPL_TIME, stamp));
+	}
+	const IrcNumeric namreply(std::string &names)
+	{
+		return (IrcNumeric(RPL_NAMREPLY, names));
+	}
+	const IrcNumeric endofnames(std::string name)
+	{
+		return (IrcNumeric(RPL_ENDOFNAMES, name + " :End of NAMES list"));
 	}
 }

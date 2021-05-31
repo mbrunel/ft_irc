@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/26 16:22:34 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/31 11:55:46 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ public:
 	void				setTopic(const std::string &topic);
 	void				setKey(const std::string &key);
 	void				setLimit(size_t limit);
+	unsigned int		nbUserVisible() const;
 
 private:
 	const std::string	_name;

@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/26 15:56:41 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/31 12:01:21 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ class IrcServer
 	int ping(User &sender, const Message &msg);
 	int pong(User &sender, const Message &msg);
 	int	time(User &sender, const Message &msg);
+	int	names(User &sender, const Message &msg);
 
 	void	disconnect(TcpSocket *socket) throw();
 	void	disconnect(User *connection) throw();
