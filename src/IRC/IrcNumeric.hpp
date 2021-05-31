@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/26 16:36:36 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/31 11:59:23 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ enum IrcNumericCode
 	RPL_NOWAWAY = 306,
 	RPL_CHANNELMODEIS = 324,
 	RPL_INVITING = 341,
+	RPL_NAMREPLY = 353,
+	RPL_ENDOFNAMES = 366,
 	RPL_MOTD = 372,
 	RPL_MOTDSTART = 375,
 	RPL_ENDOFMOTD = 376,
@@ -161,4 +163,6 @@ namespace IrcReply
 	const IrcNumeric endofmotd();
 	const IrcNumeric youreoper();
 	const IrcNumeric time();
+	const IrcNumeric namreply(std::string &names);
+	const IrcNumeric endofnames(std::string name);
 }
