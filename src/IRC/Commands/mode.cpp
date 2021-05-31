@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 11:48:50 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/24 15:52:11 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/05/31 14:34:56 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int IrcServer::mode(User &u, const Message &m)
 	const Param &s = m.params()[0];
 	std::string modes, changes;
 	char mask[128] = {0};
-	SwitchFlag prevSwitchFlag = static_cast<SwitchFlag>(-1);
+	SwitchFlag prevSwitchFlag = NONE;
 	bool unknownMode = 0, needMoreParams = 0;
 	if (s.isNickname())
 	{
@@ -228,14 +228,13 @@ int IrcServer::mode(User &u, const Message &m)
 		if (changes.size())
 		{
 			MessageBuilder r(u.nickname(), m.command());
-			r << u.nickname() << changes;
+			r << c->name() << changes;
 			while (changeParams.size())
 			{
 				r << changeParams.front();
 				changeParams.pop_front();
 			}
 			const std::string s = r.str();
-			u.writeLine(s);
 			network.msgToChan(c, r.str());
 		}
 	}

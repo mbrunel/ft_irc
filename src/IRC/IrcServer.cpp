@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/31 12:00:44 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/05/31 14:08:34 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,19 @@ IrcServer::IrcServer()
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
+	userCommands["LIST"] = &IrcServer::list;
 	userCommands["MODE"] = &IrcServer::mode;
 	userCommands["MOTD"] = &IrcServer::motd;
+	userCommands["NAMES"] = &IrcServer::names;
 	userCommands["NICK"] = &IrcServer::nick;
-	userCommands["PART"] = &IrcServer::part;
-	userCommands["PRIVMSG"] = &IrcServer::privmsg;
-	userCommands["TOPIC"] = &IrcServer::topic;
-	userCommands["USER"] = &IrcServer::user;
 	userCommands["OPER"] = &IrcServer::oper;
+	userCommands["PART"] = &IrcServer::part;
 	userCommands["PING"] = &IrcServer::ping;
 	userCommands["PONG"] = &IrcServer::pong;
+	userCommands["PRIVMSG"] = &IrcServer::privmsg;
 	userCommands["TIME"] = &IrcServer::time;
-	userCommands["NAMES"] = &IrcServer::names;
+	userCommands["TOPIC"] = &IrcServer::topic;
+	userCommands["USER"] = &IrcServer::user;
 }
 
 IrcServer::~IrcServer() {}
