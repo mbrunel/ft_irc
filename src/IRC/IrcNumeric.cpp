@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/31 14:06:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/02 13:27:49 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,6 +315,46 @@ namespace IrcReply
 		return (IrcNumeric(RPL_INVITING, channel + ' ' + nickname));
 	}
 
+	const IrcNumeric invitelist(const std::string &channel, const std::string &invitemask)
+	{
+		return (IrcNumeric(RPL_INVITELIST, channel + ' ' + invitemask));
+	}
+
+	const IrcNumeric endofinvitelist(const std::string &channel)
+	{
+		return (IrcNumeric(RPL_ENDOFINVITELIST, channel + " :End of channel invite list"));
+	}
+
+	const IrcNumeric exceptlist(const std::string &channel, const std::string &exceptionmask)
+	{
+		return (IrcNumeric(RPL_EXCEPTLIST, channel + ' ' + exceptionmask));
+	}
+
+	const IrcNumeric endofexceptlist(const std::string &channel)
+	{
+		return (IrcNumeric(RPL_ENDOFEXCEPTLIST, channel + " :End of channel exception list"));
+	}
+
+	const IrcNumeric namreply(const std::string &names)
+	{
+		return (IrcNumeric(RPL_NAMREPLY, names));
+	}
+
+	const IrcNumeric endofnames(const std::string &name)
+	{
+		return (IrcNumeric(RPL_ENDOFNAMES, name + " :End of NAMES list"));
+	}
+
+	const IrcNumeric banlist(const std::string &channel, const std::string &banmask)
+	{
+		return (IrcNumeric(RPL_BANLIST, channel + ' ' + banmask));
+	}
+
+	const IrcNumeric endofbanlist(const std::string &channel)
+	{
+		return (IrcNumeric(RPL_ENDOFBANLIST, channel + " :End of channel ban list"));
+	}
+
 	const IrcNumeric motd(const std::string &text)
 	{
 		return (IrcNumeric(RPL_MOTD, ":- " + text));
@@ -334,6 +374,7 @@ namespace IrcReply
 	{
 		return (IrcNumeric(RPL_YOUREOPER, "You are now an IRC operator"));
 	}
+
 	const IrcNumeric time()
 	{
 		char stamp[80];
@@ -342,13 +383,5 @@ namespace IrcReply
 		::time(&rawtime);
 		strftime(stamp, 80, "%x - %I:%M:%S", localtime(&rawtime));
 		return (IrcNumeric(RPL_TIME, stamp));
-	}
-	const IrcNumeric namreply(const std::string &names)
-	{
-		return (IrcNumeric(RPL_NAMREPLY, names));
-	}
-	const IrcNumeric endofnames(const std::string &name)
-	{
-		return (IrcNumeric(RPL_ENDOFNAMES, name + " :End of NAMES list"));
 	}
 }
