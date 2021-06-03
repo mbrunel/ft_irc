@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/31 14:08:34 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/03 06:33:34 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ IrcServer::IrcServer()
 	userCommands["PING"] = &IrcServer::ping;
 	userCommands["PONG"] = &IrcServer::pong;
 	userCommands["PRIVMSG"] = &IrcServer::privmsg;
+	userCommands["QUIT"] = &IrcServer::quit;
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
@@ -63,22 +64,26 @@ void IrcServer::run() throw()
 		TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{
-			// Add check if connection is an authorized server
 			User *u = new User(newSocket, UserRequirement::ALL_EXCEPT_PASS);
 			writeMessage(*u, "NOTICE", "Connection established");
 			network.add(u);
 		}
+		Police();
 		TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()))
 		{
-			try { if (!socket->IO()){ disconnect(socket); continue ; } }
-			catch (std::exception &e) { log() << e.what() << std::endl; disconnect(socket); continue ; }
+			try { if (!socket->IO()) { disconnect(socket); continue ; } }
+			catch (std::exception &e) {
+				log() << e.what() << std::endl;
+				writeError(socket, "io failed");
+				disconnect(socket);
+				continue ;
+			}
 			std::string line;
 			if (!socket->readLine(line))
 				continue ;
 			exec(network.getBySocket(socket), Message(line));
 		}
-		Police();
 	}
 }
 
@@ -103,8 +108,7 @@ void IrcServer::disconnect(TcpSocket *socket) throw()
 void IrcServer::disconnect(User *connection) throw()
 {
 	network.remove(connection);
-	srv.disconnect(connection->socket());
-	delete (connection);
+	network.newZombie(connection);
 }
 
 void IrcServer::disconnect(Server *connection) throw()
@@ -210,10 +214,24 @@ void IrcServer::writeWelcome(User &u)
 	writeMotd(u);
 }
 
+void IrcServer::writeError(TcpSocket *s, std::string reason)
+{
+	s->writeLine(":" + config.servername + " ERROR :" + reason);
+}
+
 void IrcServer::Police()
 {
 	static time_t ptime = 0;
 	time_t ctime = ::time(NULL);
+	BasicConnection *z;
+
+	while ((z = network.nextZombie()))
+	{
+		log() << "HOP" << std::endl;
+		z->socket()->IO();
+		srv.disconnect(z->socket());
+		delete z;
+	}
 	if (ctime - ptime < 5)
 		return ;
 	ptime = ctime;
@@ -222,7 +240,7 @@ void IrcServer::Police()
 		it++;
 		if (c->pongExpected() && ctime - c->clock() > config.pong)
 		{
-		//	c->writeLine(":" + config.servername + " ERROR :Closing Link: (Ping Timeout)"); can't send msg before disconnection
+			writeError(c->socket(), "Ping timeout");
 			log() << "A connection has not pong in time" << std::endl;
 			disconnect(c->socket());
 		}

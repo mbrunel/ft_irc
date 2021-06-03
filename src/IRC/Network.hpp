@@ -6,13 +6,14 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:16 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/21 15:40:14 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/03 06:04:56 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <assert.h>
 #include <map>
+#include <list>
 #include "Channel.hpp"
 #include "RemoteServer.hpp"
 #include "Config.hpp"
@@ -25,6 +26,7 @@ class Network
 	typedef std::map<std::string, Server *>				ServerMap;
 	typedef std::map<std::string, Channel *>			ChannelMap;
 	typedef std::map<std::string, Oper>					OperMap;
+	typedef std::list<BasicConnection *>				ZombieList;
 
 	Network();
 	~Network() throw();
@@ -49,6 +51,8 @@ class Network
 	void				remove(const Channel *chan) throw();
 	void				setOpers(OperMap opers);
 	Oper				*getOper(std::string login);
+	void				newZombie(BasicConnection *);
+	BasicConnection		*nextZombie();
 
   private:
 	ConnectionMap	_connections;
@@ -56,6 +60,8 @@ class Network
 	ServerMap		_servers;
 	ChannelMap		_channels;
 	OperMap			_opers;
+	ZombieList		_zombies;
+
 
 	Network(const Network &);
 	Network &operator=(const Network &);
