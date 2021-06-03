@@ -6,13 +6,16 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 19:24:30 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/26 13:30:08 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/02 13:36:03 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cstring>
 #include "Param.hpp"
 #include "Parser.hpp"
+
+Param::Param()
+{}
 
 Param::Param(const std::string &value) :
 std::string(value)
@@ -51,7 +54,7 @@ bool Param::isKey() const
 {
 	Context	c(*this);
 
-	while (c.distance() < 24 && *c && !!std::strchr(" \f\t\v", *c))
+	while (c.distance() < 24 && *c && !std::strchr(" \f\t\v", *c))
 		++c;
 	return (c.distance() > 0 && !*c);
 }

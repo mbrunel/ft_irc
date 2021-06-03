@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/31 14:07:20 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/02 13:26:53 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,14 @@ enum IrcNumericCode
 	RPL_LISTEND = 323,
 	RPL_CHANNELMODEIS = 324,
 	RPL_INVITING = 341,
+	RPL_INVITELIST = 346,
+	RPL_ENDOFINVITELIST =  347,
+	RPL_EXCEPTLIST = 348,
+	RPL_ENDOFEXCEPTLIST = 349,
 	RPL_NAMREPLY = 353,
 	RPL_ENDOFNAMES = 366,
+	RPL_BANLIST = 367,
+	RPL_ENDOFBANLIST = 368,
 	RPL_MOTD = 372,
 	RPL_MOTDSTART = 375,
 	RPL_ENDOFMOTD = 376,
@@ -163,11 +169,17 @@ namespace IrcReply
 	const IrcNumeric listend();
 	const IrcNumeric channelmodeis(const std::string &channel, const std::string &modes);
 	const IrcNumeric inviting(const std::string &channel, const std::string &nickname);
+	const IrcNumeric invitelist(const std::string &channel, const std::string &invitemask);
+	const IrcNumeric endofinvitelist(const std::string &channel);
+	const IrcNumeric exceptlist(const std::string &channel, const std::string &exceptionmask);
+	const IrcNumeric endofexceptlist(const std::string &channel);
+	const IrcNumeric namreply(const std::string &names);
+	const IrcNumeric endofnames(const std::string &name);
+	const IrcNumeric banlist(const std::string &channel, const std::string &banmask);
+	const IrcNumeric endofbanlist(const std::string &channel);
 	const IrcNumeric motd(const std::string &text);
 	const IrcNumeric motdstart(const std::string &servername);
 	const IrcNumeric endofmotd();
 	const IrcNumeric youreoper();
 	const IrcNumeric time();
-	const IrcNumeric namreply(const std::string &names);
-	const IrcNumeric endofnames(const std::string &name);
 }
