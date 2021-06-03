@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/21 17:42:21 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/03 06:00:59 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,4 +143,18 @@ Oper *Network::getOper(std::string login)
 	if (it == _opers.end())
 		return (NULL);
 	return &it->second;
+}
+
+void Network::newZombie(BasicConnection *z)
+{
+	_zombies.push_back(z);
+}
+
+BasicConnection *Network::nextZombie()
+{
+	if (_zombies.empty())
+		return NULL;
+	BasicConnection *z = _zombies.front();
+	_zombies.pop_front();
+	return z;
 }
