@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/03 06:33:34 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/04 12:14:59 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,13 @@
 IrcServerConfig::IrcServerConfig(){}
 
 IrcServerConfig::IrcServerConfig(Config &cfg):
-version(cfg.version()),
-servername(cfg.servername()),
-maxChannels(cfg.maxChannels()),
-ping(cfg.ping()),
-pong(cfg.pong()),
-flood(cfg.floodControl())
-{
-	std::ifstream f(cfg.motdfile().c_str(), std::ios_base::in);
-	std::string line;
-	while (std::getline(f, line))
-		motd.push_back(line);
-}
+	version(cfg.version()),
+	servername(cfg.servername()),
+	maxChannels(cfg.maxChannels()),
+	ping(cfg.ping()),
+	pong(cfg.pong()),
+	flood(cfg.floodControl()),
+	motdfile(cfg.motdfile()) {}
 
 IrcServer::IrcServer()
 {
@@ -252,6 +247,11 @@ void IrcServer::Police()
 			log() << "Ping has been sent" << std::endl;
 		}
 	}
+	std::ifstream f(config.motdfile.c_str(), std::ios_base::in);
+	std::string line;
+	config.motd.clear();
+	while (std::getline(f, line))
+		config.motd.push_back(line);
 }
 
 bool IrcServer::floodControl(User &u)
