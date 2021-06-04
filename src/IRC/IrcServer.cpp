@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 14:39:51 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 14:56:03 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,7 +223,7 @@ void IrcServer::writeWelcome(User &u)
 
 void IrcServer::writeError(TcpSocket *s, std::string reason)
 {
-	s->writeLine(":" + config.servername + " ERROR :" + reason);
+	s->writeLine((MessageBuilder(config.servername, "ERROR") << reason).str());
 }
 
 void IrcServer::Police()
