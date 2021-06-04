@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 17:07:47 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 17:27:52 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 	}
 	if (notifyUserQuit)
 		u.writeLine(quitMessage);
-	errorReason << "Closing Link: " << u.socket()->host() << " (" << reason << ')';
+	errorReason << "Closing Link: " << u.socket()->host() << " (Client Quit)";
 	writeError(u.socket(), errorReason.str());
 	network.remove(&u);
 	network.newZombie(&u);
