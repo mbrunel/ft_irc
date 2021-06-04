@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/03 06:33:34 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/04 11:47:09 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,8 +227,7 @@ void IrcServer::Police()
 
 	while ((z = network.nextZombie()))
 	{
-		log() << "HOP" << std::endl;
-		z->socket()->IO();
+		try { z->socket()->IO(); } catch(std::exception &e) {}
 		srv.disconnect(z->socket());
 		delete z;
 	}
