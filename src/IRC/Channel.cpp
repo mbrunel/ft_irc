@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/04 13:23:37 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 16:59:48 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,12 +127,19 @@ bool Channel::isLocal() const
 	return (_type == LOCAL);
 }
 
-void Channel::send(const std::string &msg, BasicConnection *origin) const
+void Channel::markAllMembers()
+{
+	for (MemberMap::const_iterator i = _members.begin(); i != _members.end(); ++i)
+		i->first->mark();
+}
+
+void Channel::send(const std::string &msg, BasicConnection *origin, bool useReceipt) const
 {
 	for (MemberMap::const_iterator i = _members.begin(); i != _members.end(); ++i)
 	{
 		User *user(i->first);
-		if (!user->hopcount() && (!origin || user->socket() != origin->socket()))
+		if (!user->hopcount() && (!origin || user->socket() != origin->socket()) &&
+		(!useReceipt || !user->umode().isSet(UserMode::MARK)))
 			user->writeLine(msg);
 	}
 }

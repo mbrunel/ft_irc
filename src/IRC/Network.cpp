@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Network.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/03 06:00:59 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/04 17:00:13 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,9 @@ void Network::msgToAll(const std::string &msg, BasicConnection *origin)
 	msgToNetwork(msg, origin);
 }
 
-void Network::msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin)
+void Network::msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin, bool useReceipt)
 {
-	channel->send(msg, origin);
+	channel->send(msg, origin, useReceipt);
 	if (!channel->isLocal())
 		msgToNetwork(msg, origin);
 }
@@ -133,6 +133,12 @@ void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
 		if (!server->hopcount() && (!origin || server->socket() != origin->socket()))
 			server->writeLine(msg);
 	}
+}
+
+void Network::resetUserReceipt()
+{
+	for (UserMap::const_iterator i = _users.begin(); i != _users.end(); ++i)
+		i->second->unmark();
 }
 
 void Network::setOpers(OperMap o) { _opers = o; }

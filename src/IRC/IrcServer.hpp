@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 14:35:20 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 16:31:15 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ class IrcServer
 	int	topic(User &sender, const Message &msg);
 	int	user(User &sender, const Message &msg);
 
-	void	disconnect(TcpSocket *socket) throw();
-	void	disconnect(User *connection) throw();
-	void	disconnect(Server *connection) throw();
+	void	disconnect(TcpSocket *socket, const std::string &reason) throw();
+	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit) throw();
+	void	disconnect(Server &server, const std::string &reason) throw();
 	int		exec(BasicConnection *sender, const Message &msg);
 	bool	match(const std::string &mask, const std::string &str);
 	void	writeMessage(User &dst, const std::string &command, const std::string &content);

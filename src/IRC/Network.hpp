@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Network.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:16 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/03 06:04:56 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/04 16:59:38 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,12 @@ class Network
 	Server				*getByServername(const std::string &servername);
 	Channel				*getByChannelname(const std::string &channelname);
 	void				msgToAll(const std::string &msg, BasicConnection *origin = NULL);
-	void				msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin = NULL);
+	void				msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin = NULL, bool useReceipt = false);
 	void				msgToNetwork(const std::string &msg, BasicConnection *origin = NULL);
 	void				remove(User *user) throw();
 	void				remove(Server *srv) throw();
 	void				remove(const Channel *chan) throw();
+	void				resetUserReceipt();
 	void				setOpers(OperMap opers);
 	Oper				*getOper(std::string login);
 	void				newZombie(BasicConnection *);

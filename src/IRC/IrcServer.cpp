@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 14:56:03 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 17:07:47 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,16 @@ void IrcServer::run() throw()
 		TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()))
 		{
-			try { if (!socket->IO()) { disconnect(socket); continue ; } }
+			try {
+				if (!socket->IO())
+				{
+					disconnect(socket, "Remote host closed the connection");
+					continue ;
+				}
+			}
 			catch (std::exception &e) {
 				log() << e.what() << std::endl;
-				writeError(socket, "io failed");
-				disconnect(socket);
+				disconnect(socket, "IO exception");
 				continue ;
 			}
 			std::string line;
@@ -103,27 +108,57 @@ void IrcServer::setConfig(Config &cfg)
 	config = IrcServerConfig(cfg);
 }
 
-void IrcServer::disconnect(TcpSocket *socket) throw()
+void IrcServer::disconnect(TcpSocket *socket, const std::string &reason) throw()
 {
 	BasicConnection *c = network.getBySocket(socket);
 	if (c->type() == BasicConnection::USER)
-		disconnect(static_cast<User *>(c));
+		disconnect(*static_cast<User *>(c), reason, false);
 	else if (c->type() == BasicConnection::SERVER)
-		disconnect(static_cast<RemoteServer *>(c));
+		disconnect(*static_cast<RemoteServer *>(c), reason);
 }
 
-void IrcServer::disconnect(User *connection) throw()
+void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQuit) throw()
 {
-	network.remove(connection);
-	network.newZombie(connection);
+	const std::string quitMessage = (MessageBuilder(u.prefix(), "QUIT") << reason).str();
+	std::stringstream errorReason;
+
+	if (u.joinedChannels())
+	{
+		network.resetUserReceipt();
+		const Network::ChannelMap &channels = network.channels();
+		Network::ChannelMap::const_iterator i = channels.begin();
+		while (i != channels.end())
+		{
+			Channel *c = i->second;
+			++i;
+			if (c->findMember(&u))
+			{
+				c->delMember(&u);
+				if (c->count())
+				{
+					network.msgToChan(c, quitMessage, NULL, true);
+					c->markAllMembers();
+				}
+				else
+					network.remove(c);
+			}
+		}
+	}
+	if (notifyUserQuit)
+		u.writeLine(quitMessage);
+	errorReason << "Closing Link: " << u.socket()->host() << " (" << reason << ')';
+	writeError(u.socket(), errorReason.str());
+	network.remove(&u);
+	network.newZombie(&u);
 }
 
-void IrcServer::disconnect(Server *connection) throw()
+void IrcServer::disconnect(Server &s, const std::string &reason) throw()
 {
-	network.remove(connection);
+	(void)reason;
+	network.remove(&s);
 	// Must remove all Users using same socket too
-	srv.disconnect(connection->socket());
-	delete (connection);
+	srv.disconnect(s.socket());
+	delete (&s);
 }
 
 int IrcServer::exec(BasicConnection *sender, const Message &msg)
@@ -246,9 +281,8 @@ void IrcServer::Police()
 		it++;
 		if (c->pongExpected() && ctime - c->clock() > config.pong)
 		{
-			writeError(c->socket(), "Ping timeout");
 			log() << "A connection has not pong in time" << std::endl;
-			disconnect(c->socket());
+			disconnect(c->socket(), "Ping timeout");
 		}
 		else if (!c->pongExpected() && ctime - c->clock() > config.ping)
 		{

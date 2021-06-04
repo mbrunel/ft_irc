@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/24 12:32:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 16:51:42 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,21 @@ bool User::isRegistered() const
 	return (!_requirements.flags());
 }
 
+void User::mark()
+{
+	_umode.set(UserMode::MARK);
+}
+
 RemoteServer *User::makeRemoteServer(int hopcount)
 {
 	//return (new RemoteServer(_socket, hopcount));
 	(void)hopcount;
 	return (NULL);
+}
+
+void User::unmark()
+{
+	_umode.unset(UserMode::MARK);
 }
 
 void User::unsetRequirement(UserRequirement::Flag requirement)
