@@ -16,18 +16,13 @@
 IrcServerConfig::IrcServerConfig(){}
 
 IrcServerConfig::IrcServerConfig(Config &cfg):
-version(cfg.version()),
-servername(cfg.servername()),
-maxChannels(cfg.maxChannels()),
-ping(cfg.ping()),
-pong(cfg.pong()),
-flood(cfg.floodControl())
-{
-	std::ifstream f(cfg.motdfile().c_str(), std::ios_base::in);
-	std::string line;
-	while (std::getline(f, line))
-		motd.push_back(line);
-}
+	version(cfg.version()),
+	servername(cfg.servername()),
+	maxChannels(cfg.maxChannels()),
+	ping(cfg.ping()),
+	pong(cfg.pong()),
+	flood(cfg.floodControl()),
+	motdfile(cfg.motdfile()) {}
 
 IrcServer::IrcServer()
 {
@@ -195,13 +190,15 @@ int IrcServer::writeNum(User &dst, const IrcNumeric &response)
 
 void IrcServer::writeMotd(User &u)
 {
-	writeNum(u, IrcReply::motdstart(config.servername));
-	if (config.motd.size())
+	if (!config.motd.size())
 	{
-		writeNum(u, IrcReply::motd(config.motd.front()));
-		for (std::list<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
-			writeNum(u, IrcReply::motd(*it));
+		writeNum(u, IrcError::nomotd());
+		return ;
 	}
+	writeNum(u, IrcReply::motdstart(config.servername));
+	writeNum(u, IrcReply::motd(config.motd.front()));
+	for (std::list<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
+		writeNum(u, IrcReply::motd(*it));
 	writeNum(u, IrcReply::endofmotd());
 }
 
@@ -250,6 +247,15 @@ void IrcServer::Police()
 			c->pongExpected() = true;
 			log() << "Ping has been sent" << std::endl;
 		}
+	}
+	std::ifstream f(config.motdfile.c_str(), std::ios_base::in);
+	std::string line;
+	config.motd.clear();
+	while (std::getline(f, line))
+	{
+		if (line.size() > 80)
+			line.resize(80);
+		config.motd.push_back(line);
 	}
 }
 

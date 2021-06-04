@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 17:53:40 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/24 19:28:49 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/06/04 11:58:27 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int IrcServer::ping(User &u, const Message &m) //for when a client sends a ping 
 {
 	if (!m.params().size())
 		return (writeNum(u, IrcError::needmoreparams("PING")));
-	u.writeLine("PONG " + m.params().front());
+	u.writeLine((MessageBuilder(config.servername, "PONG") << m.params()[0]).str());
 	return true;
 }
 
