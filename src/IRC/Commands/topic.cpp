@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/27 15:10:36 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 19:28:42 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/04 13:57:02 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IrcNumeric.hpp"
 #include "IrcServer.hpp"
+#include "MessageBuilder.hpp"
 
 int IrcServer::topic(User &u, const Message &m)
 {
@@ -24,27 +24,26 @@ int IrcServer::topic(User &u, const Message &m)
 
 	if (target.isChannel() && (c = network.getByChannelname(target)))
 	{
-		const MemberMode *mode(c->findMember(&u));
-		if (mode)
+		const ChannelMode &cm = c->mode();
+		const MemberMode *mm = c->findMember(&u);
+		if (m.params().size() > 1)
 		{
-			if (m.params().size() > 1)
-			{
-				if (c->mode().isSet(ChannelMode::TOPIC_SETTABLE_BY_CHANOP) &&
-				!mode->isSet(MemberMode::OPERATOR))
-					writeNum(u, IrcError::chanoprisneeded(target));
-				else
-				{
-					c->setTopic(m.params()[1]);
-					network.msgToChan(c, u.prefix() + ' ' + m.command() + ' ' + target + " :" + c->topic());
-				}
-			}
-			else if (c->topic().size())
-				u.writeLine(':' + config.servername + " 332 " + target + " :" + c->topic());
+			if (!mm)
+				writeNum(u, IrcError::notonchannel(target));
+			else if (!mm->isSet(MemberMode::OPERATOR) && cm.isSet(ChannelMode::TOPIC_SETTABLE_BY_CHANOP))
+				writeNum(u, IrcError::chanoprisneeded(target));
 			else
-				u.writeLine(':' + config.servername + " 331 " + target + " :No topic is set");
+			{
+				c->setTopic(m.params()[1]);
+				network.msgToChan(c, (MessageBuilder(u.prefix(), m.command()) << target << c->topic()).str());
+			}
 		}
-		else
+		else if (!mm && cm.isSet(ChannelMode::SECRET))
 			writeNum(u, IrcError::notonchannel(target));
+		else if (c->topic().size())
+			writeNum(u, IrcReply::topic(target, c->topic()));
+		else
+			writeNum(u, IrcReply::notopic(target));
 	}
 	else
 		writeNum(u, IrcError::nosuchchannel(target));

@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/02 13:27:49 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 13:41:47 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,6 +308,16 @@ namespace IrcReply
 	const IrcNumeric channelmodeis(const std::string &channel, const std::string &modes)
 	{
 		return (IrcNumeric(RPL_CHANNELMODEIS, channel + " +" + modes));
+	}
+
+	const IrcNumeric notopic(const std::string &channel)
+	{
+		return (IrcNumeric(RPL_NOTOPIC, channel + " :No topic is set"));
+	}
+
+	const IrcNumeric topic(const std::string &channel, const std::string &topic)
+	{
+		return (IrcNumeric(RPL_TOPIC, channel + " :" + topic));
 	}
 
 	const IrcNumeric inviting(const std::string &channel, const std::string &nickname)

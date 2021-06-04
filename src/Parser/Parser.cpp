@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 18:19:41 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/21 17:38:54 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 13:23:23 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ namespace Parser
 	bool asChannel(Context &o, std::string &s)
 	{
 		o.resetDistance();
-		if (!strchr("#&!+", *o))
+		if (!strchr("#&+", *o))
 			return (false);
 		while ((++o).distance() < 50 && *o && *o != ',' && *o != '\b');
 		if (o.distance() < 2)

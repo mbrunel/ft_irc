@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/24 12:28:48 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 16:50:46 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,9 @@ public:
 	virtual ~User();
 
 	bool					isRegistered() const;
+	void					mark();
 	RemoteServer			*makeRemoteServer(int hopcount);
+	void					unmark();
 	void					unsetRequirement(UserRequirement::Flag requirement);
 	const UserRequirement	&requirements() const;
 	const std::string		&realname() const;
