@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 12:14:59 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/04 13:08:43 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,13 +190,15 @@ int IrcServer::writeNum(User &dst, const IrcNumeric &response)
 
 void IrcServer::writeMotd(User &u)
 {
-	writeNum(u, IrcReply::motdstart(config.servername));
-	if (config.motd.size())
+	if (!config.motd.size())
 	{
-		writeNum(u, IrcReply::motd(config.motd.front()));
-		for (std::list<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
-			writeNum(u, IrcReply::motd(*it));
+		writeNum(u, IrcError::nomotd());
+		return ;
 	}
+	writeNum(u, IrcReply::motdstart(config.servername));
+	writeNum(u, IrcReply::motd(config.motd.front()));
+	for (std::list<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
+		writeNum(u, IrcReply::motd(*it));
 	writeNum(u, IrcReply::endofmotd());
 }
 
@@ -251,7 +253,11 @@ void IrcServer::Police()
 	std::string line;
 	config.motd.clear();
 	while (std::getline(f, line))
+	{
+		if (line.size() > 80)
+			line.resize(80);
 		config.motd.push_back(line);
+	}
 }
 
 bool IrcServer::floodControl(User &u)
