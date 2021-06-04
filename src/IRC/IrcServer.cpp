@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 11:47:09 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/04 14:14:29 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ void IrcServer::writeWelcome(User &u)
 	writeNum(u, IrcReply::welcome(u.prefix()));
 	writeNum(u, IrcReply::yourhost(config.servername, config.version));
 	writeNum(u, IrcReply::created("in the past (for sure)"));
-	writeNum(u, IrcReply::myinfo(config.servername, config.version, "<available user modes>", "<available channel modes>"));
+	writeNum(u, IrcReply::myinfo(config.servername, config.version, "Oaiorsw", "IOabeiklmnopqrstv"));
 	writeMotd(u);
 }
 
