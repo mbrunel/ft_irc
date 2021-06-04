@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/31 13:58:32 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 13:23:37 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ const unsigned short ChannelMode::_lowerFlagTable[] =
 Channel::Channel(const std::string &name) :
 _name(name), _type(GLOBAL)
 {
-	const char *types = "#&!+";
+	const char *types = "#&+";
 	if (name.size())
 		_type = static_cast<Type>(strchrnul(types, name[0]) - types);
 }

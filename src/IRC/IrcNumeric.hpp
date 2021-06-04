@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/02 13:26:53 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 13:40:45 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ enum IrcNumericCode
 	RPL_LIST = 322,
 	RPL_LISTEND = 323,
 	RPL_CHANNELMODEIS = 324,
+	RPL_NOTOPIC = 331,
+	RPL_TOPIC = 332,
 	RPL_INVITING = 341,
 	RPL_INVITELIST = 346,
 	RPL_ENDOFINVITELIST =  347,
@@ -168,6 +170,8 @@ namespace IrcReply
 	const IrcNumeric list(const std::string &channel, size_t visible, const std::string &topic);
 	const IrcNumeric listend();
 	const IrcNumeric channelmodeis(const std::string &channel, const std::string &modes);
+	const IrcNumeric notopic(const std::string &channel);
+	const IrcNumeric topic(const std::string &channel, const std::string &topic);
 	const IrcNumeric inviting(const std::string &channel, const std::string &nickname);
 	const IrcNumeric invitelist(const std::string &channel, const std::string &invitemask);
 	const IrcNumeric endofinvitelist(const std::string &channel);
