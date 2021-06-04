@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/03 06:27:43 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/04 14:35:20 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,12 @@ class IrcServer
 	typedef std::map<std::string, ServerCommandPointer> serverCommandsMap;
 	typedef std::vector<Param> Params;
 
-	IrcServerConfig					config;
-	TcpServer						srv;
-	Network							network;
-	userCommandsMap					userCommands;
-	serverCommandsMap				serverCommands;
+	std::string			creationDate;
+	IrcServerConfig		config;
+	TcpServer			srv;
+	Network				network;
+	userCommandsMap		userCommands;
+	serverCommandsMap	serverCommands;
 
 	int	away(User &sender, const Message &msg);
 	int	invite(User &sender, const Message &msg);

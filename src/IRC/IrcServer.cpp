@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 14:14:29 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/04 14:39:51 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ flood(cfg.floodControl())
 
 IrcServer::IrcServer()
 {
+	time_t	current;
+	char	buf[80];
+
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
@@ -48,6 +51,10 @@ IrcServer::IrcServer()
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
+
+	::time(&current);
+	strftime(buf, sizeof(buf), "%a %b %d %Y at %H:%M:%S %Z", localtime(&current));
+	creationDate = buf;
 }
 
 IrcServer::~IrcServer() {}
@@ -209,7 +216,7 @@ void IrcServer::writeWelcome(User &u)
 {
 	writeNum(u, IrcReply::welcome(u.prefix()));
 	writeNum(u, IrcReply::yourhost(config.servername, config.version));
-	writeNum(u, IrcReply::created("in the past (for sure)"));
+	writeNum(u, IrcReply::created(creationDate));
 	writeNum(u, IrcReply::myinfo(config.servername, config.version, "Oaiorsw", "IOabeiklmnopqrstv"));
 	writeMotd(u);
 }
