@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcNumeric.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/04 13:40:45 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/08 18:49:10 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ namespace IrcError
 	const IrcNumeric norecipient(const std::string &command);
 	const IrcNumeric notexttosend();
 	const IrcNumeric notoplevel(const std::string &mask);
+	const IrcNumeric badmask(const std::string &mask);
 	const IrcNumeric wildtoplevel(const std::string &mask);
 	const IrcNumeric unknowncommand(const std::string &command);
 	const IrcNumeric nomotd();

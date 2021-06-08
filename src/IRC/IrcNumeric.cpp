@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcNumeric.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 13:41:47 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/08 19:23:37 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,11 @@ namespace IrcError
 	const IrcNumeric wildtoplevel(const std::string &mask)
 	{
 		return (IrcNumeric(ERR_WILDTOPLEVEL, mask + " :Wildcard in top level domain"));
+	}
+
+	const IrcNumeric badmask(const std::string &mask)
+	{
+		return (IrcNumeric(ERR_BADMASK, mask + "Bad Server/host mask"));
 	}
 
 	const IrcNumeric unknowncommand(const std::string &command)
