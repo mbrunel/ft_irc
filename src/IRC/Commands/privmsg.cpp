@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/07 11:00:05 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/08 12:19:18 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ int IrcServer::privmsg(User &u, const Message &m)
 		{
 			User *receiver = network.getByNickname(*target);
 			if (!receiver)
-				writeNum(u, IrcError::nosuchnick(*target));
-			else
 			{
-				if (receiver->umode().isSet(UserMode::AWAY))
-					writeNum(u, IrcReply::away(receiver->nickname(), receiver->awayReason()));
-				receiver->writeLine((MessageBuilder(u.prefix(), m.command()) << text).str());
+				writeNum(u, IrcError::nosuchnick(*target));
+				continue ;
 			}
+			if (receiver->umode().isSet(UserMode::AWAY))
+				writeNum(u, IrcReply::away(receiver->nickname(), receiver->awayReason()));
+			receiver->writeLine((MessageBuilder(u.prefix(), m.command()) << text).str());
 		}
 		else if (target->isChannel())
 		{
@@ -48,12 +48,12 @@ int IrcServer::privmsg(User &u, const Message &m)
 		}
 		else if (target->size() > 0)
 		{
-			if (!u.umode().isSet(UserMode::OPERATOR))
-				writeNum(u, IrcError::nosuchnick(target->c_str()));
-			else
+			if (!u.umode().isSet(UserMode::OPERATOR) || (*target)[0] != '#')
 			{
-
+				writeNum(u, IrcError::nosuchnick(target->c_str());
+				continue ;
 			}
+			for 
 		}
 	}
 	return (0);
