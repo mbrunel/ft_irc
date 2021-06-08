@@ -31,60 +31,7 @@ int IrcServer::kick(User &u, const Message &m)
 		while (ic != channels.end())
 		{
 			Channel *c = ic->second;
-			if ((*i).isMask())
-			{
-				std::string cmask = (*i).mask();
-				if (IrcServer::match(cmask, c->name()))
-				{
-					MemberMode *mmode = c->findMember(&u);
-					if (!mmode)
-					{
-						writeNum(u, IrcError::notonchannel(c->name()));
-						++ic;
-						check = true;
-						continue;
-					}
-					if (!mmode->isSet(MemberMode::OPERATOR)
-							&& !mmode->isSet(MemberMode::CREATOR))
-					{
-						writeNum(u, IrcError::chanoprisneeded(c->name()));
-						++ic;
-						check = true;
-						continue;
-					}
-					std::vector<Param>::const_iterator iterUser = UserList.begin();
-					while (iterUser != UserList.end())
-					{
-						const Channel::MemberMap &members = c->members();
-						Channel::MemberMap::const_iterator im = members.begin();
-						while (im != members.end())
-						{
-
-							if ((*iterUser).isMask())
-							{
-								std::string umask = (*iterUser).mask();
-								if (IrcServer::match(umask, im->first->nickname()))
-								{
-									network.msgToChan(ic->second, messageHelper(ic, u, im, m));
-									c->delMember(im->first);
-									check = true;
-									break;
-								}
-							}
-							else if (im->first->nickname() == (*iterUser))
-							{
-								network.msgToChan(ic->second, messageHelper(ic, u, im, m));
-								c->delMember(im->first);
-								check = true;
-								break;
-							}
-							++im;
-						}
-						++iterUser;
-					}
-				}
-			}
-			else if ((*i) == c->name())
+			if ((*i) == c->name())
 			{
 				MemberMode *mmode = c->findMember(&u);
 				if (!mmode)
@@ -110,19 +57,7 @@ int IrcServer::kick(User &u, const Message &m)
 					Channel::MemberMap::const_iterator im = members.begin();
 					while (im != members.end())
 					{
-
-						if ((*iterUser).isMask())
-						{
-							std::string umask = (*iterUser).mask();
-							if (IrcServer::match(umask, im->first->nickname()))
-							{
-								network.msgToChan(ic->second, messageHelper(ic, u, im, m));
-								c->delMember(im->first);
-								check = true;
-								break;
-							}
-						}
-						else if (im->first->nickname() == (*iterUser))
+						if (im->first->nickname() == (*iterUser))
 						{
 							network.msgToChan(ic->second, messageHelper(ic, u, im, m));
 							c->delMember(im->first);
