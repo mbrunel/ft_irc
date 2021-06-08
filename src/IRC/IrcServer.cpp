@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/08 12:10:36 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/06/08 19:21:22 by mapapin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ IrcServer::IrcServer()
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
 	userCommands["KICK"] = &IrcServer::kick;
+	userCommands["LUSERS"] = &IrcServer::lusers;
 
 	::time(&current);
 	strftime(buf, sizeof(buf), "%a %b %d %Y at %H:%M:%S %Z", localtime(&current));
