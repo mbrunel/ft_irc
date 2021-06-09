@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/27 15:10:36 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/04 13:57:02 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/09 05:33:43 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int IrcServer::topic(User &u, const Message &m)
 			else
 			{
 				c->setTopic(m.params()[1]);
-				network.msgToChan(c, (MessageBuilder(u.prefix(), m.command()) << target << c->topic()).str());
+				c->send((MessageBuilder(u.prefix(), m.command()) << target << c->topic()).str());
 			}
 		}
 		else if (!mm && cm.isSet(ChannelMode::SECRET))

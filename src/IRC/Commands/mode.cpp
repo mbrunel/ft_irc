@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 11:48:50 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/02 14:27:17 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/09 05:37:16 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,6 @@ int IrcServer::mode(User &u, const Message &m)
 			r << u.nickname() << changes;
 			const std::string s = r.str();
 			u.writeLine(s);
-			network.msgToNetwork(s, &u);
 		}
 	}
 	else if (s.isChannel())
@@ -323,7 +322,7 @@ int IrcServer::mode(User &u, const Message &m)
 				changeParams.pop_front();
 			}
 			const std::string s = r.str();
-			network.msgToChan(c, r.str());
+			c->send(r.str());
 		}
 	}
 	else

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/08 19:21:22 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/06/09 16:33:16 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ IrcServer::IrcServer()
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NAMES"] = &IrcServer::names;
 	userCommands["NICK"] = &IrcServer::nick;
+	userCommands["NOTICE"] = &IrcServer::notice;
 	userCommands["OPER"] = &IrcServer::oper;
 	userCommands["PART"] = &IrcServer::part;
 	userCommands["PING"] = &IrcServer::ping;
@@ -133,7 +134,7 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 				c->delMember(&u);
 				if (c->count())
 				{
-					network.msgToChan(c, quitMessage, NULL, true);
+					c->send(quitMessage, NULL, true);
 					c->markAllMembers();
 				}
 				else

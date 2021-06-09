@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:40:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/08 15:53:38 by mapapin          ###   ########.fr       */
+/*   Updated: 2021/06/09 16:32:40 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int IrcServer::part(User &u, const Message &m)
 			msg << *chan;
 			if (m.params().size() > 1)
 				msg << m.params()[1];
-			network.msgToChan(c, msg.str());
+			c->send()(msg.str());
 			c->delMember(&u);
 			if (!c->count())
 				network.remove(c);
