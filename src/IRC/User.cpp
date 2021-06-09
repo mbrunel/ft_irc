@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/09 11:29:01 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/09 16:52:39 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,6 @@ void User::updatePrefix()
 {
 	_prefix = nickname();
 	if (_username.size())
-		_prefix += "~" + username();
+		_prefix += "!" + username();
 	_prefix += "@" + _socket->host();
 }
