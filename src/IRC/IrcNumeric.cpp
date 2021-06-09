@@ -6,11 +6,12 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/09 05:54:58 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/09 16:35:14 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sstream>
+#include <string>
 #include "IrcNumeric.hpp"
 
 IrcNumeric::IrcNumeric(const IrcNumericCode code, const std::string &content) :
@@ -398,5 +399,40 @@ namespace IrcReply
 		::time(&rawtime);
 		strftime(stamp, 80, "%x - %I:%M:%S", localtime(&rawtime));
 		return (IrcNumeric(RPL_TIME, stamp));
+	}
+
+	const IrcNumeric lusersclient(int nb)
+	{
+		std::ostringstream ss;
+		ss << nb;
+		return (IrcNumeric(RPL_LUSERCLIENT, ":There are " + ss.str() + " users on 1 server"));	
+	}
+
+	const IrcNumeric lusersop(int nb)
+	{
+		std::ostringstream ss;
+		ss << nb;
+		return (IrcNumeric(RPL_LUSEROP, ss.str() + " :operator(s) online"));
+	}
+
+	const IrcNumeric lusersunknown(int nb)
+	{
+		std::ostringstream ss;
+		ss << nb;
+		return (IrcNumeric(RPL_LUSERUNKNOWN, ss.str() + " :unknown connection(s)"));
+	}
+
+	const IrcNumeric luserschannels(int nb)
+	{
+		std::ostringstream ss;
+		ss << nb;
+		return (IrcNumeric(RPL_LUSERCHANNELS, ss.str() + " :channels formed"));
+	}
+
+	const IrcNumeric lusersme(int nb)
+	{
+		std::ostringstream ss;
+		ss << nb;
+		return (IrcNumeric(RPL_LUSERME, ":I have " + ss.str() + " clients and 1 server"));
 	}
 }

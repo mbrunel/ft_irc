@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 15:25:14 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/08 18:49:10 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/09 16:35:01 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,11 @@ enum IrcNumericCode
 	RPL_MYINFO = 4,
 	RPL_BOUNCE = 5,
 	RPL_UMODEIS = 221,
+	RPL_LUSERCLIENT = 251,
+	RPL_LUSEROP = 252,
+	RPL_LUSERUNKNOWN = 253,
+	RPL_LUSERCHANNELS = 254,
+	RPL_LUSERME = 255,
 	RPL_AWAY = 301,
 	RPL_UNAWAY = 305,
 	RPL_NOWAWAY = 306,
@@ -187,4 +192,9 @@ namespace IrcReply
 	const IrcNumeric endofmotd();
 	const IrcNumeric youreoper();
 	const IrcNumeric time();
+	const IrcNumeric lusersclient(int nb);
+	const IrcNumeric lusersop(int nb);
+	const IrcNumeric lusersunknown(int nb);
+	const IrcNumeric luserschannels(int nb);
+	const IrcNumeric lusersme(int nb);
 }
