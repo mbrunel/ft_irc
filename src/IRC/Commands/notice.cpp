@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   privmsg.cpp                                        :+:      :+:    :+:   */
+/*   notice.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/07 11:00:05 by mbrunel          ###   ########.fr       */
+/*   Created: 2021/06/06 10:25:41 by mbrunel           #+#    #+#             */
+/*   Updated: 2021/06/06 10:36:06 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 #include "MessageBuilder.hpp"
 
-int IrcServer::privmsg(User &u, const Message &m)
+int IrcServer::notice(User &u, const Message &m)
 {
-	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
-	if (!m.params().size())
-		return (writeNum(u, IrcError::norecipient(m.command())));
-	if (m.params().size() < 2)
-		return (writeNum(u, IrcError::notexttosend()));
+	if (!u.isRegistered() || m.params().size() < 2)
+		return (1);
 	Params		targets(m.params()[0].split());
 	const Param	&text(m.params()[1]);
 
@@ -29,31 +25,18 @@ int IrcServer::privmsg(User &u, const Message &m)
 		if (target->isNickname())
 		{
 			User *receiver = network.getByNickname(*target);
-			if (!receiver)
-				writeNum(u, IrcError::nosuchnick(*target));
-			else
-			{
-				if (receiver->umode().isSet(UserMode::AWAY))
-					writeNum(u, IrcReply::away(receiver->nickname(), receiver->awayReason()));
+			if (receiver)
 				receiver->writeLine((MessageBuilder(u.prefix(), m.command()) << text).str());
-			}
 		}
 		else if (target->isChannel())
 		{
 			Channel *chan = network.getByChannelname(*target);
-			if (!chan)
-				writeNum(u, IrcError::nosuchchannel(*target));
-			else
+			if (chan)
 				network.msgToChan(chan, (MessageBuilder(u.prefix(), m.command()) << chan->name() << text).str(), &u);
 		}
 		else if (target->size() > 0)
 		{
-			if (!u.umode().isSet(UserMode::OPERATOR))
-				writeNum(u, IrcError::nosuchnick(target->c_str()));
-			else
-			{
-
-			}
+			u.writeLine("MASKS NOT SUPPORTED YET");
 		}
 	}
 	return (0);
