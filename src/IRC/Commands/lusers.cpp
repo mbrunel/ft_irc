@@ -15,6 +15,8 @@
 int     IrcServer::lusers(User &u, const Message &m)
 {
 	(void)m;
+	if (!u.isRegistered())
+		return (writeNum(u, IrcError::notregistered()));
     Network::UserMap umap = network.users();
     Network::UserMap::const_iterator ium = umap.begin();
     writeNum(u, IrcReply::lusersclient(umap.size()));
