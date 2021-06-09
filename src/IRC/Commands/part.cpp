@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 16:40:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 16:30:28 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/09 05:35:47 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int IrcServer::part(User &u, const Message &m)
 			writeNum(u, IrcError::notonchannel(*chan));
 		else
 		{
-			network.msgToChan(c, (MessageBuilder(u.prefix(), m.command()) << *chan).str());
+			c->send((MessageBuilder(u.prefix(), m.command()) << *chan).str());
 			c->delMember(&u);
 			if (!c->count())
 				network.remove(c);
