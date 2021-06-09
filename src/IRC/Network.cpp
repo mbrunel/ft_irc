@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Network.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/04 17:00:13 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/09 05:26:08 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,24 +114,6 @@ void Network::msgToAll(const std::string &msg, BasicConnection *origin)
 		User *u(i->second);
 		if (!u->hopcount() && u->isRegistered() && u->socket() != origin->socket())
 			u->writeLine(msg);
-	}
-	msgToNetwork(msg, origin);
-}
-
-void Network::msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin, bool useReceipt)
-{
-	channel->send(msg, origin, useReceipt);
-	if (!channel->isLocal())
-		msgToNetwork(msg, origin);
-}
-
-void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
-{
-	for (ServerMap::const_iterator i = _servers.begin(); i != _servers.end(); ++i)
-	{
-		Server *server(i->second);
-		if (!server->hopcount() && (!origin || server->socket() != origin->socket()))
-			server->writeLine(msg);
 	}
 }
 

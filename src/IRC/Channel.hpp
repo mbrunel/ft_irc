@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/04 16:58:25 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/09 05:33:29 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ public:
 	bool				isInvited(User *user) const;
 	bool				isLocal() const;
 	void				markAllMembers();
-	void				send(const std::string &msg, BasicConnection *origin, bool useReceipt = false) const;
+	void				send(const std::string &msg, BasicConnection *origin = NULL, bool useReceipt = false) const;
 	const std::string	&name() const;
 	Type				type() const;
 	const MemberMap		&members() const;

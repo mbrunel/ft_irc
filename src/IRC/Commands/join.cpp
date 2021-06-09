@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 12:08:04 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/09 05:36:26 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int IrcServer::join(User &u, const Message &m)
 	}
 	std::vector<Param>	channels(m.params()[0].split());
 	std::vector<Param>	keys;
-	
+
 	if (m.params().size() > 1)
 		keys = m.params()[1].split();
 	for (Params::const_iterator chan(channels.begin()); chan != channels.end(); ++chan)
@@ -53,7 +53,7 @@ int IrcServer::join(User &u, const Message &m)
 				continue ;
 			c->addMember(&u, MemberMode(c->count() ? 0 : MemberMode::CREATOR | MemberMode::OPERATOR));
 			topic(u, Message("TOPIC " + *chan));
-			network.msgToChan(c, (MessageBuilder(u.prefix(), m.command()) << *chan).str());
+			c->send((MessageBuilder(u.prefix(), m.command()) << *chan).str());
 			// names(u, Message("NAMES " + *chan));
 		}
 		else

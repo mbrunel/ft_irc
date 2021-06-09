@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/06 10:25:41 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/06 10:36:06 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/09 11:09:41 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,35 @@ int IrcServer::notice(User &u, const Message &m)
 {
 	if (!u.isRegistered() || m.params().size() < 2)
 		return (1);
+
 	Params		targets(m.params()[0].split());
 	const Param	&text(m.params()[1]);
 
 	for (Params::const_iterator target = targets.begin(); target != targets.end(); ++target)
 	{
+		if (target->isMask())
+		{
+			if (!u.umode().isSet(UserMode::OPERATOR))
+				continue ;
+			else if ((*target)[0] == '$')
+			{
+				if (match((*target).substr(1), config.servername))
+					network.msgToAll((MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
+			}
+			else if ((*target)[0] == '#')
+			{
+				size_t dot;
+				std::string toplevel;
+
+				if ((dot = target->find_last_of('.')) == std::string::npos)
+					continue ;
+				toplevel = target->substr(dot);
+				if (toplevel.find('*') == std::string::npos && toplevel.find('?') == std::string::npos)
+					for (Network::UserMap::const_iterator it = network.users().begin(); it != network.users().end(); ++it)
+						if (match((*target).substr(1), it->second->socket()->host()))
+							it->second->writeLine((MessageBuilder(it->second->prefix(), m.command()) << text).str());
+			}
+		}
 		if (target->isNickname())
 		{
 			User *receiver = network.getByNickname(*target);
@@ -32,11 +56,7 @@ int IrcServer::notice(User &u, const Message &m)
 		{
 			Channel *chan = network.getByChannelname(*target);
 			if (chan)
-				network.msgToChan(chan, (MessageBuilder(u.prefix(), m.command()) << chan->name() << text).str(), &u);
-		}
-		else if (target->size() > 0)
-		{
-			u.writeLine("MASKS NOT SUPPORTED YET");
+				chan->send((MessageBuilder(u.prefix(), m.command()) << chan->name() << text).str(), &u);
 		}
 	}
 	return (0);

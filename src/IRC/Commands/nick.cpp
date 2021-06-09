@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/26 13:14:24 by asoursou          #+#    #+#             */
-/*   Updated: 2021/05/20 19:28:12 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/09 05:28:34 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,12 @@ int IrcServer::nick(User &u, const Message &m)
 	{
 		u.unsetRequirement(UserRequirement::NICK);
 		if (u.isRegistered())
-		{
 			writeWelcome(u);
-			network.msgToNetwork((MessageBuilder(config.servername, "NICK") << u.nickname() <<
-			u.hopcount() << u.username() << config.servername << "34" << u.umode().flags() << u.realname()).str(), &u);
-		}
 	}
 	else
 	{
 		std::string msg((MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
 		u.writeLine(msg);
-		network.msgToNetwork(msg, &u);
 	}
 	return (0);
 }

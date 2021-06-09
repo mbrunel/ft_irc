@@ -6,7 +6,7 @@
 /*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/09 16:19:39 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/09 16:24:06 by mbrunel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 				c->delMember(&u);
 				if (c->count())
 				{
-					network.msgToChan(c, quitMessage, NULL, true);
+					c->send(quitMessage, NULL, true);
 					c->markAllMembers();
 				}
 				else
