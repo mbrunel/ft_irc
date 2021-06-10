@@ -6,12 +6,13 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/10 15:46:12 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/10 18:54:04 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 #include "MessageBuilder.hpp"
+#include "Utils.hpp"
 
 IrcServerConfig::IrcServerConfig(){}
 
@@ -26,9 +27,7 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 
 IrcServer::IrcServer()
 {
-	time_t	current;
-	char	buf[80];
-
+	creationDate = Utils::to_date(::time(NULL), "%a %b %d %Y at %H:%M:%S %Z");
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
@@ -49,10 +48,6 @@ IrcServer::IrcServer()
 	userCommands["USER"] = &IrcServer::user;
 	userCommands["KICK"] = &IrcServer::kick;
 	userCommands["LUSERS"] = &IrcServer::lusers;
-
-	::time(&current);
-	strftime(buf, sizeof(buf), "%a %b %d %Y at %H:%M:%S %Z", localtime(&current));
-	creationDate = buf;
 }
 
 IrcServer::~IrcServer() {}

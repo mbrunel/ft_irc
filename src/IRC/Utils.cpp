@@ -6,7 +6,7 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 18:41:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/09 16:12:51 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/10 18:58:35 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,12 @@ static bool match_internal(const char *mask, const char *str)
 bool Utils::match(const std::string &mask, const std::string &str)
 {
 	return (match_internal(mask.c_str(), str.c_str()));
+}
+
+std::string Utils::to_date(const time_t t, const char *format)
+{
+	char buf[80];
+
+	strftime(buf, sizeof(buf), format, localtime(&t));
+	return (buf);
 }
