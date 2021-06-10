@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/27 15:10:36 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/09 05:33:43 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/10 15:45:03 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ int IrcServer::topic(User &u, const Message &m)
 
 	if (target.isChannel() && (c = network.getByChannelname(target)))
 	{
+		if (c->type() == Channel::UNMODERATED)
+			return (writeNum(u, IrcError::nochanmodes(target)));
 		const ChannelMode &cm = c->mode();
 		const MemberMode *mm = c->findMember(&u);
 		if (m.params().size() > 1)

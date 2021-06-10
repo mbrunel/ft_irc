@@ -58,7 +58,7 @@ int IrcServer::kick(User &u, const Message &m)
 						if (c->findMember(ufind))
 						{
 							c->send(messageHelper(ic, u, ufind, m));
-							c->delMember(ufind);
+							c->banMember(ufind);
 							check = true;
 						}
 						else
