@@ -6,12 +6,13 @@
 /*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/04 16:59:48 by asoursou         ###   ########.fr       */
+/*   Updated: 2021/06/09 19:39:36 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cctype>
 #include "Channel.hpp"
+#include "Utils.hpp"
 
 MemberMode::MemberMode(unsigned flags) :
 Mode(flags)
@@ -91,8 +92,16 @@ void Channel::addMember(User *user, const MemberMode &mode)
 {
 	_members[user] = mode;
 	user->setJoinedChannels(user->joinedChannels() + 1);
-	if (isInvited(user))
-		_invitations.erase(_invitations.find(user->nickname()));
+	MaskSet::const_iterator it = _invitations.find(user->nickname());
+	if (it != _invitations.end())
+		_invitations.erase(it);
+}
+
+void Channel::banMember(User *user)
+{
+	if (_type != UNMODERATED)
+		_bans.insert(user->nickname());
+	delMember(user);
 }
 
 size_t Channel::count() const
@@ -117,9 +126,14 @@ void Channel::invite(User *user)
 	_invitations.insert(user->nickname());
 }
 
-bool Channel::isInvited(User *user) const
+bool Channel::isBanned(const User *u) const
 {
-	return (_invitations.find(user->nickname()) != _invitations.end());
+	return (_bans.find(u->nickname()) != _bans.end() || (inSet(u->nickname(), _banMasks) && !inSet(u->nickname(), _exceptionMasks)));
+}
+
+bool Channel::isInvited(const User *u) const
+{
+	return (_invitations.find(u->nickname()) != _invitations.end() || inSet(u->nickname(), _invitationMasks));
 }
 
 bool Channel::isLocal() const
@@ -227,4 +241,12 @@ void Channel::setKey(const std::string &key)
 void Channel::setLimit(size_t limit)
 {
 	_limit = limit;
+}
+
+bool Channel::inSet(const std::string &nickname, const Channel::MaskSet &set) const
+{
+	for (Channel::MaskSet::const_iterator it = set.begin(); it != set.end(); ++it)
+		if (Utils::match(*it, nickname))
+			return (1);
+	return (0);
 }

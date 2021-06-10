@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/09 16:32:57 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/10 15:46:00 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ class IrcServer
 	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit) throw();
 	void	disconnect(Server &server, const std::string &reason) throw();
 	int		exec(BasicConnection *sender, const Message &msg);
-	bool	match(const std::string &mask, const std::string &str);
 	void	writeMessage(User &dst, const std::string &command, const std::string &content);
 	int		writeNum(User &dst, const IrcNumeric &response);
 	void	writeWelcome(User &user);

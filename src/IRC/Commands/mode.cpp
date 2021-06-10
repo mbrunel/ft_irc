@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 11:48:50 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/09 05:37:16 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/10 15:46:38 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,7 @@ int IrcServer::mode(User &u, const Message &m)
 								changeParams.push_back(mask);
 							}
 						}
-						else if (cm.isSet(f))
+						else if (((f == ChannelMode::PRIVATE || f == ChannelMode::SECRET) && cm.isSet(ChannelMode::PRIVATE | ChannelMode::SECRET)) || cm.isSet(f))
 							continue ;
 						cm.set(f);
 					}
@@ -303,7 +303,7 @@ int IrcServer::mode(User &u, const Message &m)
 				}
 				else
 				{
-					if (umm->isSet(f))
+					if (f == MemberMode::CREATOR || umm->isSet(f))
 						continue ;
 					umm->set(f);
 				}

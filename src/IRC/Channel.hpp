@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/09 05:33:29 by mbrunel          ###   ########.fr       */
+/*   Updated: 2021/06/10 15:45:19 by asoursou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,13 @@ public:
 	~Channel();
 
 	void				addMember(User *user, const MemberMode &mode);
+	void				banMember(User *user);
 	size_t				count() const;
 	void				delMember(User *user);
 	MemberMode			*findMember(User *user);
 	void				invite(User *user);
-	bool				isInvited(User *user) const;
+	bool				isBanned(const User *user) const;
+	bool				isInvited(const User *user) const;
 	bool				isLocal() const;
 	void				markAllMembers();
 	void				send(const std::string &msg, BasicConnection *origin = NULL, bool useReceipt = false) const;
@@ -136,5 +138,8 @@ private:
 	MaskSet				_banMasks;
 	MaskSet				_exceptionMasks;
 	MaskSet				_invitationMasks;
+	MaskSet				_bans;
 	MaskSet				_invitations;
+
+	bool	inSet(const std::string &nickname, const Channel::MaskSet &set) const;
 };
