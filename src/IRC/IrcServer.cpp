@@ -134,13 +134,13 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 	writeError(u.socket(), errorReason.str());
 	network.remove(&u);
 	network.newZombie(&u);
+	log() << u.socket()->host() << " DISCONNECTED (" << reason << ')' << std::endl;
 }
 
 int IrcServer::exec(BasicConnection *sender, const Message &msg)
 {
 	if (!msg.isValid())
 		return (-1);
-	log() << "Message: " << msg << std::endl;
 	if (sender->type() == BasicConnection::USER)
 	{
 		User &u(*static_cast<User*>(sender));
@@ -184,7 +184,7 @@ void IrcServer::writeWelcome(User &u)
 	writeNum(u, IrcReply::welcome(u.prefix()));
 	writeNum(u, IrcReply::yourhost(config.servername, config.version));
 	writeNum(u, IrcReply::created(creationDate));
-	writeNum(u, IrcReply::myinfo(config.servername, config.version, "Oaiorsw", "IOabeiklmnopqrstv"));
+	writeNum(u, IrcReply::myinfo(config.servername, config.version, "Oaiorsw", "IObeiklmnopqstv"));
 	writeMotd(u);
 }
 
@@ -212,16 +212,12 @@ void IrcServer::Police()
 		BasicConnection *c = it->second;
 		it++;
 		if (c->pongExpected() && ctime - c->clock() > config.pong)
-		{
-			log() << "A connection has not pong in time" << std::endl;
 			disconnect(c->socket(), "Ping timeout");
-		}
 		else if (!c->pongExpected() && ctime - c->clock() > config.ping)
 		{
 			c->writeLine("PING :" + config.servername);
 			c->clock() = ctime;
 			c->pongExpected() = true;
-			log() << "Ping has been sent" << std::endl;
 		}
 	}
 	std::ifstream f(config.motdfile.c_str(), std::ios_base::in);

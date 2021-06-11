@@ -27,8 +27,6 @@ class ChannelMode : public Mode
 public:
 	enum Flag
 	{
-		/** 'a' - Anonymous Channel flag */
-		ANONYMOUS = 1,
 		/** 'i' - Invite-only Channel flag */
 		INVITE_ONLY = 1 << 1,
 		/** 'm' - Moderated Channel flag */
@@ -41,8 +39,6 @@ public:
 		PRIVATE = 1 << 5,
 		/** 's' - Secret channel flag */
 		SECRET = 1 << 6,
-		/** 'r' - Server reop Channel flag */
-		REOP = 1 << 7,
 		/** 't' - Topic settable by Channel operator only flag */
 		TOPIC_SETTABLE_BY_CHANOP = 1 << 8,
 		/** 'k' - Channel key */

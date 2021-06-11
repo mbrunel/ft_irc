@@ -35,8 +35,6 @@ ChannelMode::Flag ChannelMode::parse(char c)
 std::string ChannelMode::toString() const
 {
 	std::string s;
-	if (isSet(ANONYMOUS))
-		s.push_back('a');
 	if (isSet(INVITE_ONLY))
 		s.push_back('i');
 	if (isSet(NO_OUTSIDE_MSG))
@@ -47,8 +45,6 @@ std::string ChannelMode::toString() const
 		s.push_back('p');
 	if (isSet(SECRET))
 		s.push_back('s');
-	if (isSet(REOP))
-		s.push_back('r');
 	if (isSet(TOPIC_SETTABLE_BY_CHANOP))
 		s.push_back('t');
 	if (isSet(KEY))
@@ -60,8 +56,8 @@ std::string ChannelMode::toString() const
 
 const unsigned short ChannelMode::_lowerFlagTable[] =
 {
-	ANONYMOUS, BAN_MASK, 0, 0, EXCEPTION_MASK, 0, 0, 0, INVITE_ONLY, 0, KEY,
-	LIMIT, MODERATED, NO_OUTSIDE_MSG, 0, PRIVATE, QUIET, REOP, SECRET,
+	0, BAN_MASK, 0, 0, EXCEPTION_MASK, 0, 0, 0, INVITE_ONLY, 0, KEY,
+	LIMIT, MODERATED, NO_OUTSIDE_MSG, 0, PRIVATE, QUIET, 0, SECRET,
 	TOPIC_SETTABLE_BY_CHANOP, 0, 0, 0, 0, 0, 0
 };
 

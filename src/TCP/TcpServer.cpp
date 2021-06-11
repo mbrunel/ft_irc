@@ -87,7 +87,6 @@ void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
 
 void TcpServer::disconnect(TcpSocket *connection) throw()
 {
-	log() << connection->ip() << " DISCONNECTED" << std::endl;
 	_pending.remove(connection);
 	_connections.remove(connection);
 	delete connection;
