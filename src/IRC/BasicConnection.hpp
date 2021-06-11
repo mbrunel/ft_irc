@@ -7,8 +7,6 @@ class BasicConnection
   public:
 	enum Type
 	{
-		SERVER,
-		SERVICE,
 		USER
 	};
 

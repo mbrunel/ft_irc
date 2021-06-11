@@ -63,13 +63,6 @@ void User::mark()
 	_umode.set(UserMode::MARK);
 }
 
-RemoteServer *User::makeRemoteServer(int hopcount)
-{
-	//return (new RemoteServer(_socket, hopcount));
-	(void)hopcount;
-	return (NULL);
-}
-
 void User::unmark()
 {
 	_umode.unset(UserMode::MARK);

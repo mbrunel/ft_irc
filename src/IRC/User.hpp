@@ -2,7 +2,6 @@
 #include <string>
 #include "IrcNumeric.hpp"
 #include "Mode.hpp"
-#include "RemoteServer.hpp"
 #include "BasicConnection.hpp"
 
 class UserMode : public Mode
@@ -62,7 +61,6 @@ public:
 
 	bool					isRegistered() const;
 	void					mark();
-	RemoteServer			*makeRemoteServer(int hopcount);
 	void					unmark();
 	void					unsetRequirement(UserRequirement::Flag requirement);
 	const UserRequirement	&requirements() const;

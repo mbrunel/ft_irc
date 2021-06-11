@@ -3,7 +3,6 @@
 #include <map>
 #include <list>
 #include "Channel.hpp"
-#include "RemoteServer.hpp"
 #include "Config.hpp"
 
 class Network
@@ -11,7 +10,6 @@ class Network
   public:
 	typedef std::map<TcpSocket *, BasicConnection *>	ConnectionMap;
 	typedef std::map<std::string, User *>				UserMap;
-	typedef std::map<std::string, Server *>				ServerMap;
 	typedef std::map<std::string, Channel *>			ChannelMap;
 	typedef std::map<std::string, Oper>					OperMap;
 	typedef std::list<BasicConnection *>				ZombieList;
@@ -21,19 +19,15 @@ class Network
 
 	const ChannelMap	&channels() const;
 	const ConnectionMap	&connections() const;
-	const ServerMap		&servers() const;
 	const UserMap		&users() const;
 	void				add(User *user);
-	void				add(Server *server);
 	void				add(Channel *channel);
 	void				clear() throw();
 	BasicConnection		*getBySocket(TcpSocket *socket);
 	User				*getByNickname(const std::string &nickname);
-	Server				*getByServername(const std::string &servername);
 	Channel				*getByChannelname(const std::string &channelname);
 	void				msgToAll(const std::string &msg, BasicConnection *origin = NULL);
 	void				remove(User *user) throw();
-	void				remove(Server *srv) throw();
 	void				remove(const Channel *chan) throw();
 	void				resetUserReceipt();
 	void				setOpers(OperMap opers);
@@ -44,7 +38,6 @@ class Network
   private:
 	ConnectionMap	_connections;
 	UserMap			_users;
-	ServerMap		_servers;
 	ChannelMap		_channels;
 	OperMap			_opers;
 	ZombieList		_zombies;

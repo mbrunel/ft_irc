@@ -95,8 +95,6 @@ void IrcServer::disconnect(TcpSocket *socket, const std::string &reason) throw()
 	BasicConnection *c = network.getBySocket(socket);
 	if (c->type() == BasicConnection::USER)
 		disconnect(*static_cast<User *>(c), reason, false);
-	else if (c->type() == BasicConnection::SERVER)
-		disconnect(*static_cast<RemoteServer *>(c), reason);
 }
 
 void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQuit) throw()
@@ -138,15 +136,6 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 	network.newZombie(&u);
 }
 
-void IrcServer::disconnect(Server &s, const std::string &reason) throw()
-{
-	(void)reason;
-	network.remove(&s);
-	// Must remove all Users using same socket too
-	srv.disconnect(s.socket());
-	delete (&s);
-}
-
 int IrcServer::exec(BasicConnection *sender, const Message &msg)
 {
 	if (!msg.isValid())
@@ -161,12 +150,6 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 		if (i == userCommands.end())
 			return (writeNum(u, IrcError::unknowncommand(msg.command())));
 		return ((this->*(i->second))(u, msg));
-	}
-	if (sender->type() == BasicConnection::SERVER)
-	{
-		serverCommandsMap::iterator i(serverCommands.find(msg.command()));
-		if (i != serverCommands.end())
-			return ((this->*(i->second))(*static_cast<Server*>(sender), msg));
 	}
 	return (-1);
 }
