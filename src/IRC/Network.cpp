@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Network.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/09 05:26:08 by mbrunel          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "Network.hpp"
 
 Network::Network() {}
@@ -19,7 +7,6 @@ Network::~Network() throw()
 	clear();
 }
 
-
 const Network::ChannelMap &Network::channels() const
 {
 	return (_channels);
@@ -28,10 +15,7 @@ const Network::ConnectionMap &Network::connections() const
 {
 	return (_connections);
 }
-const Network::ServerMap &Network::servers() const
-{
-	return (_servers);
-}
+
 const Network::UserMap &Network::users() const
 {
 	return (_users);
@@ -41,12 +25,6 @@ void Network::add(User *u)
 	_connections[u->socket()] = u;
 	if (u->nickname().size())
 		_users[u->nickname()] = u;
-}
-
-void Network::add(Server *s)
-{
-	_connections[s->socket()] = s;
-	_servers[s->name()] = s;
 }
 
 void Network::add(Channel *c)
@@ -59,8 +37,6 @@ void Network::clear() throw()
 	for (UserMap::iterator i = _users.begin(); i != _users.end(); ++i)
 		if (i->second->hopcount())
 			delete i->second;
-	for (ServerMap::iterator i = _servers.begin(); i != _servers.end(); ++i)
-		delete i->second;
 	for (ChannelMap::iterator i = _channels.begin(); i != _channels.end(); ++i)
 		delete i->second;
 }
@@ -77,12 +53,6 @@ User *Network::getByNickname(const std::string &key)
 	return (i == _users.end() ? NULL : i->second);
 }
 
-Server *Network::getByServername(const std::string &key)
-{
-	ServerMap::const_iterator i = _servers.find(key);
-	return (i == _servers.end() ? NULL : i->second);
-}
-
 Channel *Network::getByChannelname(const std::string &key)
 {
 	ChannelMap::const_iterator i = _channels.find(key);
@@ -94,12 +64,6 @@ void Network::remove(User *u) throw()
 	if (!u->hopcount())
 		_connections.erase(u->socket());
 	_users.erase(u->nickname());
-}
-
-void Network::remove(Server *s) throw()
-{
-	_connections.erase(s->socket());
-	_servers.erase(s->name());
 }
 
 void Network::remove(const Channel *c) throw()

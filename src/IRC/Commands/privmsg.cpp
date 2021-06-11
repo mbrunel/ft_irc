@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   privmsg.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/26 13:12:17 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/10 15:49:47 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "IrcServer.hpp"
 #include "MessageBuilder.hpp"
-#include "Utils.hpp"
+#include "ft.hpp"
 
 int IrcServer::privmsg(User &u, const Message &m)
 {
@@ -34,7 +22,7 @@ int IrcServer::privmsg(User &u, const Message &m)
 				writeNum(u, IrcError::nosuchnick(target->c_str()));
 			else if ((*target)[0] == '$')
 			{
-				if (Utils::match((*target).substr(1), config.servername))
+				if (ft::match((*target).substr(1), config.servername))
 					network.msgToAll((MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
 				else
 					writeNum(u, IrcError::badmask(*target));
@@ -56,7 +44,7 @@ int IrcServer::privmsg(User &u, const Message &m)
 				{
 					bool found = false;
 					for (Network::UserMap::const_iterator it = network.users().begin(); it != network.users().end(); ++it)
-						if (Utils::match((*target).substr(1), it->second->socket()->host()))
+						if (ft::match((*target).substr(1), it->second->socket()->host()))
 						{
 							it->second->writeLine((MessageBuilder(it->second->prefix(), m.command()) << text).str());
 							found = true;

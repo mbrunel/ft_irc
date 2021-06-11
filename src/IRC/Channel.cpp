@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/09 19:39:36 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <cctype>
 #include "Channel.hpp"
-#include "Utils.hpp"
+#include "ft.hpp"
 
 MemberMode::MemberMode(unsigned flags) :
 Mode(flags)
@@ -47,8 +35,6 @@ ChannelMode::Flag ChannelMode::parse(char c)
 std::string ChannelMode::toString() const
 {
 	std::string s;
-	if (isSet(ANONYMOUS))
-		s.push_back('a');
 	if (isSet(INVITE_ONLY))
 		s.push_back('i');
 	if (isSet(NO_OUTSIDE_MSG))
@@ -59,8 +45,6 @@ std::string ChannelMode::toString() const
 		s.push_back('p');
 	if (isSet(SECRET))
 		s.push_back('s');
-	if (isSet(REOP))
-		s.push_back('r');
 	if (isSet(TOPIC_SETTABLE_BY_CHANOP))
 		s.push_back('t');
 	if (isSet(KEY))
@@ -72,8 +56,8 @@ std::string ChannelMode::toString() const
 
 const unsigned short ChannelMode::_lowerFlagTable[] =
 {
-	ANONYMOUS, BAN_MASK, 0, 0, EXCEPTION_MASK, 0, 0, 0, INVITE_ONLY, 0, KEY,
-	LIMIT, MODERATED, NO_OUTSIDE_MSG, 0, PRIVATE, QUIET, REOP, SECRET,
+	0, BAN_MASK, 0, 0, EXCEPTION_MASK, 0, 0, 0, INVITE_ONLY, 0, KEY,
+	LIMIT, MODERATED, NO_OUTSIDE_MSG, 0, PRIVATE, QUIET, 0, SECRET,
 	TOPIC_SETTABLE_BY_CHANOP, 0, 0, 0, 0, 0, 0
 };
 
@@ -95,13 +79,6 @@ void Channel::addMember(User *user, const MemberMode &mode)
 	MaskSet::const_iterator it = _invitations.find(user->nickname());
 	if (it != _invitations.end())
 		_invitations.erase(it);
-}
-
-void Channel::banMember(User *user)
-{
-	if (_type != UNMODERATED)
-		_bans.insert(user->nickname());
-	delMember(user);
 }
 
 size_t Channel::count() const
@@ -128,7 +105,7 @@ void Channel::invite(User *user)
 
 bool Channel::isBanned(const User *u) const
 {
-	return (_bans.find(u->nickname()) != _bans.end() || (inSet(u->nickname(), _banMasks) && !inSet(u->nickname(), _exceptionMasks)));
+	return (inSet(u->nickname(), _banMasks) && !inSet(u->nickname(), _exceptionMasks));
 }
 
 bool Channel::isInvited(const User *u) const
@@ -246,7 +223,7 @@ void Channel::setLimit(size_t limit)
 bool Channel::inSet(const std::string &nickname, const Channel::MaskSet &set) const
 {
 	for (Channel::MaskSet::const_iterator it = set.begin(); it != set.end(); ++it)
-		if (Utils::match(*it, nickname))
+		if (ft::match(*it, nickname))
 			return (1);
 	return (0);
 }

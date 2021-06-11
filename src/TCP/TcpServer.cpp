@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   TcpServer.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/09 01:29:06 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/05/21 16:28:42 by mbrunel          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "TcpServer.hpp"
 
 int abortFd = -1;
@@ -99,7 +87,6 @@ void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
 
 void TcpServer::disconnect(TcpSocket *connection) throw()
 {
-	log() << connection->ip() << " DISCONNECTED" << std::endl;
 	_pending.remove(connection);
 	_connections.remove(connection);
 	delete connection;

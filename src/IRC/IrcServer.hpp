@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcServer.hpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/10 15:46:00 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #pragma once
 #include "IrcNumeric.hpp"
 #include "Network.hpp"
@@ -45,17 +33,15 @@ class IrcServer
 
   private:
 	typedef int (IrcServer::*UserCommandPointer)(User &, const Message &);
-	typedef int (IrcServer::*ServerCommandPointer)(Server &, const Message &);
 	typedef std::map<std::string, UserCommandPointer> userCommandsMap;
-	typedef std::map<std::string, ServerCommandPointer> serverCommandsMap;
 	typedef std::vector<Param> Params;
 
+	time_t				creation;
 	std::string			creationDate;
 	IrcServerConfig		config;
 	TcpServer			srv;
 	Network				network;
 	userCommandsMap		userCommands;
-	serverCommandsMap	serverCommands;
 
 	int	away(User &sender, const Message &msg);
 	int	invite(User &sender, const Message &msg);
@@ -80,7 +66,6 @@ class IrcServer
 
 	void	disconnect(TcpSocket *socket, const std::string &reason) throw();
 	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit) throw();
-	void	disconnect(Server &server, const std::string &reason) throw();
 	int		exec(BasicConnection *sender, const Message &msg);
 	void	writeMessage(User &dst, const std::string &command, const std::string &content);
 	int		writeNum(User &dst, const IrcNumeric &response);

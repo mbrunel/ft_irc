@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   User.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 17:11:05 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/09 16:52:39 by mbrunel          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "MessageBuilder.hpp"
 #include "User.hpp"
 
@@ -73,13 +61,6 @@ bool User::isRegistered() const
 void User::mark()
 {
 	_umode.set(UserMode::MARK);
-}
-
-RemoteServer *User::makeRemoteServer(int hopcount)
-{
-	//return (new RemoteServer(_socket, hopcount));
-	(void)hopcount;
-	return (NULL);
 }
 
 void User::unmark()

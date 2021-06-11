@@ -1,17 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcServer.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/10 15:46:12 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "IrcServer.hpp"
 #include "MessageBuilder.hpp"
+#include "ft.hpp"
 
 IrcServerConfig::IrcServerConfig(){}
 
@@ -24,11 +13,10 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 	flood(cfg.floodControl()),
 	motdfile(cfg.motdfile()) {}
 
-IrcServer::IrcServer()
+IrcServer::IrcServer() :
+creation(::time(NULL))
 {
-	time_t	current;
-	char	buf[80];
-
+	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
@@ -49,10 +37,6 @@ IrcServer::IrcServer()
 	userCommands["USER"] = &IrcServer::user;
 	userCommands["KICK"] = &IrcServer::kick;
 	userCommands["LUSERS"] = &IrcServer::lusers;
-
-	::time(&current);
-	strftime(buf, sizeof(buf), "%a %b %d %Y at %H:%M:%S %Z", localtime(&current));
-	creationDate = buf;
 }
 
 IrcServer::~IrcServer() {}
@@ -111,8 +95,6 @@ void IrcServer::disconnect(TcpSocket *socket, const std::string &reason) throw()
 	BasicConnection *c = network.getBySocket(socket);
 	if (c->type() == BasicConnection::USER)
 		disconnect(*static_cast<User *>(c), reason, false);
-	else if (c->type() == BasicConnection::SERVER)
-		disconnect(*static_cast<RemoteServer *>(c), reason);
 }
 
 void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQuit) throw()
@@ -132,38 +114,33 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 			if (c->findMember(&u))
 			{
 				c->delMember(&u);
-				if (c->count())
+				if (!c->count())
+					network.remove(c);
+				else if (!c->mode().isSet(ChannelMode::QUIET))
 				{
 					c->send(quitMessage, NULL, true);
 					c->markAllMembers();
 				}
-				else
-					network.remove(c);
 			}
 		}
 	}
 	if (notifyUserQuit)
 		u.writeLine(quitMessage);
-	errorReason << "Closing Link: " << u.socket()->host() << " (Client Quit)";
+	errorReason << "Closing Link: " << u.socket()->host();
+	if (notifyUserQuit)
+		errorReason << " (Client Quit)";
+	else
+		errorReason << " (" << reason << ')';
 	writeError(u.socket(), errorReason.str());
 	network.remove(&u);
 	network.newZombie(&u);
-}
-
-void IrcServer::disconnect(Server &s, const std::string &reason) throw()
-{
-	(void)reason;
-	network.remove(&s);
-	// Must remove all Users using same socket too
-	srv.disconnect(s.socket());
-	delete (&s);
+	log() << u.socket()->host() << " DISCONNECTED (" << reason << ')' << std::endl;
 }
 
 int IrcServer::exec(BasicConnection *sender, const Message &msg)
 {
 	if (!msg.isValid())
 		return (-1);
-	log() << "Message: " << msg << std::endl;
 	if (sender->type() == BasicConnection::USER)
 	{
 		User &u(*static_cast<User*>(sender));
@@ -173,12 +150,6 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 		if (i == userCommands.end())
 			return (writeNum(u, IrcError::unknowncommand(msg.command())));
 		return ((this->*(i->second))(u, msg));
-	}
-	if (sender->type() == BasicConnection::SERVER)
-	{
-		serverCommandsMap::iterator i(serverCommands.find(msg.command()));
-		if (i != serverCommands.end())
-			return ((this->*(i->second))(*static_cast<Server*>(sender), msg));
 	}
 	return (-1);
 }
@@ -213,7 +184,7 @@ void IrcServer::writeWelcome(User &u)
 	writeNum(u, IrcReply::welcome(u.prefix()));
 	writeNum(u, IrcReply::yourhost(config.servername, config.version));
 	writeNum(u, IrcReply::created(creationDate));
-	writeNum(u, IrcReply::myinfo(config.servername, config.version, "Oaiorsw", "IOabeiklmnopqrstv"));
+	writeNum(u, IrcReply::myinfo(config.servername, config.version, "Oaiorsw", "IObeiklmnopqstv"));
 	writeMotd(u);
 }
 
@@ -241,16 +212,12 @@ void IrcServer::Police()
 		BasicConnection *c = it->second;
 		it++;
 		if (c->pongExpected() && ctime - c->clock() > config.pong)
-		{
-			log() << "A connection has not pong in time" << std::endl;
 			disconnect(c->socket(), "Ping timeout");
-		}
 		else if (!c->pongExpected() && ctime - c->clock() > config.ping)
 		{
 			c->writeLine("PING :" + config.servername);
 			c->clock() = ctime;
 			c->pongExpected() = true;
-			log() << "Ping has been sent" << std::endl;
 		}
 	}
 	std::ifstream f(config.motdfile.c_str(), std::ios_base::in);

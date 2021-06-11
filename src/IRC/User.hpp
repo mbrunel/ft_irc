@@ -1,20 +1,7 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   User.hpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/22 12:43:09 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/04 16:50:46 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #pragma once
 #include <string>
 #include "IrcNumeric.hpp"
 #include "Mode.hpp"
-#include "RemoteServer.hpp"
 #include "BasicConnection.hpp"
 
 class UserMode : public Mode
@@ -74,7 +61,6 @@ public:
 
 	bool					isRegistered() const;
 	void					mark();
-	RemoteServer			*makeRemoteServer(int hopcount);
 	void					unmark();
 	void					unsetRequirement(UserRequirement::Flag requirement);
 	const UserRequirement	&requirements() const;

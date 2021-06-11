@@ -1,18 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcNumeric.cpp                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/09 16:35:14 by mbrunel          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include <sstream>
-#include <string>
 #include "IrcNumeric.hpp"
+#include "ft.hpp"
 
 IrcNumeric::IrcNumeric(const IrcNumericCode code, const std::string &content) :
 code(code), content(content)
@@ -301,9 +288,7 @@ namespace IrcReply
 
 	const IrcNumeric list(const std::string &channel, size_t visible, const std::string &topic)
 	{
-		std::stringstream ss;
-		ss << visible;
-		return (IrcNumeric(RPL_LIST, channel + ' ' + ss.str() + " :" + topic));
+		return (IrcNumeric(RPL_LIST, channel + ' ' + ft::to_string(visible) + " :" + topic));
 	}
 
 	const IrcNumeric listend()
@@ -393,46 +378,31 @@ namespace IrcReply
 
 	const IrcNumeric time()
 	{
-		char stamp[80];
-
-		time_t rawtime;
-		::time(&rawtime);
-		strftime(stamp, 80, "%x - %I:%M:%S", localtime(&rawtime));
-		return (IrcNumeric(RPL_TIME, stamp));
+		return (IrcNumeric(RPL_TIME, ft::to_date(::time(NULL), "%x - %I:%M:%S")));
 	}
 
 	const IrcNumeric lusersclient(int nb)
 	{
-		std::ostringstream ss;
-		ss << nb;
-		return (IrcNumeric(RPL_LUSERCLIENT, ":There are " + ss.str() + " users on 1 server"));	
+		return (IrcNumeric(RPL_LUSERCLIENT, ":There are " + ft::to_string(nb) + " users on 1 server"));	
 	}
 
 	const IrcNumeric lusersop(int nb)
 	{
-		std::ostringstream ss;
-		ss << nb;
-		return (IrcNumeric(RPL_LUSEROP, ss.str() + " :operator(s) online"));
+		return (IrcNumeric(RPL_LUSEROP, ft::to_string(nb) + " :operator(s) online"));
 	}
 
 	const IrcNumeric lusersunknown(int nb)
 	{
-		std::ostringstream ss;
-		ss << nb;
-		return (IrcNumeric(RPL_LUSERUNKNOWN, ss.str() + " :unknown connection(s)"));
+		return (IrcNumeric(RPL_LUSERUNKNOWN, ft::to_string(nb) + " :unknown connection(s)"));
 	}
 
 	const IrcNumeric luserschannels(int nb)
 	{
-		std::ostringstream ss;
-		ss << nb;
-		return (IrcNumeric(RPL_LUSERCHANNELS, ss.str() + " :channels formed"));
+		return (IrcNumeric(RPL_LUSERCHANNELS, ft::to_string(nb) + " :channels formed"));
 	}
 
 	const IrcNumeric lusersme(int nb)
 	{
-		std::ostringstream ss;
-		ss << nb;
-		return (IrcNumeric(RPL_LUSERME, ":I have " + ss.str() + " clients and 1 server"));
+		return (IrcNumeric(RPL_LUSERME, ":I have " + ft::to_string(nb) + " clients and 1 server"));
 	}
 }
