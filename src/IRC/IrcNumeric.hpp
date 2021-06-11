@@ -113,6 +113,7 @@ namespace IrcError
 	const IrcNumeric norecipient(const std::string &command);
 	const IrcNumeric notexttosend();
 	const IrcNumeric notoplevel(const std::string &mask);
+	const IrcNumeric badmask(const std::string &mask);
 	const IrcNumeric wildtoplevel(const std::string &mask);
 	const IrcNumeric unknowncommand(const std::string &command);
 	const IrcNumeric nomotd();

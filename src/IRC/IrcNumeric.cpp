@@ -68,6 +68,11 @@ namespace IrcError
 		return (IrcNumeric(ERR_WILDTOPLEVEL, mask + " :Wildcard in top level domain"));
 	}
 
+	const IrcNumeric badmask(const std::string &mask)
+	{
+		return (IrcNumeric(ERR_BADMASK, mask + " :Bad Server/host mask"));
+	}
+
 	const IrcNumeric unknowncommand(const std::string &command)
 	{
 		return (IrcNumeric(ERR_UNKNOWNCOMMAND, command + " :Unknown command"));

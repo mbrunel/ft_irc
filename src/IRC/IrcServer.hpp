@@ -53,6 +53,7 @@ class IrcServer
 	int mode(User &sender, const Message &msg);
 	int	names(User &sender, const Message &msg);
 	int	nick(User &sender, const Message &msg);
+	int notice(User &sender, const Message &msg);
 	int oper(User &sender, const Message &msg);
 	int	part(User &sender, const Message &msg);
 	int ping(User &sender, const Message &msg);
@@ -69,7 +70,6 @@ class IrcServer
 	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit) throw();
 	void	disconnect(Server &server, const std::string &reason) throw();
 	int		exec(BasicConnection *sender, const Message &msg);
-	bool	match(const std::string &mask, const std::string &str);
 	void	writeMessage(User &dst, const std::string &command, const std::string &content);
 	int		writeNum(User &dst, const IrcNumeric &response);
 	void	writeWelcome(User &user);

@@ -32,8 +32,6 @@ class Network
 	Server				*getByServername(const std::string &servername);
 	Channel				*getByChannelname(const std::string &channelname);
 	void				msgToAll(const std::string &msg, BasicConnection *origin = NULL);
-	void				msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin = NULL, bool useReceipt = false);
-	void				msgToNetwork(const std::string &msg, BasicConnection *origin = NULL);
 	void				remove(User *user) throw();
 	void				remove(Server *srv) throw();
 	void				remove(const Channel *chan) throw();

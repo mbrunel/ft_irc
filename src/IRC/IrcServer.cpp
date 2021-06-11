@@ -25,6 +25,7 @@ IrcServer::IrcServer()
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NAMES"] = &IrcServer::names;
 	userCommands["NICK"] = &IrcServer::nick;
+	userCommands["NOTICE"] = &IrcServer::notice;
 	userCommands["OPER"] = &IrcServer::oper;
 	userCommands["PART"] = &IrcServer::part;
 	userCommands["PING"] = &IrcServer::ping;
@@ -121,7 +122,7 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 				c->delMember(&u);
 				if (c->count())
 				{
-					network.msgToChan(c, quitMessage, NULL, true);
+					c->send(quitMessage, NULL, true);
 					c->markAllMembers();
 				}
 				else
@@ -168,45 +169,6 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 			return ((this->*(i->second))(*static_cast<Server*>(sender), msg));
 	}
 	return (-1);
-}
-
-// std::string goes brrr
-static bool match(const char *mask, const char *str)
-{
-	const char m = *mask;
-	const char c = *str;
-	if (!m)
-		return (!c);
-	if (m == '\\') // escape character (only if next is a special character)
-	{
-		const char m1 = mask[1];
-		if (m1 == '*' || m1 == '?')
-			return (m1 == c ? match(mask + 2, str + 1) : 0);
-	}
-	if (m == '*') // wildcard matching
-	{
-		if (match(mask + 1, str))
-			return (1);
-		if (!c)
-			return (0);
-	}
-	else
-	{
-		if (m == '?') // any character matching
-		{
-			if (!c)
-				return (0);
-		}
-		else if (m != c) // else character must match
-			return (0);
-		++mask;
-	}
-	return (match(mask, str + 1));
-}
-
-bool IrcServer::match(const std::string &mask, const std::string &str)
-{
-	return (::match(mask.c_str(), str.c_str()));
 }
 
 void IrcServer::writeMessage(User &dst, const std::string &command, const std::string &content)

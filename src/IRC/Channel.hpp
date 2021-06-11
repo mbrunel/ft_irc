@@ -89,14 +89,16 @@ public:
 	~Channel();
 
 	void				addMember(User *user, const MemberMode &mode);
+	void				banMember(User *user);
 	size_t				count() const;
 	void				delMember(User *user);
 	MemberMode			*findMember(User *user);
 	void				invite(User *user);
-	bool				isInvited(User *user) const;
+	bool				isBanned(const User *user) const;
+	bool				isInvited(const User *user) const;
 	bool				isLocal() const;
 	void				markAllMembers();
-	void				send(const std::string &msg, BasicConnection *origin, bool useReceipt = false) const;
+	void				send(const std::string &msg, BasicConnection *origin = NULL, bool useReceipt = false) const;
 	const std::string	&name() const;
 	Type				type() const;
 	const MemberMap		&members() const;
@@ -124,5 +126,8 @@ private:
 	MaskSet				_banMasks;
 	MaskSet				_exceptionMasks;
 	MaskSet				_invitationMasks;
+	MaskSet				_bans;
 	MaskSet				_invitations;
+
+	bool	inSet(const std::string &nickname, const Channel::MaskSet &set) const;
 };

@@ -104,7 +104,6 @@ int IrcServer::mode(User &u, const Message &m)
 			r << u.nickname() << changes;
 			const std::string s = r.str();
 			u.writeLine(s);
-			network.msgToNetwork(s, &u);
 		}
 	}
 	else if (s.isChannel())
@@ -255,7 +254,7 @@ int IrcServer::mode(User &u, const Message &m)
 								changeParams.push_back(mask);
 							}
 						}
-						else if (cm.isSet(f))
+						else if (((f == ChannelMode::PRIVATE || f == ChannelMode::SECRET) && cm.isSet(ChannelMode::PRIVATE | ChannelMode::SECRET)) || cm.isSet(f))
 							continue ;
 						cm.set(f);
 					}
@@ -292,7 +291,7 @@ int IrcServer::mode(User &u, const Message &m)
 				}
 				else
 				{
-					if (umm->isSet(f))
+					if (f == MemberMode::CREATOR || umm->isSet(f))
 						continue ;
 					umm->set(f);
 				}
@@ -311,7 +310,7 @@ int IrcServer::mode(User &u, const Message &m)
 				changeParams.pop_front();
 			}
 			const std::string s = r.str();
-			network.msgToChan(c, r.str());
+			c->send(r.str());
 		}
 	}
 	else

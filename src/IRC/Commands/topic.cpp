@@ -12,6 +12,8 @@ int IrcServer::topic(User &u, const Message &m)
 
 	if (target.isChannel() && (c = network.getByChannelname(target)))
 	{
+		if (c->type() == Channel::UNMODERATED)
+			return (writeNum(u, IrcError::nochanmodes(target)));
 		const ChannelMode &cm = c->mode();
 		const MemberMode *mm = c->findMember(&u);
 		if (m.params().size() > 1)
@@ -23,7 +25,7 @@ int IrcServer::topic(User &u, const Message &m)
 			else
 			{
 				c->setTopic(m.params()[1]);
-				network.msgToChan(c, (MessageBuilder(u.prefix(), m.command()) << target << c->topic()).str());
+				c->send((MessageBuilder(u.prefix(), m.command()) << target << c->topic()).str());
 			}
 		}
 		else if (!mm && cm.isSet(ChannelMode::SECRET))

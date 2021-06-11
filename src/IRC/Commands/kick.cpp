@@ -1,13 +1,13 @@
 #include "IrcServer.hpp"
 
 std::string messageHelper(Network::ChannelMap::const_iterator c,
-User &u,Channel::MemberMap::const_iterator me, const Message &m)
+User &u, User *me, const Message &m)
 {
 	std::string ret;
 
 	ret = ":" + u.prefix() + " KICK " + c->second->name() + " ";
-	ret += me->first->nickname();
-	ret += (m.params()[2].size() != 0 ? " :" + m.params()[2] : "");
+	ret += me->nickname() + " :";
+	ret += (m.params()[2].size() != 0 ? m.params()[2] : u.nickname());
 	return (ret);
 }
 
@@ -33,6 +33,13 @@ int IrcServer::kick(User &u, const Message &m)
 			Channel *c = ic->second;
 			if ((*i) == c->name())
 			{
+				if (c->mode().isSet(Channel::UNMODERATED))
+				{
+					writeNum(u, IrcError::nochanmodes((*i)));
+					++ic;
+					check = true;
+					continue;
+				}
 				MemberMode *mmode = c->findMember(&u);
 				if (!mmode)
 				{
@@ -49,25 +56,21 @@ int IrcServer::kick(User &u, const Message &m)
 					check = true;
 					continue;
 				}
-
 				std::vector<Param>::const_iterator iterUser = UserList.begin();
 				while (iterUser != UserList.end())
 				{
-					const Channel::MemberMap &members = c->members();
-					Channel::MemberMap::const_iterator im = members.begin();
-					while (im != members.end())
+					User *ufind = network.getByNickname((*iterUser));
+					if (ufind)
 					{
-						if (im->first->nickname() == (*iterUser))
+						if (c->findMember(ufind))
 						{
-							network.msgToChan(ic->second, messageHelper(ic, u, im, m));
-							c->delMember(im->first);
+							c->send(messageHelper(ic, u, ufind, m));
+							c->banMember(ufind);
 							check = true;
-							break;
 						}
-						++im;
+						else
+							writeNum(u, IrcError::usernotinchannel((*iterUser), c->name()));
 					}
-					if (im == members.end())
-						writeNum(u, IrcError::usernotinchannel((*iterUser), c->name()));
 					++iterUser;
 				}
 			}

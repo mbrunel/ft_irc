@@ -19,17 +19,12 @@ int IrcServer::nick(User &u, const Message &m)
 	{
 		u.unsetRequirement(UserRequirement::NICK);
 		if (u.isRegistered())
-		{
 			writeWelcome(u);
-			network.msgToNetwork((MessageBuilder(config.servername, "NICK") << u.nickname() <<
-			u.hopcount() << u.username() << config.servername << "34" << u.umode().flags() << u.realname()).str(), &u);
-		}
 	}
 	else
 	{
 		std::string msg((MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
 		u.writeLine(msg);
-		network.msgToNetwork(msg, &u);
 	}
 	return (0);
 }

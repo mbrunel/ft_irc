@@ -7,7 +7,6 @@ Network::~Network() throw()
 	clear();
 }
 
-
 const Network::ChannelMap &Network::channels() const
 {
 	return (_channels);
@@ -102,24 +101,6 @@ void Network::msgToAll(const std::string &msg, BasicConnection *origin)
 		User *u(i->second);
 		if (!u->hopcount() && u->isRegistered() && u->socket() != origin->socket())
 			u->writeLine(msg);
-	}
-	msgToNetwork(msg, origin);
-}
-
-void Network::msgToChan(const Channel *channel, const std::string &msg, BasicConnection *origin, bool useReceipt)
-{
-	channel->send(msg, origin, useReceipt);
-	if (!channel->isLocal())
-		msgToNetwork(msg, origin);
-}
-
-void Network::msgToNetwork(const std::string &msg, BasicConnection *origin)
-{
-	for (ServerMap::const_iterator i = _servers.begin(); i != _servers.end(); ++i)
-	{
-		Server *server(i->second);
-		if (!server->hopcount() && (!origin || server->socket() != origin->socket()))
-			server->writeLine(msg);
 	}
 }
 

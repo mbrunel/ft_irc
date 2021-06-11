@@ -156,6 +156,6 @@ void User::updatePrefix()
 {
 	_prefix = nickname();
 	if (_username.size())
-		_prefix += "!~" + username();
+		_prefix += "!" + username();
 	_prefix += "@" + _socket->host();
 }

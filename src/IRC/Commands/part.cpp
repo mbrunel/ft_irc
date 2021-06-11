@@ -22,7 +22,7 @@ int IrcServer::part(User &u, const Message &m)
 			msg << *chan;
 			if (m.params().size() > 1)
 				msg << m.params()[1];
-			network.msgToChan(c, msg.str());
+			c->send(msg.str());
 			c->delMember(&u);
 			if (!c->count())
 				network.remove(c);
