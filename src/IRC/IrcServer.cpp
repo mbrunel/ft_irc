@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcServer.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/19 23:31:48 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/10 18:54:04 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "IrcServer.hpp"
 #include "MessageBuilder.hpp"
-#include "Utils.hpp"
+#include "ft.hpp"
 
 IrcServerConfig::IrcServerConfig(){}
 
@@ -25,9 +13,10 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 	flood(cfg.floodControl()),
 	motdfile(cfg.motdfile()) {}
 
-IrcServer::IrcServer()
+IrcServer::IrcServer() :
+creation(::time(NULL))
 {
-	creationDate = Utils::to_date(::time(NULL), "%a %b %d %Y at %H:%M:%S %Z");
+	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
@@ -127,19 +116,23 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 			if (c->findMember(&u))
 			{
 				c->delMember(&u);
-				if (c->count())
+				if (!c->count())
+					network.remove(c);
+				else if (!c->mode().isSet(ChannelMode::QUIET))
 				{
 					c->send(quitMessage, NULL, true);
 					c->markAllMembers();
 				}
-				else
-					network.remove(c);
 			}
 		}
 	}
 	if (notifyUserQuit)
 		u.writeLine(quitMessage);
-	errorReason << "Closing Link: " << u.socket()->host() << " (Client Quit)";
+	errorReason << "Closing Link: " << u.socket()->host();
+	if (notifyUserQuit)
+		errorReason << " (Client Quit)";
+	else
+		errorReason << " (" << reason << ')';
 	writeError(u.socket(), errorReason.str());
 	network.remove(&u);
 	network.newZombie(&u);

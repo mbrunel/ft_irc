@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/22 10:06:29 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/10 15:45:19 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #pragma once
 #include <map>
 #include <set>
@@ -138,7 +126,6 @@ private:
 	MaskSet				_banMasks;
 	MaskSet				_exceptionMasks;
 	MaskSet				_invitationMasks;
-	MaskSet				_bans;
 	MaskSet				_invitations;
 
 	bool	inSet(const std::string &nickname, const Channel::MaskSet &set) const;

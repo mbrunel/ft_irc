@@ -6,7 +6,7 @@
 #    By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/03/07 11:33:08 by asoursou          #+#    #+#              #
-#    Updated: 2021/05/26 15:26:46 by asoursou         ###   ########.fr        #
+#    Updated: 2021/06/11 15:20:58 by asoursou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,8 @@ SUB_DIR		:= $(dir $(wildcard src/*/.))
 SRC			:= $(wildcard src/*/*/*.cpp) $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
 CXX			:= clang++
 CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP -g \
-			   -Isrc $(foreach i,$(SUB_DIR:src/%=%),-I./src/$i) -I./$(LIBC4S_DIR)/include
+			   -I./src $(foreach i,$(SUB_DIR:src/%=%),-I./src/$i) -I./src/IRC/Parser \
+			   -I./$(LIBC4S_DIR)/include
 LDFLAGS		:= -lcrypto -lssl -L./$(LIBC4S_LDIR) -lconfig4cpp
 OBJ			:= $(SRC:src/%.cpp=$(BUILD_DIR)/%.o)
 C_RED		:= \033[31m

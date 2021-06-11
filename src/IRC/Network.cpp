@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Network.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbrunel <mbrunel@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/28 00:47:13 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/09 05:26:08 by mbrunel          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "Network.hpp"
 
 Network::Network() {}
@@ -18,7 +6,6 @@ Network::~Network() throw()
 {
 	clear();
 }
-
 
 const Network::ChannelMap &Network::channels() const
 {

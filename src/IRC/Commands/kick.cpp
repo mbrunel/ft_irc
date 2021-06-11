@@ -33,6 +33,13 @@ int IrcServer::kick(User &u, const Message &m)
 			Channel *c = ic->second;
 			if ((*i) == c->name())
 			{
+				if (c->mode().isSet(Channel::UNMODERATED))
+				{
+					writeNum(u, IrcError::nochanmodes((*i)));
+					++ic;
+					check = true;
+					continue;
+				}
 				MemberMode *mmode = c->findMember(&u);
 				if (!mmode)
 				{
@@ -58,7 +65,7 @@ int IrcServer::kick(User &u, const Message &m)
 						if (c->findMember(ufind))
 						{
 							c->send(messageHelper(ic, u, ufind, m));
-							c->banMember(ufind);
+							c->delMember(ufind);
 							check = true;
 						}
 						else

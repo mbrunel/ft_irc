@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/23 14:21:33 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/09 19:39:36 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <cctype>
 #include "Channel.hpp"
-#include "Utils.hpp"
+#include "ft.hpp"
 
 MemberMode::MemberMode(unsigned flags) :
 Mode(flags)
@@ -97,13 +85,6 @@ void Channel::addMember(User *user, const MemberMode &mode)
 		_invitations.erase(it);
 }
 
-void Channel::banMember(User *user)
-{
-	if (_type != UNMODERATED)
-		_bans.insert(user->nickname());
-	delMember(user);
-}
-
 size_t Channel::count() const
 {
 	return (_members.size());
@@ -128,7 +109,7 @@ void Channel::invite(User *user)
 
 bool Channel::isBanned(const User *u) const
 {
-	return (_bans.find(u->nickname()) != _bans.end() || (inSet(u->nickname(), _banMasks) && !inSet(u->nickname(), _exceptionMasks)));
+	return (inSet(u->nickname(), _banMasks) && !inSet(u->nickname(), _exceptionMasks));
 }
 
 bool Channel::isInvited(const User *u) const
@@ -246,7 +227,7 @@ void Channel::setLimit(size_t limit)
 bool Channel::inSet(const std::string &nickname, const Channel::MaskSet &set) const
 {
 	for (Channel::MaskSet::const_iterator it = set.begin(); it != set.end(); ++it)
-		if (Utils::match(*it, nickname))
+		if (ft::match(*it, nickname))
 			return (1);
 	return (0);
 }

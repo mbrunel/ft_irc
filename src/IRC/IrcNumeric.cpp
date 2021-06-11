@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcNumeric.cpp                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/01 16:37:07 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/10 18:52:41 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "IrcNumeric.hpp"
-#include "Utils.hpp"
+#include "ft.hpp"
 
 IrcNumeric::IrcNumeric(const IrcNumericCode code, const std::string &content) :
 code(code), content(content)
@@ -300,7 +288,7 @@ namespace IrcReply
 
 	const IrcNumeric list(const std::string &channel, size_t visible, const std::string &topic)
 	{
-		return (IrcNumeric(RPL_LIST, channel + ' ' + Utils::to_string(visible) + " :" + topic));
+		return (IrcNumeric(RPL_LIST, channel + ' ' + ft::to_string(visible) + " :" + topic));
 	}
 
 	const IrcNumeric listend()
@@ -390,31 +378,31 @@ namespace IrcReply
 
 	const IrcNumeric time()
 	{
-		return (IrcNumeric(RPL_TIME, Utils::to_date(::time(NULL), "%x - %I:%M:%S")));
+		return (IrcNumeric(RPL_TIME, ft::to_date(::time(NULL), "%x - %I:%M:%S")));
 	}
 
 	const IrcNumeric lusersclient(int nb)
 	{
-		return (IrcNumeric(RPL_LUSERCLIENT, ":There are " + Utils::to_string(nb) + " users on 1 server"));	
+		return (IrcNumeric(RPL_LUSERCLIENT, ":There are " + ft::to_string(nb) + " users on 1 server"));	
 	}
 
 	const IrcNumeric lusersop(int nb)
 	{
-		return (IrcNumeric(RPL_LUSEROP, Utils::to_string(nb) + " :operator(s) online"));
+		return (IrcNumeric(RPL_LUSEROP, ft::to_string(nb) + " :operator(s) online"));
 	}
 
 	const IrcNumeric lusersunknown(int nb)
 	{
-		return (IrcNumeric(RPL_LUSERUNKNOWN, Utils::to_string(nb) + " :unknown connection(s)"));
+		return (IrcNumeric(RPL_LUSERUNKNOWN, ft::to_string(nb) + " :unknown connection(s)"));
 	}
 
 	const IrcNumeric luserschannels(int nb)
 	{
-		return (IrcNumeric(RPL_LUSERCHANNELS, Utils::to_string(nb) + " :channels formed"));
+		return (IrcNumeric(RPL_LUSERCHANNELS, ft::to_string(nb) + " :channels formed"));
 	}
 
 	const IrcNumeric lusersme(int nb)
 	{
-		return (IrcNumeric(RPL_LUSERME, ":I have " + Utils::to_string(nb) + " clients and 1 server"));
+		return (IrcNumeric(RPL_LUSERME, ":I have " + ft::to_string(nb) + " clients and 1 server"));
 	}
 }

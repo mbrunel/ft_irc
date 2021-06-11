@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcServer.hpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/19 23:31:57 by mbrunel           #+#    #+#             */
-/*   Updated: 2021/06/10 15:46:00 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #pragma once
 #include "IrcNumeric.hpp"
 #include "Network.hpp"
@@ -50,6 +38,7 @@ class IrcServer
 	typedef std::map<std::string, ServerCommandPointer> serverCommandsMap;
 	typedef std::vector<Param> Params;
 
+	time_t				creation;
 	std::string			creationDate;
 	IrcServerConfig		config;
 	TcpServer			srv;

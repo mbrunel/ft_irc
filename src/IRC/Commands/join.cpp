@@ -1,18 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   join.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: asoursou <asoursou@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/26 13:11:46 by asoursou          #+#    #+#             */
-/*   Updated: 2021/06/10 15:44:50 by asoursou         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "IrcServer.hpp"
 #include "MessageBuilder.hpp"
-#include "Utils.hpp"
+#include "ft.hpp"
 
 static bool parseNextKeyParam(const std::vector<Param> &params, size_t &i, Param &dst)
 {
