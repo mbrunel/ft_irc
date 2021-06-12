@@ -6,6 +6,7 @@ IrcServerConfig::IrcServerConfig(){}
 
 IrcServerConfig::IrcServerConfig(Config &cfg):
 	maxChannels(cfg.maxChannels()),
+	maxMasks(cfg.maxMasks()),
 	ping(cfg.ping()),
 	pong(cfg.pong()),
 	flood(cfg.floodControl())
@@ -67,7 +68,7 @@ void IrcServer::run() throw()
 			try {
 				if (!socket->IO())
 				{
-					disconnect(socket, "EOF by client");
+					disconnect(socket, "Remote host closed connection");
 					continue ;
 				}
 			}

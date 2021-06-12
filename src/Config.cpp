@@ -68,14 +68,19 @@ void Config::motdfile(std::string &m)
 
 int Config::maxConnections()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "maxconnections", 1080));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxconnections", 1080));
 }
 
 int Config::maxChannels()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "maxchannels", 1080));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchannels", 1080));
 }
-#include <iostream>
+
+int Config::maxMasks()
+{
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks", 32));
+}
+
 void Config::opers(std::map<std::string, Oper> &o)
 {
 	config4cpp::StringVector names;
@@ -93,17 +98,17 @@ void Config::opers(std::map<std::string, Oper> &o)
 
 time_t Config::ping()
 {
-	return (cfg->lookupDurationSeconds(IRC_SCOPE, "ping_interval", 100));
+	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_interval", 100));
 }
 
 time_t Config::pong()
 {
-	return (cfg->lookupDurationSeconds(IRC_SCOPE, "ping_timeout", 100));
+	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_timeout", 100));
 }
 
 bool Config::floodControl()
 {
-	return (cfg->lookupBoolean(IRC_SCOPE, "flood_control", "yes"));
+	return (cfg->lookupBoolean(IRC_SCOPE, "limits.flood_control", "yes"));
 }
 
 void Config::fnicks(std::set<std::string> &f)

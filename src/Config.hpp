@@ -39,6 +39,7 @@ class Config
 	bool floodControl();
 	int maxConnections();
 	int maxChannels();
+	int maxMasks();
 	bool verbose();
 	void opers(std::map<std::string, Oper> &opers);
 	void fnicks(std::set<std::string> &fnicks);

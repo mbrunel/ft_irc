@@ -250,6 +250,8 @@ int IrcServer::mode(User &u, const Message &m)
 									set = &c->invitationMasks();
 								if (set->find(mask) != set->end())
 									continue ;
+								if (set->size() == config.maxMasks)
+									continue ;
 								set->insert(mask);
 								changeParams.push_back(mask);
 							}

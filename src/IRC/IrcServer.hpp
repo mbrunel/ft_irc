@@ -10,6 +10,7 @@ struct IrcServerConfig
 	std::string	version;
 	std::string servername;
 	size_t		maxChannels;
+	size_t		maxMasks;
 	time_t		ping;
 	time_t		pong;
 	bool		flood;
