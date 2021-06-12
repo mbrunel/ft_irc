@@ -10,6 +10,7 @@ struct IrcServerConfig
 	std::string	version;
 	std::string servername;
 	size_t		maxChannels;
+	size_t		maxMasks;
 	time_t		ping;
 	time_t		pong;
 	bool		flood;
@@ -62,10 +63,11 @@ class IrcServer
 	int	topic(User &sender, const Message &msg);
 	int	user(User &sender, const Message &msg);
 	int kick(User &sender, const Message &msg);
+	int kill(User &sender, const Message &msg);
 	int	lusers(User &sender, const Message &msg);
 
 	void	disconnect(TcpSocket *socket, const std::string &reason) throw();
-	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit) throw();
+	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit = false) throw();
 	int		exec(BasicConnection *sender, const Message &msg);
 	void	writeMessage(User &dst, const std::string &command, const std::string &content);
 	int		writeNum(User &dst, const IrcNumeric &response);

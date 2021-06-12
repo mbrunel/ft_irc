@@ -21,92 +21,106 @@ Config::Config(int ac, char **av)
 	cfg->parse(Configuration::INPUT_FILE, configFile.c_str());
 }
 
-std::string Config::version()
+void Config::version(std::string &v)
 {
-	return (cfg->lookupString("ircserv", "version"));
+	v = cfg->lookupString(IRC_SCOPE, "version");
 }
 
-std::string Config::servername()
+void Config::servername(std::string &n)
 {
-	return (cfg->lookupString("ircserv", "servername"));
+	n = cfg->lookupString(IRC_SCOPE, "servername");
 }
 
 std::string Config::certFile()
 {
-	return (cfg->lookupString("ssl", "certfile", ""));
+	return cfg->lookupString(SERVER_SCOPE, "ssl-certificat", "");
 }
 
 std::string Config::keyFile()
 {
-	return (cfg->lookupString("ssl", "keyfile", ""));
+	return cfg->lookupString(SERVER_SCOPE, "ssl-key", "");
 }
 
 std::string Config::tcpPort()
 {
-	return (cfg->lookupString("tcp", "port"));
+	return cfg->lookupString(SERVER_SCOPE, "tcp-port");
 }
 
 std::string Config::sslPort()
 {
-	return (cfg->lookupString("ssl", "port", 0));
+	return cfg->lookupString(SERVER_SCOPE, "ssl-port", 0);
 }
 
 bool Config::verbose()
 {
-	return (cfg->lookupBoolean("logs", "verbose", true));
+	return (cfg->lookupBoolean(SERVER_SCOPE, "logs.verbose", true));
 }
 
 std::string Config::logfile()
 {
-	return(cfg->lookupString("logs", "logfile", ""));
+	return cfg->lookupString(SERVER_SCOPE, "logs.logfile", "");
 }
 
-std::string Config::motdfile()
+void Config::motdfile(std::string &m)
 {
-	return(cfg->lookupString("logs", "motdfile"));
+	m = cfg->lookupString(IRC_SCOPE, "motdfile");
 }
 
 int Config::maxConnections()
 {
-	return (cfg->lookupInt("ircserv", "maxconnections"));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxconnections", 1080));
 }
 
 int Config::maxChannels()
 {
-	return (cfg->lookupInt("ircserv", "maxchannels"));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchannels", 1080));
 }
 
-std::map<std::string, Oper> Config::opers()
+int Config::maxMasks()
 {
-	std::map<std::string, Oper> opers;
-	config4cpp::StringVector names;
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks", 32));
+}
 
-	cfg->listLocallyScopedNames("", "", cfg->CFG_SCOPE, false, "uid-operator", names);
+void Config::opers(std::map<std::string, Oper> &o)
+{
+	config4cpp::StringVector names;
+	config4cpp::StringBuffer filterPattern;
+
+	Configuration::mergeNames(IRC_SCOPE, "uid-operator", filterPattern);
+	cfg->listFullyScopedNames(IRC_SCOPE, "", cfg->CFG_SCOPE, true, filterPattern.c_str(), names);
 	for (int i = 0; i < names.length(); i++) {
 		std::string login = cfg->lookupString(names[i], "login");
 		std::string pass = cfg->lookupString(names[i], "password");
 		std::string host = cfg->lookupString(names[i], "host", "");
-		opers[login] = Oper(login, pass, host);
+		o[login] = Oper(login, pass, host);
 	}
-	return opers;
 }
 
 time_t Config::ping()
 {
-	return (cfg->lookupDurationSeconds("ircserv", "ping_interval"));
+	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_interval", 100));
 }
 
 time_t Config::pong()
 {
-	return (cfg->lookupDurationSeconds("ircserv", "ping_timeout"));
+	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_timeout", 100));
 }
 
 bool Config::floodControl()
 {
-	return (cfg->lookupBoolean("ircserver", "flood_control", "yes"));
+	return (cfg->lookupBoolean(IRC_SCOPE, "limits.flood_control", "yes"));
+}
+
+void Config::fnicks(std::set<std::string> &f)
+{
+	config4cpp::StringVector nicks;
+
+	cfg->lookupList(IRC_SCOPE, "banned_nicks", nicks);
+	f = std::set<std::string>(nicks.c_array(), nicks.c_array() + nicks.length());
 }
 
 void Config::usage() const
 {
 	std::cout << "Usage : ./ircserv <configuration file path>" << std::endl;
 }
+

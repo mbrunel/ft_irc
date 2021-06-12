@@ -9,7 +9,7 @@ int IrcServer::nick(User &u, const Message &m)
 	const Param &nick(m.params()[0]);
 	if (!nick.isNickname())
 		return (writeNum(u, IrcError::erroneusnickname(nick)));
-	if (network.getByNickname(nick))
+	if (network.getByNickname(nick) || network.isFnick(nick))
 		return (writeNum(u, IrcError::nicknameinuse(nick)));
 	network.remove(&u);
 	std::string oldprefix = u.prefix();
