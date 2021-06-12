@@ -67,7 +67,7 @@ class IrcServer
 	int	lusers(User &sender, const Message &msg);
 
 	void	disconnect(TcpSocket *socket, const std::string &reason) throw();
-	void	disconnect(User &user, const std::string &reason) throw();
+	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit = false) throw();
 	int		exec(BasicConnection *sender, const Message &msg);
 	void	writeMessage(User &dst, const std::string &command, const std::string &content);
 	int		writeNum(User &dst, const IrcNumeric &response);

@@ -102,9 +102,11 @@ void IrcServer::disconnect(TcpSocket *socket, const std::string &reason) throw()
 		disconnect(*static_cast<User *>(c), reason);
 }
 
-void IrcServer::disconnect(User &u, const std::string &reason) throw()
+
+void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQuit) throw()
 {
 	const std::string quitMessage = (MessageBuilder(u.prefix(), "QUIT") << reason).str();
+	std::stringstream errorReason;
 
 	if (u.joinedChannels())
 	{
@@ -128,10 +130,15 @@ void IrcServer::disconnect(User &u, const std::string &reason) throw()
 			}
 		}
 	}
-	writeError(u.socket(), "Closing Link: " + u.prefix() + " (" + reason + ")");
+	errorReason << "Closing Link: " << u.socket()->host();
+	if (notifyUserQuit)
+		errorReason << " (Client Quit)";
+	else
+		errorReason << " (" << reason << ')';
+	writeError(u.socket(), errorReason.str());
 	network.remove(&u);
 	network.newZombie(&u);
-	log() << u.socket()->host() << " DISCONNECTED (" << reason << ')' << std::endl;
+	log() << u.socket()->host() << ' ' << errorReason.str() << std::endl;
 }
 
 int IrcServer::exec(BasicConnection *sender, const Message &msg)
