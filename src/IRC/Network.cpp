@@ -87,14 +87,27 @@ void Network::resetUserReceipt()
 		i->second->unmark();
 }
 
-void Network::setOpers(OperMap o) { _opers = o; }
+Network::OperMap &Network::opers() { return _opers; }
 
-Oper *Network::getOper(std::string login)
+Oper *Network::getOper(const std::string &login)
 {
 	OperMap::iterator it = _opers.find(login);
 	if (it == _opers.end())
 		return (NULL);
 	return &it->second;
+}
+
+Network::FnicksSet &Network::fnicks() {return _fnicks; }
+
+bool Network::isFnick(const std::string &nick)
+{
+	FnicksSet::iterator it = _fnicks.find(nick);
+	return (it == _fnicks.end() ? false : true);
+}
+
+void Network::addFnick(const std::string &nick)
+{
+	_fnicks.insert(nick);
 }
 
 void Network::newZombie(BasicConnection *z)

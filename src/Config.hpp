@@ -3,8 +3,12 @@
 #include <iostream>
 #include <stdlib.h>
 #include <map>
+#include <set>
 #include <time.h>
 #include "config4cpp/Configuration.h"
+
+#define SERVER_SCOPE "ServerConfig"
+#define IRC_SCOPE "IrcConfig"
 
 typedef config4cpp::Configuration Configuration;
 
@@ -22,21 +26,22 @@ class Config
   public:
 	Config(int ac, char **av);
 	void usage() const;
-	std::string version();
-	std::string servername();
+	void version(std::string &);
+	void servername(std::string &);
+	void motdfile(std::string &);
 	std::string certFile();
 	std::string keyFile();
 	std::string tcpPort();
 	std::string sslPort();
 	std::string logfile();
-	std::string motdfile();
 	time_t ping();
 	time_t pong();
 	bool floodControl();
 	int maxConnections();
 	int maxChannels();
 	bool verbose();
-	std::map<std::string, Oper> opers();
+	void opers(std::map<std::string, Oper> &opers);
+	void fnicks(std::set<std::string> &fnicks);
 
   private:
 	Configuration *cfg;

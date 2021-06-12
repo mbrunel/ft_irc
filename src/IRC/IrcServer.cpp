@@ -5,13 +5,15 @@
 IrcServerConfig::IrcServerConfig(){}
 
 IrcServerConfig::IrcServerConfig(Config &cfg):
-	version(cfg.version()),
-	servername(cfg.servername()),
 	maxChannels(cfg.maxChannels()),
 	ping(cfg.ping()),
 	pong(cfg.pong()),
-	flood(cfg.floodControl()),
-	motdfile(cfg.motdfile()) {}
+	flood(cfg.floodControl())
+{
+	cfg.version(version);
+	cfg.servername(servername);
+	cfg.motdfile(motdfile);
+}
 
 IrcServer::IrcServer() :
 creation(::time(NULL))
@@ -37,6 +39,7 @@ creation(::time(NULL))
 	userCommands["USER"] = &IrcServer::user;
 	userCommands["KICK"] = &IrcServer::kick;
 	userCommands["LUSERS"] = &IrcServer::lusers;
+	userCommands["KILL"] = &IrcServer::kill;
 }
 
 IrcServer::~IrcServer() {}
@@ -64,13 +67,13 @@ void IrcServer::run() throw()
 			try {
 				if (!socket->IO())
 				{
-					disconnect(socket, "Remote host closed the connection");
+					disconnect(socket, "EOF by client");
 					continue ;
 				}
 			}
 			catch (std::exception &e) {
 				log() << e.what() << std::endl;
-				disconnect(socket, "IO exception");
+				disconnect(socket, "Corrupt link");
 				continue ;
 			}
 			std::string line;
@@ -86,7 +89,8 @@ void IrcServer::setConfig(Config &cfg)
 	srv.setMaxConnections(cfg.maxConnections());
 	srv.setVerbose(cfg.verbose());
 	srv.setLogDestination(cfg.logfile());
-	network.setOpers(cfg.opers());
+	cfg.opers(network.opers());
+	cfg.fnicks(network.fnicks());
 	config = IrcServerConfig(cfg);
 }
 
@@ -94,13 +98,12 @@ void IrcServer::disconnect(TcpSocket *socket, const std::string &reason) throw()
 {
 	BasicConnection *c = network.getBySocket(socket);
 	if (c->type() == BasicConnection::USER)
-		disconnect(*static_cast<User *>(c), reason, false);
+		disconnect(*static_cast<User *>(c), reason);
 }
 
-void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQuit) throw()
+void IrcServer::disconnect(User &u, const std::string &reason) throw()
 {
 	const std::string quitMessage = (MessageBuilder(u.prefix(), "QUIT") << reason).str();
-	std::stringstream errorReason;
 
 	if (u.joinedChannels())
 	{
@@ -124,14 +127,7 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 			}
 		}
 	}
-	if (notifyUserQuit)
-		u.writeLine(quitMessage);
-	errorReason << "Closing Link: " << u.socket()->host();
-	if (notifyUserQuit)
-		errorReason << " (Client Quit)";
-	else
-		errorReason << " (" << reason << ')';
-	writeError(u.socket(), errorReason.str());
+	writeError(u.socket(), "Closing Link: " + u.prefix() + " (" + reason + ")");
 	network.remove(&u);
 	network.newZombie(&u);
 	log() << u.socket()->host() << " DISCONNECTED (" << reason << ')' << std::endl;
