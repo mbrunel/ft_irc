@@ -41,6 +41,7 @@ creation(::time(NULL))
 	userCommands["KICK"] = &IrcServer::kick;
 	userCommands["LUSERS"] = &IrcServer::lusers;
 	userCommands["KILL"] = &IrcServer::kill;
+	userCommands["WHO"] = &IrcServer::who;
 }
 
 IrcServer::~IrcServer() {}
