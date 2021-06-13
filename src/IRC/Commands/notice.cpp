@@ -16,9 +16,10 @@ int IrcServer::notice(User &u, const Message &m)
 		{
 			if (!u.umode().isSet(UserMode::OPERATOR))
 				continue ;
-			else if ((*target)[0] == '$')
+			const std::string mask = target->mask().substr(1);
+			if ((*target)[0] == '$')
 			{
-				if (ft::match((*target).substr(1), config.servername))
+				if (ft::match(mask, config.servername))
 					network.msgToAll((MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
 			}
 			else if ((*target)[0] == '#')
@@ -31,7 +32,7 @@ int IrcServer::notice(User &u, const Message &m)
 				toplevel = target->substr(dot);
 				if (toplevel.find('*') == std::string::npos && toplevel.find('?') == std::string::npos)
 					for (Network::UserMap::const_iterator it = network.users().begin(); it != network.users().end(); ++it)
-						if (ft::match((*target).substr(1), it->second->socket()->host()))
+						if (ft::match(mask, it->second->socket()->host()))
 							it->second->writeLine((MessageBuilder(it->second->prefix(), m.command()) << text).str());
 			}
 		}
@@ -44,7 +45,7 @@ int IrcServer::notice(User &u, const Message &m)
 		else if (target->isChannel())
 		{
 			Channel *chan = network.getByChannelname(*target);
-			if (chan)
+			if (chan && chan->canSendToChannel(&u))
 				chan->send((MessageBuilder(u.prefix(), m.command()) << chan->name() << text).str(), &u);
 		}
 	}

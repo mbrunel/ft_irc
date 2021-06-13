@@ -6,7 +6,7 @@ namespace Parser
 	bool asChannel(Context &o, std::string &s)
 	{
 		o.resetDistance();
-		if (!strchr("#&+", *o))
+		if (!strchr("#+", *o))
 			return (false);
 		while ((++o).distance() < 50 && *o && *o != ',' && *o != '\b');
 		if (o.distance() < 2)

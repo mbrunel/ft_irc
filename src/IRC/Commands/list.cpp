@@ -11,7 +11,7 @@ int IrcServer::list(User &u, const Message &m)
 		for (Network::ChannelMap::const_iterator i = channels.begin(); i != channels.end(); ++i)
 		{
 			Channel *c = i->second;
-			if (!c->mode().isSet(ChannelMode::SECRET) || c->findMember(&u))
+			if (!c->mode().isSet(ChannelMode::PRIVATE | ChannelMode::SECRET) || c->findMember(&u))
 				writeNum(u, IrcReply::list(c->name(), c->nbUserVisible(), c->topic()));
 		}
 	}
@@ -20,7 +20,7 @@ int IrcServer::list(User &u, const Message &m)
 		Params args = m.params()[0].split();
 		Channel *c;
 		for (Params::const_iterator i = args.begin(); i != args.end(); ++i)
-			if (i->isChannel() && (c = network.getByChannelname(*i)))
+			if (i->isChannel() && (c = network.getByChannelname(*i)) && (!c->mode().isSet(ChannelMode::SECRET) || c->findMember(&u)))
 				writeNum(u, IrcReply::list(c->name(), c->nbUserVisible(), c->topic()));
 			else
 				writeNum(u, IrcError::nosuchchannel(*i));

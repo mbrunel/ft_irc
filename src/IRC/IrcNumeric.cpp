@@ -222,9 +222,14 @@ namespace IrcError
 		return (IrcNumeric(ERR_CANTKILLSERVER, ":You can't kill a server"));
 	}
 
+	const IrcNumeric restricted()
+	{
+		return (IrcNumeric(ERR_RESTRICTED, ":Your connection is restricted!"));
+	}
+
 	const IrcNumeric nooperhost()
 	{
-		return (IrcNumeric(ERR_NOPERMFORHOST, ":No O-lines for your host"));
+		return (IrcNumeric(ERR_NOOPERHOST, ":No O-lines for your host"));
 	}
 
 	const IrcNumeric umodeunknownflag()

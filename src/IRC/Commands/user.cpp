@@ -7,7 +7,7 @@ int IrcServer::user(User &u, const Message &m)
 	else if (m.params().size() < 4)
 		return (writeNum(u, IrcError::needmoreparams(m.command())));
 	u.setUsername(m.params()[0]);
-	// Add mode
+	u.setUmode(strtoul(m.params()[1].c_str(), NULL, 10) & (UserMode::INVISIBLE | UserMode::WALLOPS | UserMode::RESTRICTED));
 	u.setRealname(m.params()[3]);
 	u.unsetRequirement(UserRequirement::USER);
 	if (u.isRegistered())

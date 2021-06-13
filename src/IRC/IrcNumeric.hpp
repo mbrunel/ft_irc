@@ -145,6 +145,7 @@ namespace IrcError
 	const IrcNumeric noprivileges();
 	const IrcNumeric chanoprisneeded(const std::string &channel);
 	const IrcNumeric cantkillserver();
+	const IrcNumeric restricted();
 	const IrcNumeric nooperhost();
 	const IrcNumeric umodeunknownflag();
 	const IrcNumeric usersdontmatch();

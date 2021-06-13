@@ -122,7 +122,7 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 				c->delMember(&u);
 				if (!c->count())
 					network.remove(c);
-				else if (!c->mode().isSet(ChannelMode::QUIET))
+				else
 				{
 					c->send(quitMessage, NULL, true);
 					c->markAllMembers();

@@ -19,7 +19,12 @@ int IrcServer::topic(User &u, const Message &m)
 		if (m.params().size() > 1)
 		{
 			if (!mm)
-				writeNum(u, IrcError::notonchannel(target));
+			{
+				if (c->mode().isSet(ChannelMode::SECRET))
+					IrcError::nosuchchannel(c->name());
+				else
+					writeNum(u, IrcError::notonchannel(target));
+			}
 			else if (!mm->isSet(MemberMode::OPERATOR) && cm.isSet(ChannelMode::TOPIC_SETTABLE_BY_CHANOP))
 				writeNum(u, IrcError::chanoprisneeded(target));
 			else
@@ -28,8 +33,13 @@ int IrcServer::topic(User &u, const Message &m)
 				c->send((MessageBuilder(u.prefix(), m.command()) << target << c->topic()).str());
 			}
 		}
-		else if (!mm && cm.isSet(ChannelMode::SECRET))
-			writeNum(u, IrcError::notonchannel(target));
+		else if (!mm)
+		{
+			if (cm.isSet(ChannelMode::SECRET))
+				writeNum(u, IrcError::nosuchchannel(target));
+			else
+				writeNum(u, IrcError::notonchannel(target));
+		}
 		else if (c->topic().size())
 			writeNum(u, IrcReply::topic(target, c->topic()));
 		else
