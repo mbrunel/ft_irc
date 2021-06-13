@@ -11,11 +11,14 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 	pong(cfg.pong()),
 	flood(cfg.floodControl())
 {
-	cfg.version(version);
 	cfg.servername(servername);
 	cfg.motdfile(motdfile);
 	cfg.shortinfo(shortinfo);
 }
+
+CommandStats::CommandStats() :
+count(0), byteCount(0)
+{}
 
 IrcServer::IrcServer() :
 creation(::time(NULL))
@@ -24,7 +27,10 @@ creation(::time(NULL))
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
+	userCommands["KICK"] = &IrcServer::kick;
+	userCommands["KILL"] = &IrcServer::kill;
 	userCommands["LIST"] = &IrcServer::list;
+	userCommands["LUSERS"] = &IrcServer::lusers;
 	userCommands["MODE"] = &IrcServer::mode;
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NAMES"] = &IrcServer::names;
@@ -36,12 +42,12 @@ creation(::time(NULL))
 	userCommands["PONG"] = &IrcServer::pong;
 	userCommands["PRIVMSG"] = &IrcServer::privmsg;
 	userCommands["QUIT"] = &IrcServer::quit;
+	userCommands["STATS"] = &IrcServer::stats;
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
-	userCommands["KICK"] = &IrcServer::kick;
-	userCommands["LUSERS"] = &IrcServer::lusers;
-	userCommands["KILL"] = &IrcServer::kill;
+	userCommands["VERSION"] = &IrcServer::version;
+	userCommands["WHO"] = &IrcServer::who;
 	userCommands["WHOIS"] = &IrcServer::whois;
 }
 
@@ -155,7 +161,11 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 		userCommandsMap::const_iterator i(userCommands.find(msg.command()));
 		if (i == userCommands.end())
 			return (writeNum(u, IrcError::unknowncommand(msg.command())));
-		return ((this->*(i->second))(u, msg));
+		int commandStatus = (this->*(i->second))(u, msg);
+		CommandStats &stats = commandsStats[msg.command()];
+		++stats.count;
+		stats.byteCount += msg.entry().size();
+		return (commandStatus);
 	}
 	return (-1);
 }

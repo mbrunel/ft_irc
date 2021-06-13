@@ -1,3 +1,4 @@
+#include <iomanip>
 #include "IrcNumeric.hpp"
 #include "ft.hpp"
 
@@ -271,9 +272,47 @@ namespace IrcReply
 		return (IrcNumeric(RPL_BOUNCE, ":Try server " + servername + ", port " + port));
 	}
 
+	const IrcNumeric statslinkinfo(const std::string &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen)
+	{
+		std::stringstream ss;
+		ss << linkname << ' ' << sendq << ' ' << sentMessages << ' ' << sentKbytes
+		<< ' ' << recvMessages << ' ' << recvKbytes << ' ' << timeOpen;
+		return (IrcNumeric(RPL_STATSLINKINFO, ss.str()));
+	}
+
+	const IrcNumeric statscommands(const std::string &command, size_t count, size_t byteCount, size_t remoteCount)
+	{
+		std::stringstream ss;
+		ss << command << ' ' << count << ' ' << byteCount << ' ' << remoteCount;
+		return (IrcNumeric(RPL_STATSCOMMANDS, ss.str()));
+	}
+
+	const IrcNumeric endofstats(const std::string &letter)
+	{
+		return (IrcNumeric(RPL_ENDOFSTATS, letter + " :End of STATS report"));
+	}
+
 	const IrcNumeric umodeis(const std::string &modes)
 	{
 		return (IrcNumeric(RPL_UMODEIS, '+' + modes));
+	}
+
+	const IrcNumeric statuptime(time_t uptime)
+	{
+		std::stringstream ss;
+		time_t m = 60, h = 60 * m, d = 24 * h;
+		ss << ":Server Up " << (uptime / d) << " days ";
+		uptime %= d;
+		ss << (uptime / h);
+		uptime %= h;
+		ss << ':' << std::setfill('0') << std::setw(2) << (uptime / m)
+		<< ':' << std::setfill('0') << std::setw(2) << (uptime % m);
+		return (IrcNumeric(RPL_STATSUPTIME, ss.str()));
+	}
+
+	const IrcNumeric statoline(const std::string &hostmask, const std::string &name)
+	{
+		return (IrcNumeric(RPL_AWAY, "O " + hostmask + " * " + name));
 	}
 
 	const IrcNumeric away(const std::string &nickname, const std::string &reason)
@@ -339,6 +378,11 @@ namespace IrcReply
 	const IrcNumeric endofexceptlist(const std::string &channel)
 	{
 		return (IrcNumeric(RPL_ENDOFEXCEPTLIST, channel + " :End of channel exception list"));
+	}
+
+	const IrcNumeric version(const std::string &version, const std::string debuglevel, const std::string &server, const std::string &comments)
+	{
+		return (IrcNumeric(RPL_VERSION, version + '.' + debuglevel + ' ' + server + " :" + comments));
 	}
 
 	const IrcNumeric namreply(const std::string &names)
@@ -439,5 +483,15 @@ namespace IrcReply
 	const IrcNumeric endofwhois(const std::string &nick)
 	{
 		return (IrcNumeric(RPL_ENDOFWHOIS, nick + " :End of WHOIS list"));
+	}
+
+	const IrcNumeric whoreply(const std::string &msg)
+	{
+		return (IrcNumeric(RPL_WHOREPLY, msg));
+	}
+
+	const IrcNumeric endofwho(const std::string &target)
+	{
+		return (IrcNumeric(RPL_ENDOFWHO, target + " :End of WHO list"));
 	}
 }
