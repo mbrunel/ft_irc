@@ -94,7 +94,8 @@ int     IrcServer::who(User &u, const Message &m)
 		User *us = userIter->second;
 		if (ft::match(mask, us->nickname())
 		|| ft::match(mask, us->realname())
-		|| ft::match(mask, us->username()))
+		|| ft::match(mask, us->username())
+		|| ft::match(mask, config.servername))
 		{
 			// ---------------------------------------------- //
 
