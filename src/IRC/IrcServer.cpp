@@ -15,6 +15,10 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 	cfg.motdfile(motdfile);
 }
 
+CommandStats::CommandStats() :
+count(0), byteCount(0)
+{}
+
 IrcServer::IrcServer() :
 creation(::time(NULL))
 {
@@ -37,6 +41,7 @@ creation(::time(NULL))
 	userCommands["PONG"] = &IrcServer::pong;
 	userCommands["PRIVMSG"] = &IrcServer::privmsg;
 	userCommands["QUIT"] = &IrcServer::quit;
+	userCommands["STATS"] = &IrcServer::stats;
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
@@ -154,7 +159,11 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 		userCommandsMap::const_iterator i(userCommands.find(msg.command()));
 		if (i == userCommands.end())
 			return (writeNum(u, IrcError::unknowncommand(msg.command())));
-		return ((this->*(i->second))(u, msg));
+		int commandStatus = (this->*(i->second))(u, msg);
+		CommandStats &stats = commandsStats[msg.command()];
+		++stats.count;
+		stats.byteCount += msg.entry().size();
+		return (commandStatus);
 	}
 	return (-1);
 }

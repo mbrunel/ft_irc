@@ -86,7 +86,7 @@ void Config::opers(std::map<std::string, Oper> &o)
 	for (int i = 0; i < names.length(); i++) {
 		std::string login = cfg->lookupString(names[i], "login");
 		std::string pass = cfg->lookupString(names[i], "password");
-		std::string host = cfg->lookupString(names[i], "host", "");
+		std::string host = cfg->lookupString(names[i], "host", "*");
 		o[login] = Oper(login, pass, host);
 	}
 }

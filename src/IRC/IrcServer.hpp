@@ -21,6 +21,14 @@ struct IrcServerConfig
 	IrcServerConfig(Config &cfg);
 };
 
+struct CommandStats
+{
+	size_t	count;
+	size_t 	byteCount;
+
+	CommandStats();
+};
+
 class IrcServer
 {
   public:
@@ -35,6 +43,7 @@ class IrcServer
   private:
 	typedef int (IrcServer::*UserCommandPointer)(User &, const Message &);
 	typedef std::map<std::string, UserCommandPointer> userCommandsMap;
+	typedef std::map<std::string, CommandStats> commandsStatsMap;
 	typedef std::vector<Param> Params;
 
 	time_t				creation;
@@ -43,6 +52,7 @@ class IrcServer
 	TcpServer			srv;
 	Network				network;
 	userCommandsMap		userCommands;
+	commandsStatsMap	commandsStats;
 
 	int	away(User &sender, const Message &msg);
 	int	invite(User &sender, const Message &msg);
@@ -62,6 +72,7 @@ class IrcServer
 	int	pong(User &sender, const Message &msg);
 	int	privmsg(User &sender, const Message &msg);
 	int	quit(User &sender, const Message &msg);
+	int	stats(User &sender, const Message &msg);
 	int	time(User &sender, const Message &msg);
 	int	topic(User &sender, const Message &msg);
 	int	user(User &sender, const Message &msg);

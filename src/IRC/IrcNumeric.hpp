@@ -62,7 +62,12 @@ enum IrcNumericCode
 	RPL_CREATED = 3,
 	RPL_MYINFO = 4,
 	RPL_BOUNCE = 5,
+	RPL_STATSLINKINFO = 211,
+	RPL_STATSCOMMANDS = 212,
+	RPL_ENDOFSTATS = 219,
 	RPL_UMODEIS = 221,
+	RPL_STATSUPTIME = 242,
+	RPL_STATSOLINE = 243,
 	RPL_LUSERCLIENT = 251,
 	RPL_LUSEROP = 252,
 	RPL_LUSERUNKNOWN = 253,
@@ -161,7 +166,12 @@ namespace IrcReply
 	const IrcNumeric created(const std::string &date);
 	const IrcNumeric myinfo(const std::string &servername, const std::string &version, const std::string &availableUserModes, const std::string &availableChannelModes);
 	const IrcNumeric bounce(const std::string &servername, const std::string &port);
+	const IrcNumeric statslinkinfo(const std::string &linkname, size_t sendq, size_t sentMessages, size_t sentKbytes, size_t recvMessages, size_t recvKbytes, time_t timeOpen);
+	const IrcNumeric statscommands(const std::string &command, size_t count, size_t byteCount, size_t remoteCount);
+	const IrcNumeric endofstats(const std::string &letter);
 	const IrcNumeric umodeis(const std::string &modes);
+	const IrcNumeric statuptime(time_t uptime);
+	const IrcNumeric statoline(const std::string &hostmask, const std::string &name);
 	const IrcNumeric away(const std::string &nickname, const std::string &reason);
 	const IrcNumeric unaway();
 	const IrcNumeric nowaway();
