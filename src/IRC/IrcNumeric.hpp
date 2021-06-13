@@ -83,6 +83,7 @@ enum IrcNumericCode
 	RPL_ENDOFINVITELIST =  347,
 	RPL_EXCEPTLIST = 348,
 	RPL_ENDOFEXCEPTLIST = 349,
+	RPL_VERSION = 351,
 	RPL_WHOREPLY = 352,
 	RPL_NAMREPLY = 353,
 	RPL_ENDOFNAMES = 366,
@@ -174,6 +175,7 @@ namespace IrcReply
 	const IrcNumeric endofinvitelist(const std::string &channel);
 	const IrcNumeric exceptlist(const std::string &channel, const std::string &exceptionmask);
 	const IrcNumeric endofexceptlist(const std::string &channel);
+	const IrcNumeric version(const std::string &version, const std::string debuglevel, const std::string &server, const std::string &comments);
 	const IrcNumeric namreply(const std::string &names);
 	const IrcNumeric endofnames(const std::string &name);
 	const IrcNumeric banlist(const std::string &channel, const std::string &banmask);

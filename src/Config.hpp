@@ -26,7 +26,6 @@ class Config
   public:
 	Config(int ac, char **av);
 	void usage() const;
-	void version(std::string &);
 	void servername(std::string &);
 	void motdfile(std::string &);
 	std::string certFile();

@@ -21,11 +21,6 @@ Config::Config(int ac, char **av)
 	cfg->parse(Configuration::INPUT_FILE, configFile.c_str());
 }
 
-void Config::version(std::string &v)
-{
-	v = cfg->lookupString(IRC_SCOPE, "version");
-}
-
 void Config::servername(std::string &n)
 {
 	n = cfg->lookupString(IRC_SCOPE, "servername");

@@ -11,7 +11,6 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 	pong(cfg.pong()),
 	flood(cfg.floodControl())
 {
-	cfg.version(version);
 	cfg.servername(servername);
 	cfg.motdfile(motdfile);
 }
@@ -23,7 +22,10 @@ creation(::time(NULL))
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
+	userCommands["KICK"] = &IrcServer::kick;
+	userCommands["KILL"] = &IrcServer::kill;
 	userCommands["LIST"] = &IrcServer::list;
+	userCommands["LUSERS"] = &IrcServer::lusers;
 	userCommands["MODE"] = &IrcServer::mode;
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NAMES"] = &IrcServer::names;
@@ -38,9 +40,7 @@ creation(::time(NULL))
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
 	userCommands["USER"] = &IrcServer::user;
-	userCommands["KICK"] = &IrcServer::kick;
-	userCommands["LUSERS"] = &IrcServer::lusers;
-	userCommands["KILL"] = &IrcServer::kill;
+	userCommands["VERSION"] = &IrcServer::version;
 	userCommands["WHO"] = &IrcServer::who;
 }
 

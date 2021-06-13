@@ -341,6 +341,11 @@ namespace IrcReply
 		return (IrcNumeric(RPL_ENDOFEXCEPTLIST, channel + " :End of channel exception list"));
 	}
 
+	const IrcNumeric version(const std::string &version, const std::string debuglevel, const std::string &server, const std::string &comments)
+	{
+		return (IrcNumeric(RPL_VERSION, version + '.' + debuglevel + ' ' + server + " :" + comments));
+	}
+
 	const IrcNumeric namreply(const std::string &names)
 	{
 		return (IrcNumeric(RPL_NAMREPLY, names));
