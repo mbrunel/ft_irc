@@ -494,4 +494,14 @@ namespace IrcReply
 	{
 		return (IrcNumeric(RPL_ENDOFWHO, target + " :End of WHO list"));
 	}
+
+	const IrcNumeric whowasuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname)
+	{
+		return (IrcNumeric(RPL_WHOWASUSER, nick + " " + user + " " + host + " * :" + realname));
+	}
+
+	const IrcNumeric endofwhowas(const std::string &nick)
+	{
+		return (IrcNumeric(RPL_ENDOFWHOWAS, nick + " :End of WHOWAS"));
+	}
 }

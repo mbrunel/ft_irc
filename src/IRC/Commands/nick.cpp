@@ -21,7 +21,10 @@ int IrcServer::nick(User &u, const Message &m)
 	{
 		u.unsetRequirement(UserRequirement::NICK);
 		if (u.isRegistered())
+		{
 			writeWelcome(u);
+			network.addNickToHistory(u);
+		}
 	}
 	else
 	{

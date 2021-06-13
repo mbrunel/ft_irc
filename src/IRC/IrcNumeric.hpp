@@ -83,6 +83,8 @@ enum IrcNumericCode
 	RPL_ENDOFWHOIS = 318,
 	RPL_WHOISCHANNELS = 319,
 	RPL_ENDOFWHO = 315,
+	RPL_WHOWASUSER = 314,
+	RPL_ENDOFWHOWAS = 369,
 	RPL_LISTSTART = 321, /* Not used / (╯°□°）╯︵ ┻━┻  */
 	RPL_LIST = 322,
 	RPL_LISTEND = 323,
@@ -214,4 +216,6 @@ namespace IrcReply
 	const IrcNumeric endofwhois(const std::string &nick);
 	const IrcNumeric whoreply(const std::string &msg);
 	const IrcNumeric endofwho(const std::string &target);
+	const IrcNumeric whowasuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname);
+	const IrcNumeric endofwhowas(const std::string &nick);
 }

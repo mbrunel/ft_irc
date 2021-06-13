@@ -80,6 +80,7 @@ class IrcServer
 	int	version(User &sender, const Message &msg);
 	int	who(User &sender, const Message &msg);
 	int whois(User &sender, const Message &msg);
+	int whowas(User &sender, const Message &msg);
 
 	void	disconnect(TcpSocket *socket, const std::string &reason) throw();
 	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit = false) throw();

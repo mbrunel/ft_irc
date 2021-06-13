@@ -49,6 +49,7 @@ creation(::time(NULL))
 	userCommands["VERSION"] = &IrcServer::version;
 	userCommands["WHO"] = &IrcServer::who;
 	userCommands["WHOIS"] = &IrcServer::whois;
+	userCommands["WHOWAS"] = &IrcServer::whowas;
 }
 
 IrcServer::~IrcServer() {}
