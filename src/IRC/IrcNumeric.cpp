@@ -410,4 +410,14 @@ namespace IrcReply
 	{
 		return (IrcNumeric(RPL_LUSERME, ":I have " + ft::to_string(nb) + " clients and 1 server"));
 	}
+
+	const IrcNumeric whoreply(const std::string &msg)
+	{
+		return (IrcNumeric(RPL_WHOREPLY, msg));
+	}
+
+	const IrcNumeric endofwho(const std::string &target)
+	{
+		return (IrcNumeric(RPL_ENDOFWHO, target + " :End of WHO list"));
+	}
 }

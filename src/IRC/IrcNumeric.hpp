@@ -71,6 +71,7 @@ enum IrcNumericCode
 	RPL_AWAY = 301,
 	RPL_UNAWAY = 305,
 	RPL_NOWAWAY = 306,
+	RPL_ENDOFWHO = 315,
 	RPL_LISTSTART = 321, /* Not used / (╯°□°）╯︵ ┻━┻  */
 	RPL_LIST = 322,
 	RPL_LISTEND = 323,
@@ -82,6 +83,7 @@ enum IrcNumericCode
 	RPL_ENDOFINVITELIST =  347,
 	RPL_EXCEPTLIST = 348,
 	RPL_ENDOFEXCEPTLIST = 349,
+	RPL_WHOREPLY = 352,
 	RPL_NAMREPLY = 353,
 	RPL_ENDOFNAMES = 366,
 	RPL_BANLIST = 367,
@@ -186,4 +188,6 @@ namespace IrcReply
 	const IrcNumeric lusersunknown(int nb);
 	const IrcNumeric luserschannels(int nb);
 	const IrcNumeric lusersme(int nb);
+	const IrcNumeric whoreply(const std::string &msg);
+	const IrcNumeric endofwho(const std::string &target);
 }
