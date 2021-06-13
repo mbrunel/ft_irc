@@ -21,11 +21,6 @@ Config::Config(int ac, char **av)
 	cfg->parse(Configuration::INPUT_FILE, configFile.c_str());
 }
 
-void Config::version(std::string &v)
-{
-	v = cfg->lookupString(IRC_SCOPE, "version");
-}
-
 void Config::servername(std::string &n)
 {
 	n = cfg->lookupString(IRC_SCOPE, "servername");
@@ -91,7 +86,7 @@ void Config::opers(std::map<std::string, Oper> &o)
 	for (int i = 0; i < names.length(); i++) {
 		std::string login = cfg->lookupString(names[i], "login");
 		std::string pass = cfg->lookupString(names[i], "password");
-		std::string host = cfg->lookupString(names[i], "host", "");
+		std::string host = cfg->lookupString(names[i], "host", "*");
 		o[login] = Oper(login, pass, host);
 	}
 }
