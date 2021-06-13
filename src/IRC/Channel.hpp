@@ -33,8 +33,6 @@ public:
 		MODERATED = 1 << 2,
 		/** 'n' - No messages to Channel from User on the outside */
 		NO_OUTSIDE_MSG = 1 << 3,
-		/** 'q' - Quiet channel flag */
-		QUIET = 1 << 4,
 		/** 'p' - Private channel flag */
 		PRIVATE = 1 << 5,
 		/** 's' - Secret channel flag */
@@ -75,8 +73,6 @@ public:
 	{
 		/** '#' */
 		GLOBAL,
-		/** '&' */
-		LOCAL,
 		/** '+' */
 		UNMODERATED
 	};
@@ -86,13 +82,13 @@ public:
 
 	void				addMember(User *user, const MemberMode &mode);
 	void				banMember(User *user);
+	bool				canSendToChannel(User *user);
 	size_t				count() const;
 	void				delMember(User *user);
 	MemberMode			*findMember(User *user);
 	void				invite(User *user);
 	bool				isBanned(const User *user) const;
 	bool				isInvited(const User *user) const;
-	bool				isLocal() const;
 	void				markAllMembers();
 	void				send(const std::string &msg, BasicConnection *origin = NULL, bool useReceipt = false) const;
 	const std::string	&name() const;

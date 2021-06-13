@@ -6,6 +6,8 @@ int IrcServer::nick(User &u, const Message &m)
 {
 	if (!m.params().size())
 		return (writeNum(u, IrcError::nonicknamegiven()));
+	if (!u.requirements().isSet(UserRequirement::NICK) && u.umode().isSet(UserMode::RESTRICTED))
+		return (writeNum(u, IrcError::restricted()));
 	const Param &nick(m.params()[0]);
 	if (!nick.isNickname())
 		return (writeNum(u, IrcError::erroneusnickname(nick)));

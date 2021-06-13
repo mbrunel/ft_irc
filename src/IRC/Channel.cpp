@@ -39,8 +39,6 @@ std::string ChannelMode::toString() const
 		s.push_back('i');
 	if (isSet(NO_OUTSIDE_MSG))
 		s.push_back('n');
-	if (isSet(QUIET))
-		s.push_back('q');
 	if (isSet(PRIVATE))
 		s.push_back('p');
 	if (isSet(SECRET))
@@ -57,16 +55,15 @@ std::string ChannelMode::toString() const
 const unsigned short ChannelMode::_lowerFlagTable[] =
 {
 	0, BAN_MASK, 0, 0, EXCEPTION_MASK, 0, 0, 0, INVITE_ONLY, 0, KEY,
-	LIMIT, MODERATED, NO_OUTSIDE_MSG, 0, PRIVATE, QUIET, 0, SECRET,
+	LIMIT, MODERATED, NO_OUTSIDE_MSG, 0, PRIVATE, 0, 0, SECRET,
 	TOPIC_SETTABLE_BY_CHANOP, 0, 0, 0, 0, 0, 0
 };
 
 Channel::Channel(const std::string &name) :
 _name(name), _type(GLOBAL)
 {
-	const char *types = "#&+";
 	if (name.size())
-		_type = static_cast<Type>(strchrnul(types, name[0]) - types);
+		_type = name[0] == '#' ? GLOBAL : UNMODERATED;
 }
 
 Channel::~Channel()
@@ -79,6 +76,14 @@ void Channel::addMember(User *user, const MemberMode &mode)
 	MaskSet::const_iterator it = _invitations.find(user->nickname());
 	if (it != _invitations.end())
 		_invitations.erase(it);
+}
+
+bool Channel::canSendToChannel(User *user)
+{
+	MemberMode *um = findMember(user);
+	if (um)
+		return (!_mode.isSet(ChannelMode::MODERATED) || um->flags());
+	return (!_mode.isSet(ChannelMode::MODERATED | ChannelMode::NO_OUTSIDE_MSG) && !isBanned(user));
 }
 
 size_t Channel::count() const
@@ -105,17 +110,12 @@ void Channel::invite(User *user)
 
 bool Channel::isBanned(const User *u) const
 {
-	return (inSet(u->nickname(), _banMasks) && !inSet(u->nickname(), _exceptionMasks));
+	return (inSet(u->prefix(), _banMasks) && !inSet(u->prefix(), _exceptionMasks));
 }
 
 bool Channel::isInvited(const User *u) const
 {
-	return (_invitations.find(u->nickname()) != _invitations.end() || inSet(u->nickname(), _invitationMasks));
-}
-
-bool Channel::isLocal() const
-{
-	return (_type == LOCAL);
+	return (_invitations.find(u->nickname()) != _invitations.end() || inSet(u->prefix(), _invitationMasks));
 }
 
 void Channel::markAllMembers()

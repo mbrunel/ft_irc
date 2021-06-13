@@ -41,6 +41,18 @@ static bool parseNextModeParam(const std::vector<Param> &params, size_t &i, Para
 	return (1);
 }
 
+static bool extractMask(Param &arg)
+{
+	arg = arg.mask();
+	size_t userPrefix = arg.find_first_of('!'), hostPrefix = arg.find_first_of('@');
+	if (!userPrefix)
+		arg = '*' + arg;
+	if (hostPrefix != Param::npos)
+		return (userPrefix == Param::npos || userPrefix < hostPrefix);
+	arg += userPrefix == Param::npos ? "!*@*" : "@*";
+	return (1);
+}
+
 static void pushChange(std::string &changes, const SwitchFlag prevSwitchFlag, const SwitchFlag switchFlag, char c)
 {
 	if (switchFlag != prevSwitchFlag)
@@ -188,9 +200,8 @@ int IrcServer::mode(User &u, const Message &m)
 								needMoreParams = 1;
 								continue ;
 							}
-							else if (!arg.isMask())
+							else if (!extractMask(arg))
 								continue ;
-							const std::string mask = arg.mask();
 							Channel::MaskSet *set;
 							if (f == ChannelMode::BAN_MASK)
 								set = &c->banMasks();
@@ -198,10 +209,10 @@ int IrcServer::mode(User &u, const Message &m)
 								set = &c->exceptionMasks();
 							else
 								set = &c->invitationMasks();
-							if (set->find(mask) == set->end())
+							if (set->find(arg) == set->end())
 								continue ;
-							set->erase(mask);
-							changeParams.push_back(mask);
+							set->erase(arg);
+							changeParams.push_back(arg);
 						}
 						else if (!cm.isSet(f))
 							continue ;
@@ -238,9 +249,8 @@ int IrcServer::mode(User &u, const Message &m)
 							}
 							else
 							{
-								if (!arg.isMask())
+								if (!extractMask(arg))
 									continue ;
-								const std::string mask = arg.mask();
 								Channel::MaskSet *set;
 								if (f == ChannelMode::BAN_MASK)
 									set = &c->banMasks();
@@ -248,12 +258,12 @@ int IrcServer::mode(User &u, const Message &m)
 									set = &c->exceptionMasks();
 								else
 									set = &c->invitationMasks();
-								if (set->find(mask) != set->end())
+								if (set->find(arg) != set->end())
 									continue ;
 								if (set->size() == config.maxMasks)
 									continue ;
-								set->insert(mask);
-								changeParams.push_back(mask);
+								set->insert(arg);
+								changeParams.push_back(arg);
 							}
 						}
 						else if (((f == ChannelMode::PRIVATE || f == ChannelMode::SECRET) && cm.isSet(ChannelMode::PRIVATE | ChannelMode::SECRET)) || cm.isSet(f))
@@ -263,6 +273,8 @@ int IrcServer::mode(User &u, const Message &m)
 					pushChange(changes, prevSwitchFlag, switchFlag, modeC);
 				}
 			}
+			else if (!mm->parse(modeC))
+				unknownMode = 1;
 			else if (!parseNextModeParam(m.params(), argi, arg)) // MemberMode require target
 				needMoreParams = 1;
 			else if (switchFlag != NONE) // Disable implicit set switch
