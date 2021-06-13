@@ -102,7 +102,9 @@ enum IrcNumericCode
 	RPL_ENDOFNAMES = 366,
 	RPL_BANLIST = 367,
 	RPL_ENDOFBANLIST = 368,
+	RPL_INFO = 371,
 	RPL_MOTD = 372,
+	RPL_ENDOFINFO = 374,
 	RPL_MOTDSTART = 375,
 	RPL_ENDOFMOTD = 376,
 	RPL_YOUREOPER = 381,
@@ -198,6 +200,8 @@ namespace IrcReply
 	const IrcNumeric endofnames(const std::string &name);
 	const IrcNumeric banlist(const std::string &channel, const std::string &banmask);
 	const IrcNumeric endofbanlist(const std::string &channel);
+	const IrcNumeric info(const std::string &info);
+	const IrcNumeric endofinfo();
 	const IrcNumeric motd(const std::string &text);
 	const IrcNumeric motdstart(const std::string &servername);
 	const IrcNumeric endofmotd();

@@ -29,6 +29,7 @@ class Config
 	void servername(std::string &);
 	void shortinfo(std::string &);
 	void motdfile(std::string &);
+	void infofile(std::string &);
 	std::string certFile();
 	std::string keyFile();
 	std::string tcpPort();

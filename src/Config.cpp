@@ -66,6 +66,11 @@ void Config::motdfile(std::string &m)
 	m = cfg->lookupString(IRC_SCOPE, "motdfile");
 }
 
+void Config::infofile(std::string &i)
+{
+	i = cfg->lookupString(IRC_SCOPE, "infofile");
+}
+
 int Config::maxConnections()
 {
 	return (cfg->lookupInt(IRC_SCOPE, "limits.maxconnections", 1080));

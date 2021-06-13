@@ -1,0 +1,10 @@
+IRC --
+Based on RFC 2810, 2811, 2812, 2813, 7194
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 3, or
+(at your option) any later version.
+
+Birth Date: Sun Jun 13 2021 at 12:12:26 CET, compile # 1
+MUST NEVER EVER BE PUT ONLINE

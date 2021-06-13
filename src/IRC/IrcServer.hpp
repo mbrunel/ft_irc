@@ -16,7 +16,9 @@ struct IrcServerConfig
 	time_t		pong;
 	bool		flood;
 	std::string	motdfile;
-	std::list<std::string> motd;
+	std::string infofile;
+	std::vector<std::string> motd;
+	std::vector<std::string> info;
 
 	IrcServerConfig();
 	IrcServerConfig(Config &cfg);
@@ -56,6 +58,7 @@ class IrcServer
 	commandsStatsMap	commandsStats;
 
 	int	away(User &sender, const Message &msg);
+	int info(User &sender, const Message &msg);
 	int	invite(User &sender, const Message &msg);
 	int	join(User &sender, const Message &msg);
 	int	kick(User &sender, const Message &msg);

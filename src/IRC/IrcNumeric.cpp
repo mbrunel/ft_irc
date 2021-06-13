@@ -420,6 +420,16 @@ namespace IrcReply
 		return (IrcNumeric(RPL_ENDOFMOTD, ":End of MOTD command"));
 	}
 
+	const IrcNumeric info(const std::string &info)
+	{
+		return (IrcNumeric(RPL_INFO, ':' + info));
+	}
+
+	const IrcNumeric endofinfo()
+	{
+		return (IrcNumeric(RPL_ENDOFINFO, ":End of INFO list"));
+	}
+
 	const IrcNumeric youreoper()
 	{
 		return (IrcNumeric(RPL_YOUREOPER, "You are now an IRC operator"));
