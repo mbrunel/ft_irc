@@ -71,6 +71,12 @@ enum IrcNumericCode
 	RPL_AWAY = 301,
 	RPL_UNAWAY = 305,
 	RPL_NOWAWAY = 306,
+	RPL_WHOISUSER = 311,
+	RPL_WHOISSERVER = 312,
+	RPL_WHOISOPERATOR = 313,
+	RPL_WHOISIDLE = 317,
+	RPL_ENDOFWHOIS = 318,
+	RPL_WHOISCHANNELS = 319,
 	RPL_LISTSTART = 321, /* Not used / (╯°□°）╯︵ ┻━┻  */
 	RPL_LIST = 322,
 	RPL_LISTEND = 323,
@@ -186,4 +192,10 @@ namespace IrcReply
 	const IrcNumeric lusersunknown(int nb);
 	const IrcNumeric luserschannels(int nb);
 	const IrcNumeric lusersme(int nb);
+	const IrcNumeric whoisuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname);
+	const IrcNumeric whoisserver(const std::string &nick, const std::string &servername, const std::string shortinfo);
+	const IrcNumeric whoisoperator(const std::string &nick);
+	const IrcNumeric whoisidle(const std::string &nick, size_t idle);
+	const IrcNumeric whoischannels(const std::string &nick, const std::string &status, const std::string &chan);
+	const IrcNumeric endofwhois(const std::string &nick);
 }

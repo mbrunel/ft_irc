@@ -14,6 +14,7 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 	cfg.version(version);
 	cfg.servername(servername);
 	cfg.motdfile(motdfile);
+	cfg.shortinfo(shortinfo);
 }
 
 IrcServer::IrcServer() :
@@ -41,6 +42,7 @@ creation(::time(NULL))
 	userCommands["KICK"] = &IrcServer::kick;
 	userCommands["LUSERS"] = &IrcServer::lusers;
 	userCommands["KILL"] = &IrcServer::kill;
+	userCommands["WHOIS"] = &IrcServer::whois;
 }
 
 IrcServer::~IrcServer() {}

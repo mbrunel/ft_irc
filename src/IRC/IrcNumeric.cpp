@@ -388,7 +388,7 @@ namespace IrcReply
 
 	const IrcNumeric lusersclient(int nb)
 	{
-		return (IrcNumeric(RPL_LUSERCLIENT, ":There are " + ft::to_string(nb) + " users on 1 server"));	
+		return (IrcNumeric(RPL_LUSERCLIENT, ":There are " + ft::to_string(nb) + " users on 1 server"));
 	}
 
 	const IrcNumeric lusersop(int nb)
@@ -409,5 +409,35 @@ namespace IrcReply
 	const IrcNumeric lusersme(int nb)
 	{
 		return (IrcNumeric(RPL_LUSERME, ":I have " + ft::to_string(nb) + " clients and 1 server"));
+	}
+
+	const IrcNumeric whoisuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname)
+	{
+		return (IrcNumeric(RPL_WHOISUSER, nick + " " + user + " " + host + " * :" + realname));
+	}
+
+	const IrcNumeric whoisserver(const std::string &nick, const std::string &servername, const std::string shortinfo)
+	{
+		return (IrcNumeric(RPL_WHOISSERVER, nick + " " + servername + " :" + shortinfo));
+	}
+
+	const IrcNumeric whoisoperator(const std::string &nick)
+	{
+		return (IrcNumeric(RPL_WHOISOPERATOR, nick + " :is an IRC operator"));
+	}
+
+	const IrcNumeric whoisidle(const std::string &nick, size_t idle)
+	{
+		return (IrcNumeric(RPL_WHOISIDLE, nick + " " + ft::to_string(idle) + " :seconds idle"));
+	}
+
+	const IrcNumeric whoischannels(const std::string &nick, const std::string &status, const std::string &channel)
+	{
+		return (IrcNumeric(RPL_WHOISCHANNELS, nick + " :" + status + channel));
+	}
+
+	const IrcNumeric endofwhois(const std::string &nick)
+	{
+		return (IrcNumeric(RPL_ENDOFWHOIS, nick + " :End of WHOIS list"));
 	}
 }

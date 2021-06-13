@@ -31,6 +31,11 @@ void Config::servername(std::string &n)
 	n = cfg->lookupString(IRC_SCOPE, "servername");
 }
 
+void Config::shortinfo(std::string &s)
+{
+	s = cfg->lookupString(IRC_SCOPE, "shortinfo");
+}
+
 std::string Config::certFile()
 {
 	return cfg->lookupString(SERVER_SCOPE, "ssl-certificat", "");

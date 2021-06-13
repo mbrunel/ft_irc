@@ -28,6 +28,7 @@ class Config
 	void usage() const;
 	void version(std::string &);
 	void servername(std::string &);
+	void shortinfo(std::string &);
 	void motdfile(std::string &);
 	std::string certFile();
 	std::string keyFile();
