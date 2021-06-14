@@ -29,7 +29,21 @@ int IrcServer::nick(User &u, const Message &m)
 	else
 	{
 		std::string msg((MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
-		u.writeLine(msg);
+		const Network::ChannelMap &channels = network.channels();
+		Network::ChannelMap::const_iterator c = channels.begin();
+		network.resetUserReceipt();
+		while (c != channels.end())
+		{
+			Channel *chan = c->second;
+			if (chan->findMember(&u))
+			{
+				chan->send(msg);
+				chan->markAllMembers();
+			}
+			++c;
+		}
+		if (!u.joinedChannels())
+			u.writeLine(msg);
 		network.addNickToHistory(u);
 	}
 	return (0);
