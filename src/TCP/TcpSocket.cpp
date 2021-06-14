@@ -1,6 +1,6 @@
 #include "TcpSocket.hpp"
 
-TcpSocket::TcpSocket(int listenerFd):Socket()
+TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(false)
 {
 	socklen_t addrLen = sizeof(_addr);
 	if ((_fd = accept(listenerFd, (sockaddr *)&_addr, &addrLen)) == -1)
