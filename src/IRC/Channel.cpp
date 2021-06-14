@@ -9,6 +9,11 @@ Mode(flags)
 MemberMode::~MemberMode()
 {}
 
+bool MemberMode::canTalk() const
+{
+	return (isSet(OPERATOR | VOICE));
+}
+
 MemberMode::Flag MemberMode::parse(char c)
 {
 	if (c == 'O')
@@ -59,96 +64,26 @@ const unsigned short ChannelMode::_lowerFlagTable[] =
 	TOPIC_SETTABLE_BY_CHANOP, 0, 0, 0, 0, 0, 0
 };
 
-Channel::Channel(const std::string &name) :
-_name(name), _type(GLOBAL)
+MaskSet::MaskSet()
+{}
+
+MaskSet::~MaskSet()
+{}
+
+bool MaskSet::inSet(const User &user) const
 {
-	if (name.size())
-		_type = name[0] == '#' ? GLOBAL : UNMODERATED;
+	for (const_iterator i = begin(); i != end(); ++i)
+		if (ft::match(*i, user.prefix()))
+			return (1);
+	return (0);
 }
+
+Channel::Channel(const std::string &name) :
+_name(name), _type(name.c_str()[0] == '!' ? UNMODERATED : GLOBAL)
+{}
 
 Channel::~Channel()
 {}
-
-void Channel::addMember(User *user, const MemberMode &mode)
-{
-	_members[user] = mode;
-	user->setJoinedChannels(user->joinedChannels() + 1);
-	MaskSet::const_iterator it = _invitations.find(user->nickname());
-	if (it != _invitations.end())
-		_invitations.erase(it);
-}
-
-bool Channel::canSendToChannel(User *user)
-{
-	MemberMode *um = findMember(user);
-	if (um)
-		return (!_mode.isSet(ChannelMode::MODERATED) || um->flags());
-	return (!_mode.isSet(ChannelMode::MODERATED | ChannelMode::NO_OUTSIDE_MSG) && !isBanned(user));
-}
-
-size_t Channel::count() const
-{
-	return (_members.size());
-}
-
-void Channel::delMember(User *user)
-{
-	_members.erase(user);
-	user->setJoinedChannels(user->joinedChannels() - 1);
-}
-
-MemberMode *Channel::findMember(User *user)
-{
-	MemberMap::iterator i(_members.find(user));
-	return (i != _members.end() ? &i->second : NULL);
-}
-
-void Channel::invite(User *user)
-{
-	_invitations.insert(user->nickname());
-}
-
-bool Channel::isBanned(const User *u) const
-{
-	return (inSet(u->prefix(), _banMasks) && !inSet(u->prefix(), _exceptionMasks));
-}
-
-bool Channel::isInvited(const User *u) const
-{
-	return (_invitations.find(u->nickname()) != _invitations.end() || inSet(u->prefix(), _invitationMasks));
-}
-
-void Channel::markAllMembers()
-{
-	for (MemberMap::const_iterator i = _members.begin(); i != _members.end(); ++i)
-		i->first->mark();
-}
-
-void Channel::send(const std::string &msg, BasicConnection *origin, bool useReceipt) const
-{
-	for (MemberMap::const_iterator i = _members.begin(); i != _members.end(); ++i)
-	{
-		User *user(i->first);
-		if (!user->hopcount() && (!origin || user->socket() != origin->socket()) &&
-		(!useReceipt || !user->umode().isSet(UserMode::MARK)))
-			user->writeLine(msg);
-	}
-}
-
-unsigned int Channel::nbUserVisible() const
-{
-	unsigned int nb = 0;
-	MemberMap::const_iterator im = _members.begin();
-
-	while (im != _members.end())
-	{
-		const UserMode &umode = im->first->umode();
-		if (!umode.isSet(UserMode::INVISIBLE))
-				nb++;
-		++im;
-	}
-	return (nb);
-}
 
 const std::string &Channel::name() const
 {
@@ -185,19 +120,9 @@ size_t Channel::limit() const
 	return (_limit);
 }
 
-Channel::MaskSet &Channel::banMasks()
+const MaskSet &Channel::masks(const MaskSetType type) const
 {
-	return (_banMasks);
-}
-
-Channel::MaskSet &Channel::exceptionMasks()
-{
-	return (_exceptionMasks);
-}
-
-Channel::MaskSet &Channel::invitationMasks()
-{
-	return (_invitationMasks);
+	return (_masks[type]);
 }
 
 void Channel::setMode(const ChannelMode &mode)
@@ -220,10 +145,93 @@ void Channel::setLimit(size_t limit)
 	_limit = limit;
 }
 
-bool Channel::inSet(const std::string &nickname, const Channel::MaskSet &set) const
+void Channel::addMember(User *user, const MemberMode &mode)
 {
-	for (Channel::MaskSet::const_iterator it = set.begin(); it != set.end(); ++it)
-		if (ft::match(*it, nickname))
-			return (1);
-	return (0);
+	_members[user] = mode;
+	user->setJoinedChannels(user->joinedChannels() + 1);
+	MaskSet::const_iterator it = _invitations.find(user->nickname());
+	if (it != _invitations.end())
+		_invitations.erase(it);
+}
+
+void Channel::addMask(const MaskSetType type, const std::string &mask)
+{
+	_masks[type].insert(mask);
+}
+
+bool Channel::canSendToChannel(User *user)
+{
+	MemberMode *um = findMember(user);
+	if (um)
+		return (!_mode.isSet(ChannelMode::MODERATED) || um->canTalk());
+	return (!_mode.isSet(ChannelMode::MODERATED | ChannelMode::NO_OUTSIDE_MSG) && !isBanned(user));
+}
+
+void Channel::delMember(User *user)
+{
+	_members.erase(user);
+	user->setJoinedChannels(user->joinedChannels() - 1);
+}
+
+void Channel::delMask(const MaskSetType type, const std::string &mask)
+{
+	_masks[type].erase(mask);
+}
+
+MemberMode *Channel::findMember(User *user)
+{
+	MemberMap::iterator i(_members.find(user));
+	return (i != _members.end() ? &i->second : NULL);
+}
+
+void Channel::invite(const User *user)
+{
+	_invitations.insert(user->nickname());
+}
+
+bool Channel::isBanned(const User *u) const
+{
+	return (masks(BAN_SET).inSet(*u) && !masks(EXCEPTION_SET).inSet(*u));
+}
+
+bool Channel::isInvited(const User *u) const
+{
+	return (_invitations.find(u->nickname()) != _invitations.end() || masks(INVITATION_SET).inSet(*u));
+}
+
+void Channel::markAllMembers()
+{
+	for (MemberMap::const_iterator i = _members.begin(); i != _members.end(); ++i)
+		i->first->mark();
+}
+
+size_t Channel::count() const
+{
+	return (_members.size());
+}
+
+void Channel::send(const std::string &msg, BasicConnection *origin, bool useReceipt) const
+{
+	for (MemberMap::const_iterator i = _members.begin(); i != _members.end(); ++i)
+	{
+		User *user(i->first);
+		if (!user->hopcount() && (!origin || user->socket() != origin->socket()) &&
+		(!useReceipt || !user->umode().isSet(UserMode::MARK)))
+			user->writeLine(msg);
+	}
+}
+
+size_t Channel::nbUserVisible() const
+{
+	size_t nb = 0;
+	MemberMap::const_iterator im = _members.begin();
+
+	while (im != _members.end())
+	{
+		const UserMode &umode = im->first->umode();
+		if (!umode.isSet(UserMode::INVISIBLE))
+				nb++;
+		++im;
+	}
+	return (nb);
 }

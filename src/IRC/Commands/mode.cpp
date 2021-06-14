@@ -166,25 +166,22 @@ int IrcServer::mode(User &u, const Message &m)
 						continue ;
 					if (f == ChannelMode::BAN_MASK)
 					{
-						const Channel::MaskSet &set = c->banMasks();
-						for (Channel::MaskSet::const_iterator i = set.begin();
-						i != set.end(); ++i)
+						const MaskSet &set = c->masks(Channel::BAN_SET);
+						for (MaskSet::const_iterator i = set.begin(); i != set.end(); ++i)
 							writeNum(u, IrcReply::banlist(c->name(), *i));
 						writeNum(u, IrcReply::endofbanlist(c->name()));
 					}
 					else if (f == ChannelMode::EXCEPTION_MASK)
 					{
-						const Channel::MaskSet &set = c->exceptionMasks();
-						for (Channel::MaskSet::const_iterator i = set.begin();
-						i != set.end(); ++i)
+						const MaskSet &set = c->masks(Channel::EXCEPTION_SET);
+						for (MaskSet::const_iterator i = set.begin(); i != set.end(); ++i)
 							writeNum(u, IrcReply::exceptlist(c->name(), *i));
 						writeNum(u, IrcReply::endofexceptlist(c->name()));
 					}
-					else
+					else // if (f == ChannelMode::INVITATION_MASK)
 					{
-						const Channel::MaskSet &set = c->invitationMasks();
-						for (Channel::MaskSet::const_iterator i = set.begin();
-						i != set.end(); ++i)
+						const MaskSet &set = c->masks(Channel::INVITATION_SET);
+						for (MaskSet::const_iterator i = set.begin(); i != set.end(); ++i)
 							writeNum(u, IrcReply::invitelist(c->name(), *i));
 						writeNum(u, IrcReply::endofinvitelist(c->name()));
 					}
@@ -202,16 +199,17 @@ int IrcServer::mode(User &u, const Message &m)
 							}
 							else if (!extractMask(arg))
 								continue ;
-							Channel::MaskSet *set;
+							Channel::MaskSetType type;
 							if (f == ChannelMode::BAN_MASK)
-								set = &c->banMasks();
+								type = Channel::BAN_SET;
 							else if (f == ChannelMode::EXCEPTION_MASK)
-								set = &c->exceptionMasks();
-							else
-								set = &c->invitationMasks();
-							if (set->find(arg) == set->end())
+								type = Channel::EXCEPTION_SET;
+							else // if (f == ChannelMode::INVITATION_MASK)
+								type = Channel::INVITATION_SET;
+							const MaskSet &set = c->masks(type);
+							if (set.find(arg) == set.end())
 								continue ;
-							set->erase(arg);
+							c->delMask(type, arg);
 							changeParams.push_back(arg);
 						}
 						else if (!cm.isSet(f))
@@ -251,18 +249,17 @@ int IrcServer::mode(User &u, const Message &m)
 							{
 								if (!extractMask(arg))
 									continue ;
-								Channel::MaskSet *set;
+								Channel::MaskSetType type;
 								if (f == ChannelMode::BAN_MASK)
-									set = &c->banMasks();
+									type = Channel::BAN_SET;
 								else if (f == ChannelMode::EXCEPTION_MASK)
-									set = &c->exceptionMasks();
-								else
-									set = &c->invitationMasks();
-								if (set->find(arg) != set->end())
+									type = Channel::EXCEPTION_SET;
+								else // if (f == ChannelMode::INVITATION_MASK)
+									type = Channel::INVITATION_SET;
+								const MaskSet &set = c->masks(type);
+								if (set.size() == config.maxMasks || set.find(arg) != set.end())
 									continue ;
-								if (set->size() == config.maxMasks)
-									continue ;
-								set->insert(arg);
+								c->addMask(type, arg);
 								changeParams.push_back(arg);
 							}
 						}

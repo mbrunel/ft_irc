@@ -19,6 +19,8 @@ public:
 	MemberMode(unsigned flags = 0);
 	~MemberMode();
 
+	bool canTalk() const;
+
 	static Flag	parse(char c);
 };
 
@@ -63,10 +65,19 @@ private:
 	static const unsigned short _lowerFlagTable[26];
 };
 
+class MaskSet : public std::set<std::string>
+{
+public:
+	MaskSet();
+	~MaskSet();
+
+	bool inSet(const User &user) const;
+};
+
 class Channel
 {
 public:
-	typedef std::set<std::string>		MaskSet;
+	typedef std::set<std::string>		InvitationSet;
 	typedef std::map<User*, MemberMode>	MemberMap;
 
 	enum Type
@@ -77,48 +88,50 @@ public:
 		UNMODERATED
 	};
 
+	enum MaskSetType
+	{
+		BAN_SET,
+		EXCEPTION_SET,
+		INVITATION_SET
+	};
+
 	Channel(const std::string &name = "");
 	~Channel();
 
-	void				addMember(User *user, const MemberMode &mode);
-	void				banMember(User *user);
-	bool				canSendToChannel(User *user);
-	size_t				count() const;
-	void				delMember(User *user);
-	MemberMode			*findMember(User *user);
-	void				invite(User *user);
-	bool				isBanned(const User *user) const;
-	bool				isInvited(const User *user) const;
-	void				markAllMembers();
-	void				send(const std::string &msg, BasicConnection *origin = NULL, bool useReceipt = false) const;
 	const std::string	&name() const;
 	Type				type() const;
-	const MemberMap		&members() const;
 	const ChannelMode	&mode() const;
+	const MemberMap		&members() const;
 	const std::string	&topic() const;
 	const std::string	&key() const;
 	size_t				limit() const;
-	MaskSet				&banMasks();
-	MaskSet				&exceptionMasks();
-	MaskSet				&invitationMasks();
+	const MaskSet		&masks(const MaskSetType type) const;
 	void				setMode(const ChannelMode &mode);
 	void				setTopic(const std::string &topic);
 	void				setKey(const std::string &key);
 	void				setLimit(size_t limit);
-	unsigned int		nbUserVisible() const;
+	size_t				count() const;
+	bool				isBanned(const User *user) const;
+	bool				isInvited(const User *user) const;
+	size_t				nbUserVisible() const;
+	void				send(const std::string &msg, BasicConnection *origin = NULL, bool useReceipt = false) const;
+	void				addMember(User *user, const MemberMode &mode);
+	void				addMask(const MaskSetType type, const std::string &mask);
+	bool				canSendToChannel(User *user);
+	void				delMember(User *user);
+	void				delMask(const MaskSetType type, const std::string &mask);
+	MemberMode			*findMember(User *user);
+	void				invite(const User *user);
+	void				markAllMembers();
 
 private:
 	const std::string	_name;
-	Type				_type;
-	MemberMap			_members;
+	const Type			_type;
 	ChannelMode			_mode;
+	MemberMap			_members;
 	std::string			_topic;
 	std::string			_key;
 	size_t				_limit;
-	MaskSet				_banMasks;
-	MaskSet				_exceptionMasks;
-	MaskSet				_invitationMasks;
-	MaskSet				_invitations;
-
-	bool	inSet(const std::string &nickname, const Channel::MaskSet &set) const;
+	MaskSet				_masks[3];
+	InvitationSet		_invitations;
 };

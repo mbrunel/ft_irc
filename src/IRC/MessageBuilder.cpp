@@ -1,5 +1,6 @@
 #include <iomanip>
 #include "MessageBuilder.hpp"
+#include "ft.hpp"
 
 static inline std::string toString(const IrcNumericCode code)
 {
@@ -7,13 +8,6 @@ static inline std::string toString(const IrcNumericCode code)
 	s << std::setw(3) << std::setfill('0') << code;
 	return (s.str());
 }
-
-static inline std::string toString(const unsigned n)
-{
-	std::ostringstream s;
-	s << n;
-	return (s.str());
-} 
 
 MessageBuilder::MessageBuilder(const std::string &prefix, const std::string &command) :
 _prefix(prefix),
@@ -66,7 +60,7 @@ MessageBuilder &MessageBuilder::operator<<(const std::string &arg)
 
 MessageBuilder &MessageBuilder::operator<<(unsigned arg)
 {
-	return (append(toString(arg)));
+	return (append(ft::to_string(arg)));
 }
 
 MessageBuilder &MessageBuilder::append(const std::string &arg)
