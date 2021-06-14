@@ -66,11 +66,6 @@ void Config::motdfile(std::string &m)
 	m = cfg->lookupString(IRC_SCOPE, "motdfile");
 }
 
-void Config::infofile(std::string &i)
-{
-	i = cfg->lookupString(IRC_SCOPE, "infofile");
-}
-
 int Config::maxConnections()
 {
 	return (cfg->lookupInt(IRC_SCOPE, "limits.maxconnections", 1080));
@@ -84,6 +79,11 @@ int Config::maxChannels()
 int Config::maxMasks()
 {
 	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks", 32));
+}
+
+size_t Config::historySize()
+{
+	return (cfg->lookupInt(IRC_SCOPE, "limits.history_size", 5000));
 }
 
 void Config::opers(std::map<std::string, Oper> &o)

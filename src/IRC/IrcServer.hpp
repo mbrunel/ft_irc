@@ -16,7 +16,6 @@ struct IrcServerConfig
 	time_t		pong;
 	bool		flood;
 	std::string	motdfile;
-	std::string infofile;
 	std::vector<std::string> motd;
 	std::vector<std::string> info;
 

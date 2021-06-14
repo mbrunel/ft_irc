@@ -58,8 +58,8 @@ void file_to_data(const std::string &filename, std::vector<std::string> &data)
 	data.clear();
 	while (std::getline(f, line))
 	{
-		if (line.size() > 400)
-			line.resize(400);
+		if (line.size() > 80)
+			line.resize(80);
 		data.push_back(line);
 	}
 }

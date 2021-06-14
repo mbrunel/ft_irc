@@ -84,7 +84,7 @@ const std::string &User::realname() const
 	return (_realname);
 }
 
-size_t &User::idle()
+time_t &User::idle()
 {
 	return (_idle);
 }

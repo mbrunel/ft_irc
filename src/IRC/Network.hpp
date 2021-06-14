@@ -8,6 +8,7 @@
 
 struct UserInfo
 {
+	std::string nickname;
 	std::string username;
 	std::string host;
 	std::string realname;
@@ -23,8 +24,8 @@ class Network
 	typedef std::map<std::string, Oper>					OperMap;
 	typedef std::set<std::string>						FnicksSet;
 	typedef std::list<BasicConnection *>				ZombieList;
-	typedef std::vector<UserInfo>						HistoryVec;
-	typedef std::map<std::string, HistoryVec>			HistoryVecMap;
+	typedef std::vector<UserInfo>						InfoVec;
+	typedef std::list<UserInfo>						HistoryList;
 
 	Network();
 	~Network() throw();
@@ -50,7 +51,8 @@ class Network
 	void				newZombie(BasicConnection *);
 	BasicConnection		*nextZombie();
 	void				addNickToHistory(const User &user);
-	HistoryVec			getNickHistory(const std::string &nick);
+	InfoVec				getNickHistory(const std::string &nick, size_t count);
+	void				setHistorySize(size_t size);
 
   private:
 	ConnectionMap	_connections;
@@ -59,7 +61,8 @@ class Network
 	OperMap			_opers;
 	FnicksSet		_fnicks;
 	ZombieList		_zombies;
-	HistoryVecMap	_history;
+	HistoryList		_history;
+	size_t			_historySize;
 
 	Network(const Network &);
 	Network &operator=(const Network &);

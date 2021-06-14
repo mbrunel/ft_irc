@@ -13,7 +13,6 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 {
 	cfg.servername(servername);
 	cfg.motdfile(motdfile);
-	cfg.infofile(infofile);
 	cfg.shortinfo(shortinfo);
 }
 
@@ -103,6 +102,7 @@ void IrcServer::setConfig(Config &cfg)
 	srv.setLogDestination(cfg.logfile());
 	cfg.opers(network.opers());
 	cfg.fnicks(network.fnicks());
+	network.setHistorySize(cfg.historySize());
 	config = IrcServerConfig(cfg);
 }
 
@@ -240,7 +240,6 @@ void IrcServer::Police()
 		}
 	}
 	ft::file_to_data(config.motdfile, config.motd);
-	ft::file_to_data(config.infofile, config.info);
 }
 
 bool IrcServer::floodControl(User &u)

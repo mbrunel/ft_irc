@@ -1,6 +1,7 @@
 #include "Network.hpp"
 
 UserInfo::UserInfo(const User &u):
+	nickname(u.nickname()),
 	username(u.username()),
 	host(u.socket()->host()),
 	realname(u.realname()) {}
@@ -131,13 +132,25 @@ BasicConnection *Network::nextZombie()
 
 void Network::addNickToHistory(const User &u)
 {
-	_history[u.nickname()].push_back(UserInfo(u));
+	if (_historySize == _history.size())
+		_history.pop_front();
+	_history.push_back(UserInfo(u));
 }
 
-Network::HistoryVec Network::getNickHistory(const std::string &nick)
+Network::InfoVec Network::getNickHistory(const std::string &nick, size_t count)
 {
-	HistoryVecMap::iterator it = _history.find(nick);
-	if (it == _history.end())
-		return HistoryVec();
-	return it->second;
+	InfoVec v;
+
+	if (!count)
+		count = -1;
+	for (HistoryList::reverse_iterator rit = _history.rbegin(); rit != _history.rend() && count; ++rit)
+		if (rit->nickname == nick)
+		{
+			--count;
+			v.push_back(*rit);
+		}
+	return v;
+
 }
+
+void Network::setHistorySize(size_t size){ _historySize = size; }

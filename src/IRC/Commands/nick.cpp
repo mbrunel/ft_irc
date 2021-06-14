@@ -30,6 +30,7 @@ int IrcServer::nick(User &u, const Message &m)
 	{
 		std::string msg((MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
 		u.writeLine(msg);
+		network.addNickToHistory(u);
 	}
 	return (0);
 }

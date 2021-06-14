@@ -29,7 +29,6 @@ class Config
 	void servername(std::string &);
 	void shortinfo(std::string &);
 	void motdfile(std::string &);
-	void infofile(std::string &);
 	std::string certFile();
 	std::string keyFile();
 	std::string tcpPort();
@@ -41,6 +40,7 @@ class Config
 	int maxConnections();
 	int maxChannels();
 	int maxMasks();
+	size_t historySize();
 	bool verbose();
 	void opers(std::map<std::string, Oper> &opers);
 	void fnicks(std::set<std::string> &fnicks);
