@@ -21,6 +21,8 @@ Config::Config(int ac, char **av)
 	cfg->parse(Configuration::INPUT_FILE, configFile.c_str());
 }
 
+Config::~Config() { cfg->destroy(); }
+
 void Config::servername(std::string &n)
 {
 	n = cfg->lookupString(IRC_SCOPE, "servername");

@@ -41,10 +41,11 @@ void Network::add(Channel *c)
 void Network::clear() throw()
 {
 	for (UserMap::iterator i = _users.begin(); i != _users.end(); ++i)
-		if (i->second->hopcount())
-			delete i->second;
+		delete i->second;
 	for (ChannelMap::iterator i = _channels.begin(); i != _channels.end(); ++i)
 		delete i->second;
+	for (ZombieList::iterator i = _zombies.begin(); i != _zombies.end(); ++i)
+		delete *i;
 }
 
 BasicConnection *Network::getBySocket(TcpSocket *socket)

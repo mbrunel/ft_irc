@@ -25,6 +25,7 @@ class Config
 {
   public:
 	Config(int ac, char **av);
+	~Config();
 	void usage() const;
 	void servername(std::string &);
 	void shortinfo(std::string &);
