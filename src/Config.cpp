@@ -26,6 +26,11 @@ void Config::servername(std::string &n)
 	n = cfg->lookupString(IRC_SCOPE, "servername");
 }
 
+void Config::shortinfo(std::string &s)
+{
+	s = cfg->lookupString(IRC_SCOPE, "shortinfo");
+}
+
 std::string Config::certFile()
 {
 	return cfg->lookupString(SERVER_SCOPE, "ssl-certificat", "");
@@ -74,6 +79,11 @@ int Config::maxChannels()
 int Config::maxMasks()
 {
 	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks", 32));
+}
+
+size_t Config::historySize()
+{
+	return (cfg->lookupInt(IRC_SCOPE, "limits.history_size", 5000));
 }
 
 void Config::opers(std::map<std::string, Oper> &o)

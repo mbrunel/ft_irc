@@ -13,6 +13,7 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 {
 	cfg.servername(servername);
 	cfg.motdfile(motdfile);
+	cfg.shortinfo(shortinfo);
 }
 
 CommandStats::CommandStats() :
@@ -24,6 +25,7 @@ creation(::time(NULL))
 {
 	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	userCommands["AWAY"] = &IrcServer::away;
+	userCommands["INFO"] = &IrcServer::info;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
 	userCommands["KICK"] = &IrcServer::kick;
@@ -47,6 +49,8 @@ creation(::time(NULL))
 	userCommands["USER"] = &IrcServer::user;
 	userCommands["VERSION"] = &IrcServer::version;
 	userCommands["WHO"] = &IrcServer::who;
+	userCommands["WHOIS"] = &IrcServer::whois;
+	userCommands["WHOWAS"] = &IrcServer::whowas;
 }
 
 IrcServer::~IrcServer() {}
@@ -98,6 +102,7 @@ void IrcServer::setConfig(Config &cfg)
 	srv.setLogDestination(cfg.logfile());
 	cfg.opers(network.opers());
 	cfg.fnicks(network.fnicks());
+	network.setHistorySize(cfg.historySize());
 	config = IrcServerConfig(cfg);
 }
 
@@ -188,7 +193,7 @@ void IrcServer::writeMotd(User &u)
 	}
 	writeNum(u, IrcReply::motdstart(config.servername));
 	writeNum(u, IrcReply::motd(config.motd.front()));
-	for (std::list<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
+	for (std::vector<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
 		writeNum(u, IrcReply::motd(*it));
 	writeNum(u, IrcReply::endofmotd());
 }
@@ -234,15 +239,7 @@ void IrcServer::Police()
 			c->pongExpected() = true;
 		}
 	}
-	std::ifstream f(config.motdfile.c_str(), std::ios_base::in);
-	std::string line;
-	config.motd.clear();
-	while (std::getline(f, line))
-	{
-		if (line.size() > 80)
-			line.resize(80);
-		config.motd.push_back(line);
-	}
+	ft::file_to_data(config.motdfile, config.motd);
 }
 
 bool IrcServer::floodControl(User &u)

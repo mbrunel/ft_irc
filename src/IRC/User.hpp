@@ -61,6 +61,7 @@ public:
 
 	bool					isRegistered() const;
 	void					mark();
+	time_t					&idle();
 	void					unmark();
 	void					unsetRequirement(UserRequirement::Flag requirement);
 	const UserRequirement	&requirements() const;
@@ -84,6 +85,7 @@ protected:
 	UserMode		_umode;
 	size_t			_joinedChannels;
 	std::string		_awayReason;
+	time_t			_idle;
 
 private:
 	std::string		_prefix;

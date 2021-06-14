@@ -50,4 +50,18 @@ std::string to_date(const time_t t, const char *format)
 	return (buf);
 }
 
+void file_to_data(const std::string &filename, std::vector<std::string> &data)
+{
+	std::ifstream f(filename.c_str(), std::ios_base::in);
+	std::string line;
+
+	data.clear();
+	while (std::getline(f, line))
+	{
+		if (line.size() > 80)
+			line.resize(80);
+		data.push_back(line);
+	}
+}
+
 } /* end of namespace stdext */

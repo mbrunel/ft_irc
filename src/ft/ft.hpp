@@ -1,12 +1,16 @@
 #pragma once
+#include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace ft
 {
 	bool match(const std::string &mask, const std::string &str);
 
 	std::string to_date(const time_t t,  const char *format);
+
+	void file_to_data(const std::string &filename, std::vector<std::string> &data);
 
 	template<class T>
 	inline std::string to_string(const T &value)

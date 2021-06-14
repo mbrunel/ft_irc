@@ -27,6 +27,7 @@ class Config
 	Config(int ac, char **av);
 	void usage() const;
 	void servername(std::string &);
+	void shortinfo(std::string &);
 	void motdfile(std::string &);
 	std::string certFile();
 	std::string keyFile();
@@ -39,6 +40,7 @@ class Config
 	int maxConnections();
 	int maxChannels();
 	int maxMasks();
+	size_t historySize();
 	bool verbose();
 	void opers(std::map<std::string, Oper> &opers);
 	void fnicks(std::set<std::string> &fnicks);

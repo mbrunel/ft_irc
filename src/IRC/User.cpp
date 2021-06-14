@@ -47,7 +47,8 @@ const unsigned short UserMode::_lowerFlagTable[] =
 User::User(TcpSocket *socket, UserRequirement::Flag requirements) :
 BasicConnection(socket, USER),
 _requirements(requirements),
-_joinedChannels(0)
+_joinedChannels(0),
+_idle(time(NULL))
 {}
 
 User::~User()
@@ -81,6 +82,11 @@ const UserRequirement &User::requirements() const
 const std::string &User::realname() const
 {
 	return (_realname);
+}
+
+time_t &User::idle()
+{
+	return (_idle);
 }
 
 const UserMode &User::umode() const
