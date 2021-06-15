@@ -18,7 +18,12 @@ Config::Config(int ac, char **av)
 		exit(1);
 	}
 	cfg = Configuration::create();
-	cfg->parse(Configuration::INPUT_FILE, configFile.c_str());
+	try { cfg->parse(Configuration::INPUT_FILE, configFile.c_str()); }
+	catch (config4cpp::ConfigurationException &e)
+	{
+		cfg->destroy();
+		throw ;
+	}
 }
 
 Config::~Config() { cfg->destroy(); }
@@ -26,6 +31,11 @@ Config::~Config() { cfg->destroy(); }
 void Config::servername(std::string &n)
 {
 	n = cfg->lookupString(IRC_SCOPE, "servername");
+}
+
+void Config::serverpass(std::string &p)
+{
+	p = cfg->lookupString(IRC_SCOPE, "serverpass");
 }
 
 void Config::shortinfo(std::string &s)

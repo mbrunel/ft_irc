@@ -69,6 +69,11 @@ void User::unmark()
 	_umode.unset(UserMode::MARK);
 }
 
+void User::setRequirement(UserRequirement::Flag requirement)
+{
+	_requirements.set(requirement);
+}
+
 void User::unsetRequirement(UserRequirement::Flag requirement)
 {
 	_requirements.unset(requirement);

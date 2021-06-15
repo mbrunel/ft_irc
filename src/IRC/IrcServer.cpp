@@ -14,6 +14,7 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 	cfg.servername(servername);
 	cfg.motdfile(motdfile);
 	cfg.shortinfo(shortinfo);
+	cfg.serverpass(pass);
 }
 
 CommandStats::CommandStats() :
@@ -39,6 +40,7 @@ creation(::time(NULL))
 	userCommands["NOTICE"] = &IrcServer::notice;
 	userCommands["OPER"] = &IrcServer::oper;
 	userCommands["PART"] = &IrcServer::part;
+	userCommands["PASS"] = &IrcServer::pass;
 	userCommands["PING"] = &IrcServer::ping;
 	userCommands["PONG"] = &IrcServer::pong;
 	userCommands["PRIVMSG"] = &IrcServer::privmsg;
@@ -67,7 +69,7 @@ void IrcServer::run() throw()
 		TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{
-			User *u = new User(newSocket, UserRequirement::ALL_EXCEPT_PASS);
+			User *u = new User(newSocket, config.pass.size() ? UserRequirement::ALL : UserRequirement::ALL_EXCEPT_PASS);
 			writeMessage(*u, "NOTICE", "Connection established");
 			network.add(u);
 		}
