@@ -18,12 +18,29 @@ Config::Config(int ac, char **av)
 		exit(1);
 	}
 	cfg = Configuration::create();
-	cfg->parse(Configuration::INPUT_FILE, configFile.c_str());
+	try { cfg->parse(Configuration::INPUT_FILE, configFile.c_str()); }
+	catch (config4cpp::ConfigurationException &e)
+	{
+		cfg->destroy();
+		throw ;
+	}
 }
+
+Config::~Config() { cfg->destroy(); }
 
 void Config::servername(std::string &n)
 {
 	n = cfg->lookupString(IRC_SCOPE, "servername");
+}
+
+void Config::serverpass(std::string &p)
+{
+	p = cfg->lookupString(IRC_SCOPE, "serverpass");
+}
+
+void Config::shortinfo(std::string &s)
+{
+	s = cfg->lookupString(IRC_SCOPE, "shortinfo");
 }
 
 std::string Config::certFile()
@@ -74,6 +91,11 @@ int Config::maxChannels()
 int Config::maxMasks()
 {
 	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks", 32));
+}
+
+size_t Config::historySize()
+{
+	return (cfg->lookupInt(IRC_SCOPE, "limits.history_size", 5000));
 }
 
 void Config::opers(std::map<std::string, Oper> &o)

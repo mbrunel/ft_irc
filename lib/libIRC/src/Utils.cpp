@@ -39,6 +39,20 @@ static bool match_internal(const char *mask, const char *str)
 namespace Utils
 {
 
+void file_to_data(const std::string &filename, std::vector<std::string> &data)
+{
+	std::ifstream f(filename.c_str(), std::ios_base::in);
+	std::string line;
+
+	data.clear();
+	while (std::getline(f, line))
+	{
+		if (line.size() > 80)
+			line.resize(80);
+		data.push_back(line);
+	}
+}
+
 bool match(const std::string &mask, const std::string &str)
 {
 	return (match_internal(mask.c_str(), str.c_str()));
@@ -52,4 +66,4 @@ std::string to_date(const time_t t, const char *format)
 	return (buf);
 }
 
-}
+} /* end of namespace stdext */

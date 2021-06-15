@@ -79,8 +79,16 @@ enum NumericCode
 	RPL_AWAY = 301,
 	RPL_UNAWAY = 305,
 	RPL_NOWAWAY = 306,
+	RPL_WHOISUSER = 311,
+	RPL_WHOISSERVER = 312,
+	RPL_WHOISOPERATOR = 313,
+	RPL_WHOISIDLE = 317,
+	RPL_ENDOFWHOIS = 318,
+	RPL_WHOISCHANNELS = 319,
 	RPL_ENDOFWHO = 315,
-	RPL_LISTSTART = 321, /* Not used (╯°□°）╯︵ ┻━┻  */
+	RPL_WHOWASUSER = 314,
+	RPL_ENDOFWHOWAS = 369,
+	RPL_LISTSTART = 321, /* Not used / (╯°□°）╯︵ ┻━┻  */
 	RPL_LIST = 322,
 	RPL_LISTEND = 323,
 	RPL_CHANNELMODEIS = 324,
@@ -97,7 +105,9 @@ enum NumericCode
 	RPL_ENDOFNAMES = 366,
 	RPL_BANLIST = 367,
 	RPL_ENDOFBANLIST = 368,
+	RPL_INFO = 371,
 	RPL_MOTD = 372,
+	RPL_ENDOFINFO = 374,
 	RPL_MOTDSTART = 375,
 	RPL_ENDOFMOTD = 376,
 	RPL_YOUREOPER = 381,
@@ -196,6 +206,8 @@ namespace Reply
 	const Numeric motd(const std::string &text);
 	const Numeric motdstart(const std::string &servername);
 	const Numeric endofmotd();
+	const Numeric info(const std::string &info);
+	const Numeric endofinfo();
 	const Numeric youreoper();
 	const Numeric time();
 	const Numeric lusersclient(size_t nb);
@@ -205,6 +217,16 @@ namespace Reply
 	const Numeric lusersme(size_t nb);
 	const Numeric whoreply(const std::string &msg);
 	const Numeric endofwho(const std::string &target);
+	const Numeric whoisuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname);
+	const Numeric whoisserver(const std::string &nick, const std::string &servername, const std::string shortinfo);
+	const Numeric whoisoperator(const std::string &nick);
+	const Numeric whoisidle(const std::string &nick, size_t idle);
+	const Numeric whoischannels(const std::string &nick, const std::string &status, const std::string &chan);
+	const Numeric endofwhois(const std::string &nick);
+	const Numeric whoreply(const std::string &msg);
+	const Numeric endofwho(const std::string &target);
+	const Numeric whowasuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname);
+	const Numeric endofwhowas(const std::string &nick);
 } /* end of namespace Reply */
 
 } /* end of namespace IRC */

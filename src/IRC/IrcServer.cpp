@@ -35,6 +35,7 @@ creation(::time(NULL))
 	userCommands["NOTICE"] = &IrcServer::notice;
 	userCommands["OPER"] = &IrcServer::oper;
 	userCommands["PART"] = &IrcServer::part;
+	userCommands["PASS"] = &IrcServer::pass;
 	userCommands["PING"] = &IrcServer::ping;
 	userCommands["PONG"] = &IrcServer::pong;
 	userCommands["PRIVMSG"] = &IrcServer::privmsg;
@@ -45,6 +46,8 @@ creation(::time(NULL))
 	userCommands["USER"] = &IrcServer::user;
 	userCommands["VERSION"] = &IrcServer::version;
 	userCommands["WHO"] = &IrcServer::who;
+	userCommands["WHOIS"] = &IrcServer::whois;
+	userCommands["WHOWAS"] = &IrcServer::whowas;
 }
 
 IrcServer::~IrcServer() {}
@@ -65,7 +68,7 @@ void IrcServer::run() throw()
 			writeMessage(*u, "NOTICE", "Connection established");
 			network.add(u);
 		}
-		Police();
+		police();
 		TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()))
 		{
@@ -186,7 +189,7 @@ void IrcServer::writeMotd(User &u)
 	}
 	writeNum(u, IRC::Reply::motdstart(config.servername));
 	writeNum(u, IRC::Reply::motd(config.motd.front()));
-	for (std::list<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
+	for (std::vector<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
 		writeNum(u, IRC::Reply::motd(*it));
 	writeNum(u, IRC::Reply::endofmotd());
 }
@@ -205,7 +208,7 @@ void IrcServer::writeError(TcpSocket *s, std::string reason)
 	s->writeLine((IRC::MessageBuilder(config.servername, "ERROR") << reason).str());
 }
 
-void IrcServer::Police()
+void IrcServer::police()
 {
 	static time_t ptime = 0;
 	time_t ctime = ::time(NULL);

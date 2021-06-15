@@ -2,8 +2,18 @@
 #include <assert.h>
 #include <map>
 #include <list>
+#include <vector>
 #include "Channel.hpp"
 #include "Config.hpp"
+
+struct UserInfo
+{
+	std::string nickname;
+	std::string username;
+	std::string host;
+	std::string realname;
+	UserInfo(const User &user);
+};
 
 class Network
 {
@@ -14,6 +24,8 @@ class Network
 	typedef std::map<std::string, Oper>					OperMap;
 	typedef std::set<std::string>						FnicksSet;
 	typedef std::list<BasicConnection *>				ZombieList;
+	typedef std::vector<UserInfo>						InfoVec;
+	typedef std::list<UserInfo>						HistoryList;
 
 	Network();
 	~Network() throw();
@@ -38,6 +50,9 @@ class Network
 	void				addFnick(const std::string &nick);
 	void				newZombie(BasicConnection *);
 	BasicConnection		*nextZombie();
+	void				addNickToHistory(const User &user);
+	InfoVec				getNickHistory(const std::string &nick, size_t count);
+	void				setHistorySize(size_t size);
 
   private:
 	ConnectionMap	_connections;
@@ -46,6 +61,8 @@ class Network
 	OperMap			_opers;
 	FnicksSet		_fnicks;
 	ZombieList		_zombies;
+	HistoryList		_history;
+	size_t			_historySize;
 
 	Network(const Network &);
 	Network &operator=(const Network &);

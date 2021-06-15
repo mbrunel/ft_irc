@@ -30,7 +30,7 @@ const std::string &Message::command() const
 	return (_command);
 }
 
-const std::vector<Param> &Message::params() const
+const Message::Params &Message::params() const
 {
 	return (_params);
 }

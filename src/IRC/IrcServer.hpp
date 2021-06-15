@@ -8,13 +8,16 @@ struct IrcServerConfig
 {
 	std::string	version;
 	std::string servername;
+	std::string shortinfo;
 	size_t		maxChannels;
 	size_t		maxMasks;
 	time_t		ping;
 	time_t		pong;
 	bool		flood;
+	std::string	pass;
 	std::string	motdfile;
-	std::list<std::string> motd;
+	std::vector<std::string> motd;
+	std::vector<std::string> info;
 
 	IrcServerConfig();
 	IrcServerConfig(Config &cfg);
@@ -43,7 +46,7 @@ class IrcServer
 	typedef int (IrcServer::*UserCommandPointer)(User &, const IRC::Message &);
 	typedef std::map<std::string, UserCommandPointer> userCommandsMap;
 	typedef std::map<std::string, CommandStats> commandsStatsMap;
-	typedef std::vector<IRC::Param> Params;
+	typedef IRC::Message::Params Params;
 
 	time_t				creation;
 	std::string			creationDate;
@@ -54,6 +57,7 @@ class IrcServer
 	commandsStatsMap	commandsStats;
 
 	int	away(User &sender, const IRC::Message &msg);
+	int	info(User &sender, const IRC::Message &msg);
 	int	invite(User &sender, const IRC::Message &msg);
 	int	join(User &sender, const IRC::Message &msg);
 	int	kick(User &sender, const IRC::Message &msg);
@@ -67,6 +71,7 @@ class IrcServer
 	int	notice(User &sender, const IRC::Message &msg);
 	int	oper(User &sender, const IRC::Message &msg);
 	int	part(User &sender, const IRC::Message &msg);
+	int	pass(User &sender, const IRC::Message &msg);
 	int	ping(User &sender, const IRC::Message &msg);
 	int	pong(User &sender, const IRC::Message &msg);
 	int	privmsg(User &sender, const IRC::Message &msg);
@@ -77,6 +82,8 @@ class IrcServer
 	int	user(User &sender, const IRC::Message &msg);
 	int	version(User &sender, const IRC::Message &msg);
 	int	who(User &sender, const IRC::Message &msg);
+	int whois(User &sender, const IRC::Message &msg);
+	int whowas(User &sender, const IRC::Message &msg);
 
 	void	disconnect(TcpSocket *socket, const std::string &reason) throw();
 	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit = false) throw();
@@ -86,7 +93,7 @@ class IrcServer
 	void	writeWelcome(User &user);
 	void	writeMotd(User &user);
 	void	writeError(TcpSocket *s, std::string reason);
-	void	Police();
+	void	police();
 	bool	floodControl(User &u);
 
 	IrcServer(const IrcServer& copy);

@@ -19,12 +19,35 @@ int IrcServer::nick(User &u, const IRC::Message &m)
 	{
 		u.unsetRequirement(UserRequirement::NICK);
 		if (u.isRegistered())
+		{
 			writeWelcome(u);
+			network.addNickToHistory(u);
+		}
+		else if (u.requirements().flags() == UserRequirement::PASS)
+		{
+			writeNum(u, IRC::Error::passwdmissmatch());
+			disconnect(u, "Bad Password");
+		}
 	}
 	else
 	{
 		std::string msg((IRC::MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
-		u.writeLine(msg);
+		const Network::ChannelMap &channels = network.channels();
+		Network::ChannelMap::const_iterator c = channels.begin();
+		network.resetUserReceipt();
+		while (c != channels.end())
+		{
+			Channel *chan = c->second;
+			if (chan->findMember(&u))
+			{
+				chan->send(msg);
+				chan->markAllMembers();
+			}
+			++c;
+		}
+		if (!u.joinedChannels())
+			u.writeLine(msg);
+		network.addNickToHistory(u);
 	}
 	return (0);
 }

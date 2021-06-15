@@ -11,6 +11,14 @@ int IrcServer::user(User &u, const IRC::Message &m)
 	u.setRealname(m.params()[3]);
 	u.unsetRequirement(UserRequirement::USER);
 	if (u.isRegistered())
+	{
 		writeWelcome(u);
+		network.addNickToHistory(u);
+	}
+	else if (u.requirements().flags() == UserRequirement::PASS)
+	{
+		writeNum(u, IRC::Error::passwdmissmatch());
+		disconnect(u, "Bad Password");
+	}
 	return (0);
 }

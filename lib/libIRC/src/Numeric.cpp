@@ -422,6 +422,16 @@ namespace Reply
 		return (Numeric(RPL_ENDOFMOTD, ":End of MOTD command"));
 	}
 
+	const Numeric info(const std::string &info)
+	{
+		return (Numeric(RPL_INFO, ':' + info));
+	}
+
+	const Numeric endofinfo()
+	{
+		return (Numeric(RPL_ENDOFINFO, ":End of INFO list"));
+	}
+
 	const Numeric youreoper()
 	{
 		return (Numeric(RPL_YOUREOPER, "You are now an IRC operator"));
@@ -457,6 +467,36 @@ namespace Reply
 		return (Numeric(RPL_LUSERME, ":I have " + Utils::to_string(nb) + " clients and 1 server"));
 	}
 
+	const Numeric whoisuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname)
+	{
+		return (Numeric(RPL_WHOISUSER, nick + " " + user + " " + host + " * :" + realname));
+	}
+
+	const Numeric whoisserver(const std::string &nick, const std::string &servername, const std::string shortinfo)
+	{
+		return (Numeric(RPL_WHOISSERVER, nick + " " + servername + " :" + shortinfo));
+	}
+
+	const Numeric whoisoperator(const std::string &nick)
+	{
+		return (Numeric(RPL_WHOISOPERATOR, nick + " :is an IRC operator"));
+	}
+
+	const Numeric whoisidle(const std::string &nick, size_t idle)
+	{
+		return (Numeric(RPL_WHOISIDLE, nick + " " + Utils::to_string(idle) + " :seconds idle"));
+	}
+
+	const Numeric whoischannels(const std::string &nick, const std::string &status, const std::string &channel)
+	{
+		return (Numeric(RPL_WHOISCHANNELS, nick + " :" + status + channel));
+	}
+
+	const Numeric endofwhois(const std::string &nick)
+	{
+		return (Numeric(RPL_ENDOFWHOIS, nick + " :End of WHOIS list"));
+	}
+
 	const Numeric whoreply(const std::string &msg)
 	{
 		return (Numeric(RPL_WHOREPLY, msg));
@@ -465,6 +505,16 @@ namespace Reply
 	const Numeric endofwho(const std::string &target)
 	{
 		return (Numeric(RPL_ENDOFWHO, target + " :End of WHO list"));
+	}
+
+	const Numeric whowasuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname)
+	{
+		return (Numeric(RPL_WHOWASUSER, nick + " " + user + " " + host + " * :" + realname));
+	}
+
+	const Numeric endofwhowas(const std::string &nick)
+	{
+		return (Numeric(RPL_ENDOFWHOWAS, nick + " :End of WHOWAS"));
 	}
 } /* end of namespace Reply */
 

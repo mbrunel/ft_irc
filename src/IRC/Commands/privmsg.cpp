@@ -76,5 +76,6 @@ int IrcServer::privmsg(User &u, const IRC::Message &m)
 				chan->send((IRC::MessageBuilder(u.prefix(), m.command()) << chan->name() << text).str(), &u);
 		}
 	}
+	u.idle() = ::time(NULL);
 	return (0);
 }
