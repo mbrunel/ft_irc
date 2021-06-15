@@ -1,17 +1,17 @@
 #include "IrcServer.hpp"
 
-int IrcServer::away(User &u, const Message &m)
+int IrcServer::away(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (m.params().empty())
 	{
-		writeNum(u, IrcReply::unaway());
+		writeNum(u, IRC::Reply::unaway());
 		u.setUmode(UserMode(u.umode().flags() & ~UserMode::AWAY));
 	}
 	else
 	{
-		writeNum(u, IrcReply::nowaway());
+		writeNum(u, IRC::Reply::nowaway());
 		u.setUmode(UserMode(u.umode().flags() | UserMode::AWAY));
 		u.setAway(m.params()[0]);
 	}

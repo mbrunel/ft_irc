@@ -1,6 +1,5 @@
 #pragma once
 #include "BasicConnection.hpp"
-#include "IrcNumeric.hpp"
 #include "Mode.hpp"
 
 class UserMode : public Mode

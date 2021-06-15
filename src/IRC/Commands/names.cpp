@@ -1,7 +1,7 @@
 #include "IrcServer.hpp"
 #include <algorithm>
 
-int IrcServer::names(User &u, const Message &m)
+int IrcServer::names(User &u, const IRC::Message &m)
 {
 
 	//===========TO-DO===========//
@@ -9,7 +9,7 @@ int IrcServer::names(User &u, const Message &m)
 	//===========TO-DO===========//
 
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 
 	const Network::ChannelMap &channels = network.channels();
 
@@ -49,17 +49,17 @@ int IrcServer::names(User &u, const Message &m)
 					else
 	        			listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
 	        	}
-	   			writeNum(u, IrcReply::namreply(listName));
+	   			writeNum(u, IRC::Reply::namreply(listName));
 			}
 			++ic;
 		}
-		writeNum(u, IrcReply::endofnames("*"));
+		writeNum(u, IRC::Reply::endofnames("*"));
 	}
 	else
 	{
-		std::vector<Param> paramList= m.params()[0].split();
+		Params paramList= m.params()[0].split();
 
-		std::vector<Param>::const_iterator ip = paramList.begin();
+		Params::const_iterator ip = paramList.begin();
 		while (ip != paramList.end())
 		{
 			
@@ -110,8 +110,8 @@ int IrcServer::names(User &u, const Message &m)
 		        			listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
 	            	}
 				}
-	    		writeNum(u, IrcReply::namreply(listName));
-				writeNum(u, IrcReply::endofnames((*ip)));
+	    		writeNum(u, IRC::Reply::namreply(listName));
+				writeNum(u, IRC::Reply::endofnames((*ip)));
 			}
 			++ip;
 		}

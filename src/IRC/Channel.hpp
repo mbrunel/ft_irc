@@ -33,7 +33,7 @@ public:
 		INVITE_ONLY = 1 << 1,
 		/** 'm' - Moderated Channel flag */
 		MODERATED = 1 << 2,
-		/** 'n' - No messages to Channel from User on the outside */
+		/** 'n' - No IRC::Messages to Channel from User on the outside */
 		NO_OUTSIDE_MSG = 1 << 3,
 		/** 'p' - Private channel flag */
 		PRIVATE = 1 << 5,

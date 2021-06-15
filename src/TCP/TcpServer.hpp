@@ -50,6 +50,3 @@ class TcpServer
 	TcpServer(const TcpServer &);
 	TcpServer &operator=(const TcpServer &);
 };
-
-std::string	timestamp() throw();
-void		abortSelect(int sig) throw();
