@@ -18,7 +18,12 @@ Config::Config(int ac, char **av)
 		exit(1);
 	}
 	cfg = Configuration::create();
-	cfg->parse(Configuration::INPUT_FILE, configFile.c_str());
+	try { cfg->parse(Configuration::INPUT_FILE, configFile.c_str()); }
+	catch (config4cpp::ConfigurationException &e)
+	{
+		cfg->destroy();
+		throw ;
+	}
 }
 
 Config::~Config() { cfg->destroy(); }
