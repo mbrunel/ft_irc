@@ -1,32 +1,30 @@
 #include "IrcServer.hpp"
-#include "MessageBuilder.hpp"
-#include "ft.hpp"
 
-int IrcServer::privmsg(User &u, const Message &m)
+int IrcServer::privmsg(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (!m.params().size())
-		return (writeNum(u, IrcError::norecipient(m.command())));
+		return (writeNum(u, IRC::Error::norecipient(m.command())));
 	if (m.params().size() == 1)
-		return (writeNum(u, IrcError::notexttosend()));
+		return (writeNum(u, IRC::Error::notexttosend()));
 
 	Params		targets(m.params()[0].split());
-	const Param	&text(m.params()[1]);
+	const IRC::Param	&text(m.params()[1]);
 
 	for (Params::const_iterator target = targets.begin(); target != targets.end(); ++target)
 	{
 		if (target->isMask())
 		{
 			if (!u.umode().isSet(UserMode::OPERATOR))
-				writeNum(u, IrcError::nosuchnick(target->c_str()));
+				writeNum(u, IRC::Error::nosuchnick(target->c_str()));
 			const std::string mask = target->mask().substr(1);
 			if ((*target)[0] == '$')
 			{
-				if (ft::match(mask, config.servername))
-					network.msgToAll((MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
+				if (Utils::match(mask, config.servername))
+					network.msgToAll((IRC::MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
 				else
-					writeNum(u, IrcError::badmask(*target));
+					writeNum(u, IRC::Error::badmask(*target));
 			}
 			else if ((*target)[0] == '#')
 			{
@@ -35,23 +33,23 @@ int IrcServer::privmsg(User &u, const Message &m)
 
 				if ((dot = target->find_last_of('.')) == std::string::npos)
 				{
-					writeNum(u, IrcError::notoplevel(*target));
+					writeNum(u, IRC::Error::notoplevel(*target));
 					continue ;
 				}
 				toplevel = target->substr(dot);
 				if (toplevel.find('*') != std::string::npos || toplevel.find('?') != std::string::npos)
-					writeNum(u, IrcError::wildtoplevel(*target));
+					writeNum(u, IRC::Error::wildtoplevel(*target));
 				else
 				{
 					bool found = false;
 					for (Network::UserMap::const_iterator it = network.users().begin(); it != network.users().end(); ++it)
-						if (ft::match(mask, it->second->socket()->host()))
+						if (Utils::match(mask, it->second->socket()->host()))
 						{
-							it->second->writeLine((MessageBuilder(it->second->prefix(), m.command()) << text).str());
+							it->second->writeLine((IRC::MessageBuilder(it->second->prefix(), m.command()) << text).str());
 							found = true;
 						}
 					if (!found)
-						writeNum(u, IrcError::badmask(*target));
+						writeNum(u, IRC::Error::badmask(*target));
 				}
 			}
 		}
@@ -60,22 +58,22 @@ int IrcServer::privmsg(User &u, const Message &m)
 			User *receiver = network.getByNickname(*target);
 			if (!receiver)
 			{
-				writeNum(u, IrcError::nosuchnick(*target));
+				writeNum(u, IRC::Error::nosuchnick(*target));
 				continue ;
 			}
 			if (receiver->umode().isSet(UserMode::AWAY))
-				writeNum(u, IrcReply::away(receiver->nickname(), receiver->awayReason()));
-			receiver->writeLine((MessageBuilder(u.prefix(), m.command()) << text).str());
+				writeNum(u, IRC::Reply::away(receiver->nickname(), receiver->awayReason()));
+			receiver->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << text).str());
 		}
 		else if (target->isChannel())
 		{
 			Channel *chan = network.getByChannelname(*target);
 			if (!chan)
-				writeNum(u, IrcError::nosuchchannel(*target));
+				writeNum(u, IRC::Error::nosuchchannel(*target));
 			else if (!chan->canSendToChannel(&u))
-				writeNum(u, IrcError::cannotsendtochan(chan->name()));
+				writeNum(u, IRC::Error::cannotsendtochan(chan->name()));
 			else
-				chan->send((MessageBuilder(u.prefix(), m.command()) << chan->name() << text).str(), &u);
+				chan->send((IRC::MessageBuilder(u.prefix(), m.command()) << chan->name() << text).str(), &u);
 		}
 	}
 	u.idle() = ::time(NULL);

@@ -1,18 +1,16 @@
-#include "IrcNumeric.hpp"
 #include "IrcServer.hpp"
-#include "MessageBuilder.hpp"
 
-int IrcServer::nick(User &u, const Message &m)
+int IrcServer::nick(User &u, const IRC::Message &m)
 {
 	if (!m.params().size())
-		return (writeNum(u, IrcError::nonicknamegiven()));
+		return (writeNum(u, IRC::Error::nonicknamegiven()));
 	if (!u.requirements().isSet(UserRequirement::NICK) && u.umode().isSet(UserMode::RESTRICTED))
-		return (writeNum(u, IrcError::restricted()));
-	const Param &nick(m.params()[0]);
+		return (writeNum(u, IRC::Error::restricted()));
+	const IRC::Param &nick(m.params()[0]);
 	if (!nick.isNickname())
-		return (writeNum(u, IrcError::erroneusnickname(nick)));
+		return (writeNum(u, IRC::Error::erroneusnickname(nick)));
 	if (network.getByNickname(nick) || network.isFnick(nick))
-		return (writeNum(u, IrcError::nicknameinuse(nick)));
+		return (writeNum(u, IRC::Error::nicknameinuse(nick)));
 	network.remove(&u);
 	std::string oldprefix = u.prefix();
 	u.setNickname(nick);
@@ -27,13 +25,13 @@ int IrcServer::nick(User &u, const Message &m)
 		}
 		else if (u.requirements().flags() == UserRequirement::PASS)
 		{
-			writeNum(u, IrcError::passwdmissmatch());
+			writeNum(u, IRC::Error::passwdmissmatch());
 			disconnect(u, "Bad Password");
 		}
 	}
 	else
 	{
-		std::string msg((MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
+		std::string msg((IRC::MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
 		const Network::ChannelMap &channels = network.channels();
 		Network::ChannelMap::const_iterator c = channels.begin();
 		network.resetUserReceipt();

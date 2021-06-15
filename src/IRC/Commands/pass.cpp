@@ -1,13 +1,11 @@
 #include "IrcServer.hpp"
-#include "ft.hpp"
-#include "MessageBuilder.hpp"
 
-int IrcServer::pass(User &u, const Message &m)
+int IrcServer::pass(User &u, const IRC::Message &m)
 {
 	if (u.isRegistered())
-		return writeNum(u, IrcError::alreadyregistred());
+		return writeNum(u, IRC::Error::alreadyregistred());
 	if (!m.params().size())
-		return writeNum(u, IrcError::needmoreparams(m.command()));
+		return writeNum(u, IRC::Error::needmoreparams(m.command()));
 	if (!config.pass.size() || m.params()[0] == config.pass)
 		u.unsetRequirement(UserRequirement::PASS);
 	else

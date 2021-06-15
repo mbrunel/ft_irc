@@ -1,24 +1,23 @@
 #include "IrcServer.hpp"
-#include "MessageBuilder.hpp"
 
-int IrcServer::part(User &u, const Message &m)
+int IrcServer::part(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (!m.params().size())
-		return (writeNum(u, IrcError::needmoreparams(m.command())));
-	std::vector<Param> channels(m.params()[0].split());
+		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
+	Params channels(m.params()[0].split());
 
 	for (Params::const_iterator chan(channels.begin()); chan != channels.end(); ++chan)
 	{
 		Channel *c;
 		if (!chan->isChannel() || !(c = network.getByChannelname(*chan)))
-			writeNum(u, IrcError::nosuchchannel(*chan));
+			writeNum(u, IRC::Error::nosuchchannel(*chan));
 		else if (!c->findMember(&u))
-			writeNum(u, IrcError::notonchannel(*chan));
+			writeNum(u, IRC::Error::notonchannel(*chan));
 		else
 		{
-			MessageBuilder msg(u.prefix(), m.command());
+			IRC::MessageBuilder msg(u.prefix(), m.command());
 			msg << *chan;
 			if (m.params().size() > 1)
 				msg << m.params()[1];

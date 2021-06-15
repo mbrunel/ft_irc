@@ -1,6 +1,15 @@
 #include "TcpServer.hpp"
+#include "Utils.hpp"
 
 int abortFd = -1;
+
+void abortSelect(int sig) throw()
+{
+	(void)sig;
+	if (abortFd >= 0)
+		close(abortFd);
+	abortFd = -2;
+}
 
 TcpServer::TcpServer():_maxConnections(1024), _verbose(true), _log(std::cerr.rdbuf())
 {
@@ -38,16 +47,6 @@ void TcpServer::setMaxConnections(size_t maxConnections) { _maxConnections = max
 
 void TcpServer::setVerbose(bool verbose) { _verbose = verbose; }
 
-std::string timestamp() throw()
-{
-	char stamp[80];
-
-	time_t rawtime;
-	time(&rawtime);
-	strftime(stamp, 80, "%x - %I:%M:%S", localtime(&rawtime));
-	return (stamp);
-}
-
 void TcpServer::setLogDestination(const std::string &destfile)
 {
 	_logfile.open(destfile.c_str(), std::ios::out);
@@ -57,7 +56,7 @@ void TcpServer::setLogDestination(const std::string &destfile)
 
 std::ostream &TcpServer::log() throw()
 {
-	return (_log << timestamp() << " ");
+	return (_log << Utils::to_date(time(NULL), "%x - %I:%M:%S "));
 }
 
 void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
@@ -120,14 +119,6 @@ TcpSocket *TcpServer::nextPendingConnection() throw()
 	TcpSocket *next = _pending.front();
 	_pending.pop_front();
 	return (next);
-}
-
-void abortSelect(int sig) throw()
-{
-	(void)sig;
-	if (abortFd >= 0)
-		close(abortFd);
-	abortFd = -2;
 }
 
 void TcpServer::select()

@@ -1,19 +1,18 @@
 #include "IrcServer.hpp"
-#include "MessageBuilder.hpp"
 
-int IrcServer::topic(User &u, const Message &m)
+int IrcServer::topic(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (!m.params().size())
-		return (writeNum(u, IrcError::needmoreparams(m.command())));
-	const Param	&target(m.params()[0]);
-	Channel		*c;
+		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
+	const IRC::Param	&target(m.params()[0]);
+	Channel				*c;
 
 	if (target.isChannel() && (c = network.getByChannelname(target)))
 	{
 		if (c->type() == Channel::UNMODERATED)
-			return (writeNum(u, IrcError::nochanmodes(target)));
+			return (writeNum(u, IRC::Error::nochanmodes(target)));
 		const ChannelMode &cm = c->mode();
 		const MemberMode *mm = c->findMember(&u);
 		if (m.params().size() > 1)
@@ -21,31 +20,31 @@ int IrcServer::topic(User &u, const Message &m)
 			if (!mm)
 			{
 				if (c->mode().isSet(ChannelMode::SECRET))
-					IrcError::nosuchchannel(c->name());
+					IRC::Error::nosuchchannel(c->name());
 				else
-					writeNum(u, IrcError::notonchannel(target));
+					writeNum(u, IRC::Error::notonchannel(target));
 			}
 			else if (!mm->isSet(MemberMode::OPERATOR) && cm.isSet(ChannelMode::TOPIC_SETTABLE_BY_CHANOP))
-				writeNum(u, IrcError::chanoprisneeded(target));
+				writeNum(u, IRC::Error::chanoprisneeded(target));
 			else
 			{
 				c->setTopic(m.params()[1]);
-				c->send((MessageBuilder(u.prefix(), m.command()) << target << c->topic()).str());
+				c->send((IRC::MessageBuilder(u.prefix(), m.command()) << target << c->topic()).str());
 			}
 		}
 		else if (!mm)
 		{
 			if (cm.isSet(ChannelMode::SECRET))
-				writeNum(u, IrcError::nosuchchannel(target));
+				writeNum(u, IRC::Error::nosuchchannel(target));
 			else
-				writeNum(u, IrcError::notonchannel(target));
+				writeNum(u, IRC::Error::notonchannel(target));
 		}
 		else if (c->topic().size())
-			writeNum(u, IrcReply::topic(target, c->topic()));
+			writeNum(u, IRC::Reply::topic(target, c->topic()));
 		else
-			writeNum(u, IrcReply::notopic(target));
+			writeNum(u, IRC::Reply::notopic(target));
 	}
 	else
-		writeNum(u, IrcError::nosuchchannel(target));
+		writeNum(u, IRC::Error::nosuchchannel(target));
 	return (0);
 }

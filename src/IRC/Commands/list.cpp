@@ -1,10 +1,9 @@
 #include "IrcServer.hpp"
-#include "MessageBuilder.hpp"
 
-int IrcServer::list(User &u, const Message &m)
+int IrcServer::list(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (m.params().empty())
 	{
 		const Network::ChannelMap channels = network.channels();
@@ -12,7 +11,7 @@ int IrcServer::list(User &u, const Message &m)
 		{
 			Channel *c = i->second;
 			if (!c->mode().isSet(ChannelMode::PRIVATE | ChannelMode::SECRET) || c->findMember(&u))
-				writeNum(u, IrcReply::list(c->name(), c->nbUserVisible(), c->topic()));
+				writeNum(u, IRC::Reply::list(c->name(), c->nbUserVisible(), c->topic()));
 		}
 	}
 	else
@@ -21,10 +20,10 @@ int IrcServer::list(User &u, const Message &m)
 		Channel *c;
 		for (Params::const_iterator i = args.begin(); i != args.end(); ++i)
 			if (i->isChannel() && (c = network.getByChannelname(*i)) && (!c->mode().isSet(ChannelMode::SECRET) || c->findMember(&u)))
-				writeNum(u, IrcReply::list(c->name(), c->nbUserVisible(), c->topic()));
+				writeNum(u, IRC::Reply::list(c->name(), c->nbUserVisible(), c->topic()));
 			else
-				writeNum(u, IrcError::nosuchchannel(*i));
+				writeNum(u, IRC::Error::nosuchchannel(*i));
 	}
-	writeNum(u, IrcReply::listend());
+	writeNum(u, IRC::Reply::listend());
 	return (0);
 }

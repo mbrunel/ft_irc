@@ -1,32 +1,31 @@
 #include "IrcServer.hpp"
-#include "MessageBuilder.hpp"
 
-int IrcServer::invite(User &u, const Message &m)
+int IrcServer::invite(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (m.params().size() < 2)
-		return (writeNum(u, IrcError::needmoreparams(m.command())));
-	const Param &nick = m.params()[0], chan = m.params()[1];
+		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
+	const IRC::Param &nick = m.params()[0], chan = m.params()[1];
 	User *d;
 	if (!nick.isNickname() || !(d = network.getByNickname(nick)))
-		return (writeNum(u, IrcError::nosuchnick(nick)));
+		return (writeNum(u, IRC::Error::nosuchnick(nick)));
 	Channel *c;
 	if (!chan.isChannel() || !(c = network.getByChannelname(chan)))
-		return (writeNum(u, IrcError::nosuchchannel(chan)));
+		return (writeNum(u, IRC::Error::nosuchchannel(chan)));
 	MemberMode *mm = c->findMember(&u);
 	if (!mm)
-		return (writeNum(u, IrcError::notonchannel(chan)));
+		return (writeNum(u, IRC::Error::notonchannel(chan)));
 	if (c->findMember(d))
-		return (writeNum(u, IrcError::useronchannel(nick, chan)));
+		return (writeNum(u, IRC::Error::useronchannel(nick, chan)));
 	if (c->mode().isSet(ChannelMode::INVITE_ONLY) && !mm->isSet(MemberMode::OPERATOR))
-		return (writeNum(u, IrcError::chanoprisneeded(chan)));
+		return (writeNum(u, IRC::Error::chanoprisneeded(chan)));
 	c->invite(d);
-	MessageBuilder r(u.prefix(), m.command());
+	IRC::MessageBuilder r(u.prefix(), m.command());
 	r << nick << chan;
 	d->writeLine(r.str());
-	writeNum(u, IrcReply::inviting(chan, nick));
+	writeNum(u, IRC::Reply::inviting(chan, nick));
 	if (d->umode().isSet(UserMode::AWAY))
-		writeNum(u, IrcReply::away(d->nickname(), d->awayReason()));
+		writeNum(u, IRC::Reply::away(d->nickname(), d->awayReason()));
 	return (0);
 }

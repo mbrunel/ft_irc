@@ -1,16 +1,15 @@
 #include "IrcServer.hpp"
-#include "ft.hpp"
 
-int     IrcServer::who(User &u, const Message &m)
+int     IrcServer::who(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 
-	std::vector<Param> pMsg = m.params();
+	Params pMsg = m.params();
  
 	 // J'ai limité par defaut, comme pour les serveurs existants
 	if (!pMsg.size())
-		return (writeNum(u, IrcError::needmoreparams(m.command())));
+		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
 
 	bool ope = false;
 
@@ -33,7 +32,7 @@ int     IrcServer::who(User &u, const Message &m)
 			continue;
 		}
 
-		if (ft::match(mask, c->name()))
+		if (Utils::match(mask, c->name()))
 		{
 			const Channel::MemberMap &members = c->members();
 			Channel::MemberMap::const_iterator memberIter = members.begin();
@@ -76,12 +75,12 @@ int     IrcServer::who(User &u, const Message &m)
 
 				// ---------------------------------------------- //
 
-				writeNum(u, IrcReply::whoreply(msg));
+				writeNum(u, IRC::Reply::whoreply(msg));
 
 				++memberIter;
 
 			}
-			writeNum(u, IrcReply::endofwho(mask));
+			writeNum(u, IRC::Reply::endofwho(mask));
 			return 0;
 		}
 		++chanIter;
@@ -92,10 +91,10 @@ int     IrcServer::who(User &u, const Message &m)
 	while (userIter != users.end())
 	{
 		User *us = userIter->second;
-		if (ft::match(mask, us->nickname())
-		|| ft::match(mask, us->realname())
-		|| ft::match(mask, us->username())
-		|| ft::match(mask, config.servername))
+		if (Utils::match(mask, us->nickname())
+		|| Utils::match(mask, us->realname())
+		|| Utils::match(mask, us->username())
+		|| Utils::match(mask, config.servername))
 		{
 			// ---------------------------------------------- //
 
@@ -126,12 +125,12 @@ int     IrcServer::who(User &u, const Message &m)
 
 			// ---------------------------------------------- //
 
-			writeNum(u, IrcReply::whoreply(msg));
+			writeNum(u, IRC::Reply::whoreply(msg));
 		}
 		++userIter;
 	}
 
-	writeNum(u, IrcReply::endofwho(mask));
+	writeNum(u, IRC::Reply::endofwho(mask));
 	return (0);
 }
 
