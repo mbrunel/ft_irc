@@ -42,4 +42,4 @@ doc/html
 logfile.txt
 
 # Libraries
-lib/*
+lib/config4cpp
