@@ -1,5 +1,4 @@
 #include "IrcServer.hpp"
-#include "ft.hpp"
 
 static const char *info[] = {
 "IRC --",
@@ -13,17 +12,17 @@ static const char *info[] = {
 "MUST NEVER EVER BE PUT ONLINE",
 NULL };
 
-int IrcServer::info(User &u, const Message &m)
+int IrcServer::info(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (m.params().size())
-		if (!ft::match(m.params()[0].mask(), config.servername))
-			return (writeNum(u, IrcError::nosuchserver(m.params()[0])));
+		if (!Utils::match(m.params()[0].mask(), config.servername))
+			return (writeNum(u, IRC::Error::nosuchserver(m.params()[0])));
 
 	for (size_t i = 0; ::info[i]; ++i)
-		writeNum(u, IrcReply::info(::info[i]));
+		writeNum(u, IRC::Reply::info(::info[i]));
 	std::string timestamp = "Compilation date : ";
-	writeNum(u, IrcReply::info(timestamp + __DATE__ " at " + __TIME__));
-	return writeNum(u, IrcReply::endofinfo());
+	writeNum(u, IRC::Reply::info(timestamp + __DATE__ " at " + __TIME__));
+	return writeNum(u, IRC::Reply::endofinfo());
 }

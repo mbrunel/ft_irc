@@ -1,5 +1,4 @@
 #include "IrcServer.hpp"
-#include "MessageBuilder.hpp"
 
 enum SwitchFlag
 {
@@ -11,7 +10,7 @@ enum SwitchFlag
 	SET
 };
 
-static std::string parseModes(const Param &s, char *mask)
+static std::string parseModes(const IRC::Param &s, char *mask)
 {
 	std::string d;
 	bool found[128] = {0};
@@ -33,7 +32,7 @@ static std::string parseModes(const Param &s, char *mask)
 	return (d);
 }
 
-static bool parseNextModeParam(const std::vector<Param> &params, size_t &i, Param &dst)
+static bool parseNextModeParam(const std::vector<IRC::Param> &params, size_t &i, IRC::Param &dst)
 {
 	if (i >= params.size())
 		return (0);
@@ -41,15 +40,15 @@ static bool parseNextModeParam(const std::vector<Param> &params, size_t &i, Para
 	return (1);
 }
 
-static bool extractMask(Param &arg)
+static bool extractMask(IRC::Param &arg)
 {
 	arg = arg.mask();
 	size_t userPrefix = arg.find_first_of('!'), hostPrefix = arg.find_first_of('@');
 	if (!userPrefix)
 		arg = '*' + arg;
-	if (hostPrefix != Param::npos)
-		return (userPrefix == Param::npos || userPrefix < hostPrefix);
-	arg += userPrefix == Param::npos ? "!*@*" : "@*";
+	if (hostPrefix != IRC::Param::npos)
+		return (userPrefix == IRC::Param::npos || userPrefix < hostPrefix);
+	arg += userPrefix == IRC::Param::npos ? "!*@*" : "@*";
 	return (1);
 }
 
@@ -60,13 +59,13 @@ static void pushChange(std::string &changes, const SwitchFlag prevSwitchFlag, co
 	changes.push_back(c);
 }
 
-int IrcServer::mode(User &u, const Message &m)
+int IrcServer::mode(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (m.params().empty())
-		return (writeNum(u, IrcError::needmoreparams(m.command())));
-	const Param &s = m.params()[0];
+		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
+	const IRC::Param &s = m.params()[0];
 	std::string modes, changes;
 	char mask[128] = {0};
 	SwitchFlag prevSwitchFlag = NONE, switchFlag;
@@ -74,11 +73,11 @@ int IrcServer::mode(User &u, const Message &m)
 	if (s.isNickname())
 	{
 		if (!network.getByNickname(s))
-			return (writeNum(u, IrcError::nosuchnick(s)));
+			return (writeNum(u, IRC::Error::nosuchnick(s)));
 		if (u.nickname() != s)
-			return (writeNum(u, IrcError::usersdontmatch()));
+			return (writeNum(u, IRC::Error::usersdontmatch()));
 		if (m.params().size() == 1)
-			return (!writeNum(u, IrcReply::umodeis(u.umode().toString())));
+			return (!writeNum(u, IRC::Reply::umodeis(u.umode().toString())));
 		UserMode um(u.umode());
 		modes = parseModes(m.params()[1], mask);
 		for (size_t i = 0; i < modes.size(); ++i, prevSwitchFlag = switchFlag)
@@ -112,7 +111,7 @@ int IrcServer::mode(User &u, const Message &m)
 		u.setUmode(um);
 		if (changes.size())
 		{
-			MessageBuilder r(u.nickname(), m.command());
+			IRC::MessageBuilder r(u.nickname(), m.command());
 			r << u.nickname() << changes;
 			const std::string s = r.str();
 			u.writeLine(s);
@@ -122,14 +121,14 @@ int IrcServer::mode(User &u, const Message &m)
 	{
 		Channel *c = network.getByChannelname(s);
 		if (!c)
-			return (writeNum(u, IrcError::nosuchchannel(s)));
+			return (writeNum(u, IRC::Error::nosuchchannel(s)));
 		if (c->type() == Channel::UNMODERATED)
-			return (writeNum(u, IrcError::nochanmodes(s)));
+			return (writeNum(u, IRC::Error::nochanmodes(s)));
 		const MemberMode *mm = c->findMember(&u);
 		if (m.params().size() == 1)
 		{
 			const ChannelMode &m = c->mode();
-			MessageBuilder res(config.servername, IrcReply::channelmodeis(s, m.toString()), u.nickname());
+			IRC::MessageBuilder res(config.servername, IRC::Reply::channelmodeis(s, m.toString()), u.nickname());
 			if (mm)
 			{
 				if (m.isSet(ChannelMode::KEY))
@@ -145,13 +144,13 @@ int IrcServer::mode(User &u, const Message &m)
 			return (0);
 		}
 		if (!mm)
-			return (writeNum(u, IrcError::notonchannel(s)));
+			return (writeNum(u, IRC::Error::notonchannel(s)));
 		if (!mm->isSet(MemberMode::OPERATOR))
-			return (writeNum(u, IrcError::chanoprisneeded(s)));
+			return (writeNum(u, IRC::Error::chanoprisneeded(s)));
 		std::list<std::string> changeParams;
 		ChannelMode cm(c->mode());
 		size_t argi = 2; // current index for modeparams
-		Param arg;
+		IRC::Param arg;
 		modes = parseModes(m.params()[1], mask);
 		for (size_t i = 0; i < modes.size(); ++i, prevSwitchFlag = switchFlag)
 		{
@@ -166,27 +165,24 @@ int IrcServer::mode(User &u, const Message &m)
 						continue ;
 					if (f == ChannelMode::BAN_MASK)
 					{
-						const Channel::MaskSet &set = c->banMasks();
-						for (Channel::MaskSet::const_iterator i = set.begin();
-						i != set.end(); ++i)
-							writeNum(u, IrcReply::banlist(c->name(), *i));
-						writeNum(u, IrcReply::endofbanlist(c->name()));
+						const MaskSet &set = c->masks(Channel::BAN_SET);
+						for (MaskSet::const_iterator i = set.begin(); i != set.end(); ++i)
+							writeNum(u, IRC::Reply::banlist(c->name(), *i));
+						writeNum(u, IRC::Reply::endofbanlist(c->name()));
 					}
 					else if (f == ChannelMode::EXCEPTION_MASK)
 					{
-						const Channel::MaskSet &set = c->exceptionMasks();
-						for (Channel::MaskSet::const_iterator i = set.begin();
-						i != set.end(); ++i)
-							writeNum(u, IrcReply::exceptlist(c->name(), *i));
-						writeNum(u, IrcReply::endofexceptlist(c->name()));
+						const MaskSet &set = c->masks(Channel::EXCEPTION_SET);
+						for (MaskSet::const_iterator i = set.begin(); i != set.end(); ++i)
+							writeNum(u, IRC::Reply::exceptlist(c->name(), *i));
+						writeNum(u, IRC::Reply::endofexceptlist(c->name()));
 					}
-					else
+					else // if (f == ChannelMode::INVITATION_MASK)
 					{
-						const Channel::MaskSet &set = c->invitationMasks();
-						for (Channel::MaskSet::const_iterator i = set.begin();
-						i != set.end(); ++i)
-							writeNum(u, IrcReply::invitelist(c->name(), *i));
-						writeNum(u, IrcReply::endofinvitelist(c->name()));
+						const MaskSet &set = c->masks(Channel::INVITATION_SET);
+						for (MaskSet::const_iterator i = set.begin(); i != set.end(); ++i)
+							writeNum(u, IRC::Reply::invitelist(c->name(), *i));
+						writeNum(u, IRC::Reply::endofinvitelist(c->name()));
 					}
 				}
 				else
@@ -202,16 +198,17 @@ int IrcServer::mode(User &u, const Message &m)
 							}
 							else if (!extractMask(arg))
 								continue ;
-							Channel::MaskSet *set;
+							Channel::MaskSetType type;
 							if (f == ChannelMode::BAN_MASK)
-								set = &c->banMasks();
+								type = Channel::BAN_SET;
 							else if (f == ChannelMode::EXCEPTION_MASK)
-								set = &c->exceptionMasks();
-							else
-								set = &c->invitationMasks();
-							if (set->find(arg) == set->end())
+								type = Channel::EXCEPTION_SET;
+							else // if (f == ChannelMode::INVITATION_MASK)
+								type = Channel::INVITATION_SET;
+							const MaskSet &set = c->masks(type);
+							if (set.find(arg) == set.end())
 								continue ;
-							set->erase(arg);
+							c->delMask(type, arg);
 							changeParams.push_back(arg);
 						}
 						else if (!cm.isSet(f))
@@ -231,7 +228,7 @@ int IrcServer::mode(User &u, const Message &m)
 							{
 								if (cm.isSet(f))
 								{
-									writeNum(u, IrcError::keyset(s));
+									writeNum(u, IRC::Error::keyset(s));
 									continue ;
 								}
 								else if (!arg.isKey())
@@ -251,18 +248,17 @@ int IrcServer::mode(User &u, const Message &m)
 							{
 								if (!extractMask(arg))
 									continue ;
-								Channel::MaskSet *set;
+								Channel::MaskSetType type;
 								if (f == ChannelMode::BAN_MASK)
-									set = &c->banMasks();
+									type = Channel::BAN_SET;
 								else if (f == ChannelMode::EXCEPTION_MASK)
-									set = &c->exceptionMasks();
-								else
-									set = &c->invitationMasks();
-								if (set->find(arg) != set->end())
+									type = Channel::EXCEPTION_SET;
+								else // if (f == ChannelMode::INVITATION_MASK)
+									type = Channel::INVITATION_SET;
+								const MaskSet &set = c->masks(type);
+								if (set.size() == config.maxMasks || set.find(arg) != set.end())
 									continue ;
-								if (set->size() == config.maxMasks)
-									continue ;
-								set->insert(arg);
+								c->addMask(type, arg);
 								changeParams.push_back(arg);
 							}
 						}
@@ -288,13 +284,13 @@ int IrcServer::mode(User &u, const Message &m)
 				User *user = network.getByNickname(arg);
 				if (!user)
 				{
-					writeNum(u, IrcError::nosuchnick(arg));
+					writeNum(u, IRC::Error::nosuchnick(arg));
 					continue ;
 				}
 				MemberMode *umm = c->findMember(user);
 				if (!umm)
 				{
-					writeNum(u, IrcError::usernotinchannel(arg, s));
+					writeNum(u, IRC::Error::usernotinchannel(arg, s));
 					continue ;
 				}
 				if (switchFlag == UNSET)
@@ -316,7 +312,7 @@ int IrcServer::mode(User &u, const Message &m)
 		c->setMode(cm);
 		if (changes.size())
 		{
-			MessageBuilder r(u.nickname(), m.command());
+			IRC::MessageBuilder r(u.nickname(), m.command());
 			r << c->name() << changes;
 			while (changeParams.size())
 			{
@@ -328,10 +324,10 @@ int IrcServer::mode(User &u, const Message &m)
 		}
 	}
 	else
-		return (writeNum(u, IrcError::nosuchnick(s)));
+		return (writeNum(u, IRC::Error::nosuchnick(s)));
 	if (needMoreParams)
-		writeNum(u, IrcError::needmoreparams(m.command()));
+		writeNum(u, IRC::Error::needmoreparams(m.command()));
 	else if (unknownMode)
-		writeNum(u, IrcError::umodeunknownflag());
+		writeNum(u, IRC::Error::umodeunknownflag());
 	return (0);
 }

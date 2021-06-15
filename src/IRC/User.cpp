@@ -1,4 +1,3 @@
-#include "MessageBuilder.hpp"
 #include "User.hpp"
 
 UserRequirement::UserRequirement(unsigned flags) :

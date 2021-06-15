@@ -4,12 +4,12 @@
 #define IRCSERVER_DEBUGLEVEL ""
 #define IRCSERVER_COMMENTS "An obsolete IC server (please do not use it in real life)"
 
-int IrcServer::version(User &u, const Message &m)
+int IrcServer::version(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
-		return (writeNum(u, IrcError::notregistered()));
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (m.params().size() && m.params()[0] != config.servername)
-		return (writeNum(u, IrcError::nosuchserver(m.params()[0])));
-	writeNum(u, IrcReply::version(IRCSERVER_VERSION, IRCSERVER_DEBUGLEVEL, config.servername, IRCSERVER_COMMENTS));
+		return (writeNum(u, IRC::Error::nosuchserver(m.params()[0])));
+	writeNum(u, IRC::Reply::version(IRCSERVER_VERSION, IRCSERVER_DEBUGLEVEL, config.servername, IRCSERVER_COMMENTS));
 	return (0);
 }

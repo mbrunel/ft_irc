@@ -1,6 +1,4 @@
 #include "IrcServer.hpp"
-#include "MessageBuilder.hpp"
-#include "ft.hpp"
 
 IrcServerConfig::IrcServerConfig(){}
 
@@ -13,8 +11,6 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 {
 	cfg.servername(servername);
 	cfg.motdfile(motdfile);
-	cfg.shortinfo(shortinfo);
-	cfg.serverpass(pass);
 }
 
 CommandStats::CommandStats() :
@@ -24,9 +20,8 @@ count(0), byteCount(0)
 IrcServer::IrcServer() :
 creation(::time(NULL))
 {
-	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
+	creationDate = Utils::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	userCommands["AWAY"] = &IrcServer::away;
-	userCommands["INFO"] = &IrcServer::info;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
 	userCommands["KICK"] = &IrcServer::kick;
@@ -69,11 +64,11 @@ void IrcServer::run() throw()
 		TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{
-			User *u = new User(newSocket, config.pass.size() ? UserRequirement::ALL : UserRequirement::ALL_EXCEPT_PASS);
+			User *u = new User(newSocket, UserRequirement::ALL_EXCEPT_PASS);
 			writeMessage(*u, "NOTICE", "Connection established");
 			network.add(u);
 		}
-		Police();
+		police();
 		TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()))
 		{
@@ -92,7 +87,7 @@ void IrcServer::run() throw()
 			std::string line;
 			if (!socket->readLine(line))
 				continue ;
-			exec(network.getBySocket(socket), Message(line));
+			exec(network.getBySocket(socket), IRC::Message(line));
 		}
 	}
 }
@@ -104,7 +99,6 @@ void IrcServer::setConfig(Config &cfg)
 	srv.setLogDestination(cfg.logfile());
 	cfg.opers(network.opers());
 	cfg.fnicks(network.fnicks());
-	network.setHistorySize(cfg.historySize());
 	config = IrcServerConfig(cfg);
 }
 
@@ -118,7 +112,7 @@ void IrcServer::disconnect(TcpSocket *socket, const std::string &reason) throw()
 
 void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQuit) throw()
 {
-	const std::string quitMessage = (MessageBuilder(u.prefix(), "QUIT") << reason).str();
+	const std::string quitMessage = (IRC::MessageBuilder(u.prefix(), "QUIT") << reason).str();
 	std::stringstream errorReason;
 
 	if (u.joinedChannels())
@@ -154,7 +148,7 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 	log() << u.socket()->host() << ' ' << errorReason.str() << std::endl;
 }
 
-int IrcServer::exec(BasicConnection *sender, const Message &msg)
+int IrcServer::exec(BasicConnection *sender, const IRC::Message &msg)
 {
 	if (!msg.isValid())
 		return (-1);
@@ -165,7 +159,7 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 			return (0);
 		userCommandsMap::const_iterator i(userCommands.find(msg.command()));
 		if (i == userCommands.end())
-			return (writeNum(u, IrcError::unknowncommand(msg.command())));
+			return (writeNum(u, IRC::Error::unknowncommand(msg.command())));
 		int commandStatus = (this->*(i->second))(u, msg);
 		CommandStats &stats = commandsStats[msg.command()];
 		++stats.count;
@@ -177,12 +171,12 @@ int IrcServer::exec(BasicConnection *sender, const Message &msg)
 
 void IrcServer::writeMessage(User &dst, const std::string &command, const std::string &content)
 {
-	dst.writeLine((MessageBuilder(config.servername, command) << dst.nickname() << content).str());
+	dst.writeLine((IRC::MessageBuilder(config.servername, command) << dst.nickname() << content).str());
 }
 
-int IrcServer::writeNum(User &dst, const IrcNumeric &response)
+int IrcServer::writeNum(User &dst, const  IRC::Numeric &response)
 {
-	dst.writeLine(MessageBuilder(config.servername, response, dst.nickname()).str());
+	dst.writeLine(IRC::MessageBuilder(config.servername, response, dst.nickname()).str());
 	return (-1);
 }
 
@@ -190,31 +184,31 @@ void IrcServer::writeMotd(User &u)
 {
 	if (!config.motd.size())
 	{
-		writeNum(u, IrcError::nomotd());
+		writeNum(u, IRC::Error::nomotd());
 		return ;
 	}
-	writeNum(u, IrcReply::motdstart(config.servername));
-	writeNum(u, IrcReply::motd(config.motd.front()));
+	writeNum(u, IRC::Reply::motdstart(config.servername));
+	writeNum(u, IRC::Reply::motd(config.motd.front()));
 	for (std::vector<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
-		writeNum(u, IrcReply::motd(*it));
-	writeNum(u, IrcReply::endofmotd());
+		writeNum(u, IRC::Reply::motd(*it));
+	writeNum(u, IRC::Reply::endofmotd());
 }
 
 void IrcServer::writeWelcome(User &u)
 {
-	writeNum(u, IrcReply::welcome(u.prefix()));
-	writeNum(u, IrcReply::yourhost(config.servername, config.version));
-	writeNum(u, IrcReply::created(creationDate));
-	writeNum(u, IrcReply::myinfo(config.servername, config.version, "Oaiorsw", "IObeiklmnopqstv"));
+	writeNum(u, IRC::Reply::welcome(u.prefix()));
+	writeNum(u, IRC::Reply::yourhost(config.servername, config.version));
+	writeNum(u, IRC::Reply::created(creationDate));
+	writeNum(u, IRC::Reply::myinfo(config.servername, config.version, "Oaiorsw", "IObeiklmnopstv"));
 	writeMotd(u);
 }
 
 void IrcServer::writeError(TcpSocket *s, std::string reason)
 {
-	s->writeLine((MessageBuilder(config.servername, "ERROR") << reason).str());
+	s->writeLine((IRC::MessageBuilder(config.servername, "ERROR") << reason).str());
 }
 
-void IrcServer::Police()
+void IrcServer::police()
 {
 	static time_t ptime = 0;
 	time_t ctime = ::time(NULL);
@@ -241,7 +235,15 @@ void IrcServer::Police()
 			c->pongExpected() = true;
 		}
 	}
-	ft::file_to_data(config.motdfile, config.motd);
+	std::ifstream f(config.motdfile.c_str(), std::ios_base::in);
+	std::string line;
+	config.motd.clear();
+	while (std::getline(f, line))
+	{
+		if (line.size() > 80)
+			line.resize(80);
+		config.motd.push_back(line);
+	}
 }
 
 bool IrcServer::floodControl(User &u)
