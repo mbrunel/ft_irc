@@ -15,5 +15,10 @@ int IrcServer::user(User &u, const Message &m)
 		writeWelcome(u);
 		network.addNickToHistory(u);
 	}
+	else if (u.requirements().flags() == UserRequirement::PASS)
+	{
+		writeNum(u, IrcError::passwdmissmatch());
+		disconnect(u, "Bad Password");
+	}
 	return (0);
 }

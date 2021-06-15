@@ -15,6 +15,7 @@ struct IrcServerConfig
 	time_t		ping;
 	time_t		pong;
 	bool		flood;
+	std::string	pass;
 	std::string	motdfile;
 	std::vector<std::string> motd;
 	std::vector<std::string> info;
@@ -71,6 +72,7 @@ class IrcServer
 	int	notice(User &sender, const Message &msg);
 	int	oper(User &sender, const Message &msg);
 	int	part(User &sender, const Message &msg);
+	int pass(User &sender, const Message &msg);
 	int	ping(User &sender, const Message &msg);
 	int	pong(User &sender, const Message &msg);
 	int	privmsg(User &sender, const Message &msg);

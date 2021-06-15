@@ -63,6 +63,7 @@ public:
 	void					mark();
 	time_t					&idle();
 	void					unmark();
+	void					setRequirement(UserRequirement::Flag requirement);
 	void					unsetRequirement(UserRequirement::Flag requirement);
 	const UserRequirement	&requirements() const;
 	const std::string		&realname() const;

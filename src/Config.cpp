@@ -33,6 +33,11 @@ void Config::servername(std::string &n)
 	n = cfg->lookupString(IRC_SCOPE, "servername");
 }
 
+void Config::serverpass(std::string &p)
+{
+	p = cfg->lookupString(IRC_SCOPE, "serverpass");
+}
+
 void Config::shortinfo(std::string &s)
 {
 	s = cfg->lookupString(IRC_SCOPE, "shortinfo");
