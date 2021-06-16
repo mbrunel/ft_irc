@@ -1,15 +1,17 @@
 #include "SslContext.hpp"
 
-bool sslInit = false;
+bool _sslInit = false;
 
-SslContext::SslContext(const char *certificatePath, const char *keyPath)
+SslContext::SslContext():_ctx(NULL) {}
+
+void SslContext::sslInit(const char *certificatePath, const char *keyPath)
 {
-	if (!sslInit)
+	if (!_sslInit)
 	{
 		SSL_library_init();
 		OpenSSL_add_all_algorithms();
 		SSL_load_error_strings();
-		sslInit = true;
+		_sslInit = true;
 	}
 	if (!(_ctx = SSL_CTX_new(SSLv23_server_method())))
 		throw SslException("SSL_CTX_new");
@@ -22,13 +24,15 @@ SslContext::SslContext(const char *certificatePath, const char *keyPath)
 		throw SslException("SSL_CTX_check_private_key");
   } catch (std::exception &e) {
 		SSL_CTX_free(_ctx);
+		_ctx = NULL;
 		throw ;
   }
 }
 
 SslContext::~SslContext() throw()
 {
-	SSL_CTX_free(_ctx);
+	if (_ctx)
+		SSL_CTX_free(_ctx);
 }
 
 SSL_CTX *SslContext::ctx() { return _ctx; }

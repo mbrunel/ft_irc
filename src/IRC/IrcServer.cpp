@@ -1,18 +1,22 @@
 #include "IrcServer.hpp"
 
+const std::string IrcServer::_version = "1.0.0";
+
 IrcServerConfig::IrcServerConfig(){}
 
 IrcServerConfig::IrcServerConfig(Config &cfg):
+	configfile(cfg.configfile()),
+	servername(cfg.servername()),
+	shortinfo(cfg.shortinfo()),
 	maxChannels(cfg.maxChannels()),
 	maxMasks(cfg.maxMasks()),
 	ping(cfg.ping()),
 	pong(cfg.pong()),
-	flood(cfg.floodControl())
-{
-	cfg.servername(servername);
-	cfg.motdfile(motdfile);
-	cfg.serverpass(pass);
-}
+	flood(cfg.floodControl()),
+	pass(cfg.serverpass())
+	{
+		Utils::file_to_data(cfg.motdfile(), motd);
+	}
 
 CommandStats::CommandStats() :
 count(0), byteCount(0)
@@ -42,6 +46,7 @@ creation(::time(NULL))
 	userCommands["PONG"] = &IrcServer::pong;
 	userCommands["PRIVMSG"] = &IrcServer::privmsg;
 	userCommands["QUIT"] = &IrcServer::quit;
+	userCommands["REHASH"] = &IrcServer::rehash;
 	userCommands["STATS"] = &IrcServer::stats;
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
@@ -53,8 +58,6 @@ creation(::time(NULL))
 }
 
 IrcServer::~IrcServer() {}
-
-void IrcServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen) { srv.listen(port, ctx, maxQueueLen); }
 
 std::ostream &IrcServer::log() throw() { return srv.log(); }
 
@@ -94,13 +97,19 @@ void IrcServer::run() throw()
 	}
 }
 
-void IrcServer::setConfig(Config &cfg)
+void IrcServer::loadConfig(const std::string &file)
 {
-	srv.setMaxConnections(cfg.maxConnections());
-	srv.setVerbose(cfg.verbose());
-	srv.setLogDestination(cfg.logfile());
+	static bool init = true;
+	Config cfg(file);
+
+	if (init)
+	{
+		srv.init(cfg);
+		init = false;
+	}
 	cfg.opers(network.opers());
 	cfg.fnicks(network.fnicks());
+	network.setHistorySize(cfg.historySize());
 	config = IrcServerConfig(cfg);
 }
 
@@ -199,9 +208,9 @@ void IrcServer::writeMotd(User &u)
 void IrcServer::writeWelcome(User &u)
 {
 	writeNum(u, IRC::Reply::welcome(u.prefix()));
-	writeNum(u, IRC::Reply::yourhost(config.servername, config.version));
+	writeNum(u, IRC::Reply::yourhost(config.servername, _version));
 	writeNum(u, IRC::Reply::created(creationDate));
-	writeNum(u, IRC::Reply::myinfo(config.servername, config.version, "Oaiorsw", "IObeiklmnopstv"));
+	writeNum(u, IRC::Reply::myinfo(config.servername, _version, "Oaiorsw", "IObeiklmnopstv"));
 	writeMotd(u);
 }
 
@@ -236,15 +245,6 @@ void IrcServer::police()
 			c->clock() = ctime;
 			c->pongExpected() = true;
 		}
-	}
-	std::ifstream f(config.motdfile.c_str(), std::ios_base::in);
-	std::string line;
-	config.motd.clear();
-	while (std::getline(f, line))
-	{
-		if (line.size() > 80)
-			line.resize(80);
-		config.motd.push_back(line);
 	}
 }
 

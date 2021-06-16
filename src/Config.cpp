@@ -4,21 +4,10 @@ Oper::Oper(){}
 
 Oper::Oper(std::string login, std::string pass, std::string host):login(login), pass(pass), host(host){}
 
-Config::Config(int ac, char **av)
+Config::Config(const std::string &file):_configfile(file)
 {
-	std::string configFile;
-
-	if (ac == 1)
-		configFile = "ircserv.cfg";
-	else if (ac == 2)
-		configFile = av[1];
-	else if (ac > 2)
-	{
-		usage();
-		exit(1);
-	}
 	cfg = Configuration::create();
-	try { cfg->parse(Configuration::INPUT_FILE, configFile.c_str()); }
+	try { cfg->parse(Configuration::INPUT_FILE, file.c_str()); }
 	catch (config4cpp::ConfigurationException &e)
 	{
 		cfg->destroy();
@@ -28,19 +17,24 @@ Config::Config(int ac, char **av)
 
 Config::~Config() { cfg->destroy(); }
 
-void Config::servername(std::string &n)
+std::string Config::configfile()
 {
-	n = cfg->lookupString(IRC_SCOPE, "servername");
+	return _configfile;
 }
 
-void Config::serverpass(std::string &p)
+std::string Config::servername()
 {
-	p = cfg->lookupString(IRC_SCOPE, "serverpass");
+	return cfg->lookupString(IRC_SCOPE, "servername");
 }
 
-void Config::shortinfo(std::string &s)
+std::string Config::serverpass()
 {
-	s = cfg->lookupString(IRC_SCOPE, "shortinfo");
+	return cfg->lookupString(IRC_SCOPE, "serverpass");
+}
+
+std::string Config::shortinfo()
+{
+	return cfg->lookupString(IRC_SCOPE, "shortinfo");
 }
 
 std::string Config::certFile()
@@ -73,14 +67,14 @@ std::string Config::logfile()
 	return cfg->lookupString(SERVER_SCOPE, "logs.logfile", "");
 }
 
-void Config::motdfile(std::string &m)
+std::string Config::motdfile()
 {
-	m = cfg->lookupString(IRC_SCOPE, "motdfile");
+	return cfg->lookupString(IRC_SCOPE, "motdfile");
 }
 
 int Config::maxConnections()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "limits.maxconnections", 1080));
+	return (cfg->lookupInt(SERVER_SCOPE, "maxconnections", 1080));
 }
 
 int Config::maxChannels()
@@ -100,6 +94,7 @@ size_t Config::historySize()
 
 void Config::opers(std::map<std::string, Oper> &o)
 {
+	o.clear();
 	config4cpp::StringVector names;
 	config4cpp::StringBuffer filterPattern;
 
@@ -130,14 +125,9 @@ bool Config::floodControl()
 
 void Config::fnicks(std::set<std::string> &f)
 {
+	f.clear();
 	config4cpp::StringVector nicks;
 
 	cfg->lookupList(IRC_SCOPE, "banned_nicks", nicks);
 	f = std::set<std::string>(nicks.c_array(), nicks.c_array() + nicks.length());
 }
-
-void Config::usage() const
-{
-	std::cout << "Usage : ./ircserv <configuration file path>" << std::endl;
-}
-

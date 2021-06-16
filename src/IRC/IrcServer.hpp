@@ -6,7 +6,7 @@
 
 struct IrcServerConfig
 {
-	std::string	version;
+	std::string configfile;
 	std::string servername;
 	std::string shortinfo;
 	size_t		maxChannels;
@@ -15,9 +15,7 @@ struct IrcServerConfig
 	time_t		pong;
 	bool		flood;
 	std::string	pass;
-	std::string	motdfile;
 	std::vector<std::string> motd;
-	std::vector<std::string> info;
 
 	IrcServerConfig();
 	IrcServerConfig(Config &cfg);
@@ -40,7 +38,9 @@ class IrcServer
 	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
 	std::ostream	&log() throw();
 	void			run() throw();
-	void			setConfig(Config &cfg);
+	void			loadConfig(const std::string &);
+
+	const static std::string _version;
 
   private:
 	typedef int (IrcServer::*UserCommandPointer)(User &, const IRC::Message &);
@@ -76,6 +76,7 @@ class IrcServer
 	int	pong(User &sender, const IRC::Message &msg);
 	int	privmsg(User &sender, const IRC::Message &msg);
 	int	quit(User &sender, const IRC::Message &msg);
+	int rehash(User &sender, const IRC::Message &msg);
 	int	stats(User &sender, const IRC::Message &msg);
 	int	time(User &sender, const IRC::Message &msg);
 	int	topic(User &sender, const IRC::Message &msg);

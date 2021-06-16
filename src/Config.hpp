@@ -9,6 +9,7 @@
 
 #define SERVER_SCOPE "ServerConfig"
 #define IRC_SCOPE "IrcConfig"
+#define DEFAULT_CFG_FILE "ircserv.cfg"
 
 typedef config4cpp::Configuration Configuration;
 
@@ -24,13 +25,13 @@ struct Oper
 class Config
 {
   public:
-	Config(int ac, char **av);
+	Config(const std::string &file);
 	~Config();
-	void usage() const;
-	void servername(std::string &);
-	void serverpass(std::string &);
-	void shortinfo(std::string &);
-	void motdfile(std::string &);
+	std::string configfile();
+	std::string servername();
+	std::string serverpass();
+	std::string shortinfo();
+	std::string motdfile();
 	std::string certFile();
 	std::string keyFile();
 	std::string tcpPort();
@@ -49,4 +50,5 @@ class Config
 
   private:
 	Configuration *cfg;
+	std::string _configfile;
 };

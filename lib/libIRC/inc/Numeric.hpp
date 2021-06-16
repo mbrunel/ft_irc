@@ -111,6 +111,7 @@ enum NumericCode
 	RPL_MOTDSTART = 375,
 	RPL_ENDOFMOTD = 376,
 	RPL_YOUREOPER = 381,
+	RPL_REHASHING = 382,
 	RPL_TIME = 391
 };
 
@@ -227,6 +228,7 @@ namespace Reply
 	const Numeric endofwho(const std::string &target);
 	const Numeric whowasuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname);
 	const Numeric endofwhowas(const std::string &nick);
+	const Numeric rehashing(const std::string &filename);
 } /* end of namespace Reply */
 
 } /* end of namespace IRC */
