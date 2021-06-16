@@ -4,7 +4,7 @@ int IrcServer::stats(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
 		return (writeNum(u, IRC::Error::notregistered()));
-	if (m.params().size() > 1 && Utils::match(m.params()[1], config.servername))
+	if (m.params().size() > 1 && !Utils::match(m.params()[1], config.servername))
 		return (writeNum(u, IRC::Error::nosuchserver(m.params()[1])));
 	char c = m.params().size() && m.params()[0].size() == 1 ? m.params()[0][0] : 0;
 	if (c == 'm')

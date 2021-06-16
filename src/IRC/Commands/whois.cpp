@@ -1,4 +1,5 @@
 #include "IrcServer.hpp"
+#include "Utils.hpp"
 
 int IrcServer::whois(User &sender, const IRC::Message &m)
 {
@@ -11,7 +12,7 @@ int IrcServer::whois(User &sender, const IRC::Message &m)
 		masks = Params(m.params()[0].split());
 	else
 	{
-		if (m.params()[0] != config.servername)
+		if (!Utils::match(m.params()[0].mask(), config.servername))
 			return writeNum(sender, IRC::Error::nosuchserver(m.params()[0]));
 		masks = Params(m.params()[1].split());
 	}
@@ -36,7 +37,7 @@ int IrcServer::whois(User &sender, const IRC::Message &m)
 						continue ;
 					if (m->isSet(m->OPERATOR))
 						status = "@";
-					else if (m && m->isSet(m->VOICE))
+					else if (m->isSet(m->VOICE))
 						status = "+";
 					writeNum(sender, IRC::Reply::whoischannels(u->nickname(), status, c->name()));
 				}

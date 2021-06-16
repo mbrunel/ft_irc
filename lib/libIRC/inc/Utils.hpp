@@ -12,6 +12,8 @@ namespace Utils
 
 	std::string to_date(const time_t t, const char *format);
 
+	void to_upper(std::string &str);
+
 	template<class T>
 	inline std::string to_string(const T &value)
 	{
