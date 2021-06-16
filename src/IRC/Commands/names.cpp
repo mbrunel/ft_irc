@@ -3,24 +3,19 @@
 
 int IrcServer::names(User &u, const IRC::Message &m)
 {
-
-	//===========TO-DO===========//
-	// Gerer les targets
-	//===========TO-DO===========//
-
 	if (!u.isRegistered())
 		return (writeNum(u, IRC::Error::notregistered()));
+	if (m.params().size() > 1 && !Utils::match(m.params()[1], config.servername))
+		return (writeNum(u, IRC::Error::nosuchserver(m.params()[1])));
 
 	const Network::ChannelMap &channels = network.channels();
-
 	if (!m.params().size())
 	{
-		
 		Network::ChannelMap::const_iterator ic = channels.begin();
 		while (ic != channels.end())
 		{
 			std::string listName = "";
-		
+
 			if (ic->second->nbUserVisible() > 0 || ic->second->findMember(&u))
 			{
 
@@ -32,24 +27,24 @@ int IrcServer::names(User &u, const IRC::Message &m)
 				else
 					listName += "* " + ic->first + " :";
 				const Channel::MemberMap &members = ic->second->members();
-	        	Channel::MemberMap::const_iterator im = members.begin();
-	        	while (im != members.end())
-	        	{
+				Channel::MemberMap::const_iterator im = members.begin();
+				while (im != members.end())
+				{
 					MemberMode *mmode = ic->second->findMember(im->first);
 					if (mmode != NULL)
 					{
 						if (mmode->isSet(MemberMode::OPERATOR) || mmode->isSet(MemberMode::CREATOR))
-	        				listName += "@" + im->first->nickname() + (++im == members.end()-- ? "" : " ");
+							listName += "@" + im->first->nickname() + (++im == members.end()-- ? "" : " ");
 						else if (mmode->isSet(MemberMode::VOICE) && (!mmode->isSet(MemberMode::OPERATOR)
 						&& !mmode->isSet(MemberMode::CREATOR)))
-	        				listName += "+" + im->first->nickname() + (++im == members.end()-- ? "" : " ");
+							listName += "+" + im->first->nickname() + (++im == members.end()-- ? "" : " ");
 						else
-	        				listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
+							listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
 					}
 					else
-	        			listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
-	        	}
-	   			writeNum(u, IRC::Reply::namreply(listName));
+						listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
+				}
+				writeNum(u, IRC::Reply::namreply(listName));
 			}
 			++ic;
 		}
@@ -62,11 +57,11 @@ int IrcServer::names(User &u, const IRC::Message &m)
 		Params::const_iterator ip = paramList.begin();
 		while (ip != paramList.end())
 		{
-			
+
 			std::string listName = "";
-	
-			//--------------- FIND -------------------//	
-			short int paramInChannels = 0;		
+
+			//--------------- FIND -------------------//
+			short int paramInChannels = 0;
 			Network::ChannelMap::const_iterator ic = channels.begin();
 			while (ic != channels.end())
 			{
@@ -77,8 +72,8 @@ int IrcServer::names(User &u, const IRC::Message &m)
 				}
 				++ic;
 			}
-			//---------------------------------------//	
-			
+			//---------------------------------------//
+
 			if (paramInChannels)
 			{
 
@@ -92,31 +87,31 @@ int IrcServer::names(User &u, const IRC::Message &m)
 					else
 						listName += "* " + (*ip) + " :";
 					const Channel::MemberMap &members = ic->second->members();
-		            Channel::MemberMap::const_iterator im = members.begin();
-		            while (im != members.end())
-		            {
+					Channel::MemberMap::const_iterator im = members.begin();
+					while (im != members.end())
+					{
 						MemberMode *mmode = ic->second->findMember(im->first);
 						if (mmode != NULL)
 						{
 							if (mmode->isSet(MemberMode::OPERATOR) || mmode->isSet(MemberMode::CREATOR))
-		        				listName += "@" + im->first->nickname() + (++im == members.end()-- ? "" : " ");
+								listName += "@" + im->first->nickname() + (++im == members.end()-- ? "" : " ");
 							else if (mmode->isSet(MemberMode::VOICE) && (!mmode->isSet(MemberMode::OPERATOR)
 							&& !mmode->isSet(MemberMode::CREATOR)))
-		        				listName += "+" + im->first->nickname() + (++im == members.end()-- ? "" : " ");
+								listName += "+" + im->first->nickname() + (++im == members.end()-- ? "" : " ");
 							else
-		        				listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
+								listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
 						}
 						else
-		        			listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
-	            	}
+							listName += im->first->nickname() + (++im == members.end()-- ? "" : " ");
+					}
 				}
-	    		writeNum(u, IRC::Reply::namreply(listName));
+				writeNum(u, IRC::Reply::namreply(listName));
 				writeNum(u, IRC::Reply::endofnames((*ip)));
 			}
 			++ip;
 		}
 	}
-    return (0);
+	return (0);
 }
 
 /*

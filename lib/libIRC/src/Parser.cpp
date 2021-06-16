@@ -29,7 +29,7 @@ namespace Parser
 			while ((++o).distance() < 3)
 				if (!std::isdigit(*o))
 					return (false);
-		s = o.extract();
+		Utils::to_upper(s = o.extract().c_str());
 		return (true);
 	}
 

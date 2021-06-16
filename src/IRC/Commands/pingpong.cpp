@@ -3,7 +3,7 @@
 int IrcServer::ping(User &u, const IRC::Message &m) //for when a client sends a ping : undefined in IRC
 {
 	if (!m.params().size())
-		return (writeNum(u, IRC::Error::needmoreparams("PING")));
+		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
 	u.writeLine((IRC::MessageBuilder(config.servername, "PONG") << m.params()[0]).str());
 	return true;
 }
@@ -11,7 +11,7 @@ int IrcServer::ping(User &u, const IRC::Message &m) //for when a client sends a 
 int IrcServer::pong(User &u, const IRC::Message &m) //for when a client sends a pong : poorly defined in IRC
 {
 	if (!m.params().size())
-		return (writeNum(u, IRC::Error::needmoreparams("PONG")));
+		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
 	u.pongExpected() = false;
 	::time(&u.clock());
 	return true;

@@ -66,4 +66,9 @@ std::string to_date(const time_t t, const char *format)
 	return (buf);
 }
 
+void to_upper(std::string &str)
+{
+	for (std::string::iterator c = str.begin(); c != str.end(); ++c) *c = toupper(*c);
+}
+
 } /* end of namespace stdext */

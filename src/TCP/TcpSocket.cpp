@@ -75,6 +75,8 @@ int TcpSocket::IO()
 			return (0);
 		buf[nb] = '\0';
 		_readBuf += buf;
+		if (_readBuf.size() >= 2048)
+			throw MsgException("socket is flooded");
 	}
 	return (1);
 }

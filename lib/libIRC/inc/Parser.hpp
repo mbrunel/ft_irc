@@ -1,5 +1,6 @@
 #pragma once
 #include "Context.hpp"
+#include "Utils.hpp"
 
 namespace IRC
 {

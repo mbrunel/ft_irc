@@ -31,7 +31,7 @@ int IrcServer::nick(User &u, const IRC::Message &m)
 	}
 	else
 	{
-		std::string msg((IRC::MessageBuilder(oldprefix, "NICK") << u.nickname()).str());
+		std::string msg((IRC::MessageBuilder(oldprefix, m.command()) << u.nickname()).str());
 		const Network::ChannelMap &channels = network.channels();
 		Network::ChannelMap::const_iterator c = channels.begin();
 		network.resetUserReceipt();

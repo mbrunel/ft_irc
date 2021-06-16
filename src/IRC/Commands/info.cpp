@@ -16,9 +16,8 @@ int IrcServer::info(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
 		return (writeNum(u, IRC::Error::notregistered()));
-	if (m.params().size())
-		if (!Utils::match(m.params()[0].mask(), config.servername))
-			return (writeNum(u, IRC::Error::nosuchserver(m.params()[0])));
+	if (m.params().size() && !Utils::match(m.params()[0], config.servername))
+		return (writeNum(u, IRC::Error::nosuchserver(m.params()[0])));
 
 	for (size_t i = 0; ::info[i]; ++i)
 		writeNum(u, IRC::Reply::info(::info[i]));

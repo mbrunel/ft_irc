@@ -11,6 +11,7 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 {
 	cfg.servername(servername);
 	cfg.motdfile(motdfile);
+	cfg.serverpass(pass);
 }
 
 CommandStats::CommandStats() :
@@ -22,6 +23,7 @@ creation(::time(NULL))
 {
 	creationDate = Utils::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	userCommands["AWAY"] = &IrcServer::away;
+	userCommands["INFO"] = &IrcServer::info;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
 	userCommands["KICK"] = &IrcServer::kick;
@@ -64,7 +66,7 @@ void IrcServer::run() throw()
 		TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{
-			User *u = new User(newSocket, UserRequirement::ALL_EXCEPT_PASS);
+			User *u = new User(newSocket, config.pass.size() ? UserRequirement::ALL : UserRequirement::ALL_EXCEPT_PASS);
 			writeMessage(*u, "NOTICE", "Connection established");
 			network.add(u);
 		}
@@ -81,7 +83,7 @@ void IrcServer::run() throw()
 			}
 			catch (std::exception &e) {
 				log() << e.what() << std::endl;
-				disconnect(socket, "Corrupt link");
+				disconnect(socket, e.what());
 				continue ;
 			}
 			std::string line;
