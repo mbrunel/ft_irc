@@ -299,6 +299,16 @@ namespace Reply
 		return (Numeric(RPL_UMODEIS, '+' + modes));
 	}
 
+	const Numeric servlist(const std::string &name, const std::string &server, const std::string &mask, const std::string &type, size_t hopcount, const std::string &info)
+	{
+		return (Numeric(RPL_SERVLIST, name + ' ' + server + ' ' + mask + ' ' + type + ' ' + Utils::to_string(hopcount) + " :" + info));
+	}
+
+	const Numeric servlistend(const std::string &mask, const std::string &type)
+	{
+		return (Numeric(RPL_SERVLISTEND, mask + ' ' + type + " :End of service listing"));
+	}
+
 	const Numeric statuptime(time_t uptime)
 	{
 		std::stringstream ss;
@@ -435,6 +445,11 @@ namespace Reply
 	const Numeric youreoper()
 	{
 		return (Numeric(RPL_YOUREOPER, "You are now an IRC operator"));
+	}
+
+	const Numeric youreservice(const std::string &servicename)
+	{
+		return (Numeric(RPL_YOURESERVICE, "You are service " + servicename));
 	}
 
 	const Numeric time()

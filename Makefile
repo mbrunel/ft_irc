@@ -23,7 +23,11 @@ CHECK		:= ✔
 BUILD_MSG	:= @echo "$(C_GREEN)$(CHECK)$(C_NONE)"
 REMOVE_MSG	:= @echo "$(C_RED)$(CROSS)$(C_NONE)"
 
-$(NAME): $(OBJ) $(LIBC4S) $(LIBIRC)
+$(NAME): $(OBJ)
+	@make -C $(LIBC4S_DIR) BUILD_TYPE=release CXX=$(CXX) > /dev/null 2>&1
+	@$(BUILD_MSG) $(notdir $(LIBC4S))
+	@make -C $(LIBIRC_DIR) > /dev/null 2>&1
+	@$(BUILD_MSG) $(notdir $(LIBIRC))
 	@$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 	@$(BUILD_MSG) $@
 
@@ -53,14 +57,6 @@ run: $(NAME) $(CERT)
 $(BUILD_DIR)/%.o: src/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
-	@$(BUILD_MSG) $(@F)
-
-$(LIBC4S):
-	@make -C $(LIBC4S_DIR) BUILD_TYPE=release CXX=$(CXX) > /dev/null 2>&1
-	@$(BUILD_MSG) $(@F)
-
-$(LIBIRC):
-	@make -C $(LIBIRC_DIR) > /dev/null 2>&1
 	@$(BUILD_MSG) $(@F)
 
 $(CERT):
