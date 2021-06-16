@@ -27,12 +27,10 @@ TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(
 		throw MsgException("Unknown IP family");
 	}
 	char buf[NI_MAXHOST];
-	if (getnameinfo((sockaddr *)&_addr, addrLen, buf, sizeof(buf), NULL, 0, NI_NAMEREQD))
-	{
-		close();
-		throw MsgException("getnameinfo");
-	}
-	_host = buf;
+	if (!getnameinfo((sockaddr *)&_addr, addrLen, buf, sizeof(buf), NULL, 0, NI_NAMEREQD))
+		_host = buf;
+	else
+		_host = _ip;
 }
 
 TcpSocket::~TcpSocket() throw() { close(); }
