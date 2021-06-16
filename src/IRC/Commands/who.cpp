@@ -6,22 +6,25 @@ int     IrcServer::who(User &u, const IRC::Message &m)
 		return (writeNum(u, IRC::Error::notregistered()));
 
 	Params pMsg = m.params();
- 
-	 // J'ai limité par defaut, comme pour les serveurs existants
+
+	bool noParams = false;
+	std::string mask;
 	if (!pMsg.size())
-		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
+	{
+		noParams = true;
+		mask = "";
+	}
+	else
+		mask = pMsg[0];
 
 	bool ope = false;
-
-	std::string mask = pMsg[0];
-
 	if (pMsg.size() > 1)
 		if (pMsg[1] == "o")
 			ope = true;
 
 	const Network::ChannelMap &channels = network.channels();
 	Network::ChannelMap::const_iterator chanIter = channels.begin();
-	while (chanIter != channels.end())
+	while (chanIter != channels.end() && !noParams)
 	{
 		Channel *c = chanIter->second;
 		ChannelMode cmode = c->mode();
@@ -94,7 +97,8 @@ int     IrcServer::who(User &u, const IRC::Message &m)
 		if (Utils::match(mask, us->nickname())
 		|| Utils::match(mask, us->realname())
 		|| Utils::match(mask, us->username())
-		|| Utils::match(mask, config.servername))
+		|| Utils::match(mask, config.servername)
+		|| noParams)
 		{
 			// ---------------------------------------------- //
 
