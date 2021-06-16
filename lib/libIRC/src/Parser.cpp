@@ -17,6 +17,7 @@ namespace Parser
 		s = o.extract();
 		return (true);
 	}
+
 	bool asCommand(Context &o, std::string &s)
 	{
 		o.resetDistance();
