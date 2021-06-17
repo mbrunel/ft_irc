@@ -18,38 +18,44 @@ CommandStats::CommandStats() :
 count(0), byteCount(0)
 {}
 
+const std::string IrcServer::_version = "1.0.0";
+
 IrcServer::IrcServer() :
 creation(::time(NULL))
 {
 	creationDate = Utils::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
+	serviceCommands["KILL"] = &IrcServer::kill;
+	serviceCommands["MODE"] = &IrcServer::mode;
+	serviceCommands["NICK"] = &IrcServer::nick;
+	serviceCommands["NOTICE"] = &IrcServer::notice;
+	serviceCommands["OPER"] = &IrcServer::oper;
+	serviceCommands["PASS"] = &IrcServer::pass;
+	serviceCommands["PING"] = &IrcServer::ping;
+	serviceCommands["PONG"] = &IrcServer::pong;
+	serviceCommands["PRIVMSG"] = &IrcServer::privmsg;
+	serviceCommands["QUIT"] = &IrcServer::quit;
+	serviceCommands["SERVICE"] = &IrcServer::service;
+	serviceCommands["SERVLIST"] = &IrcServer::servlist;
+	serviceCommands["SQUERY"] = &IrcServer::squery;
+	serviceCommands["USER"] = &IrcServer::user;
+	serviceCommands["WHO"] = &IrcServer::who;
+	serviceCommands["WHOIS"] = &IrcServer::whois;
+	serviceCommands["WHOWAS"] = &IrcServer::whowas;
+	userCommands = serviceCommands;
 	userCommands["AWAY"] = &IrcServer::away;
 	userCommands["INFO"] = &IrcServer::info;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
 	userCommands["KICK"] = &IrcServer::kick;
-	userCommands["KILL"] = &IrcServer::kill;
 	userCommands["LIST"] = &IrcServer::list;
 	userCommands["LUSERS"] = &IrcServer::lusers;
-	userCommands["MODE"] = &IrcServer::mode;
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NAMES"] = &IrcServer::names;
-	userCommands["NICK"] = &IrcServer::nick;
-	userCommands["NOTICE"] = &IrcServer::notice;
-	userCommands["OPER"] = &IrcServer::oper;
 	userCommands["PART"] = &IrcServer::part;
-	userCommands["PASS"] = &IrcServer::pass;
-	userCommands["PING"] = &IrcServer::ping;
-	userCommands["PONG"] = &IrcServer::pong;
-	userCommands["PRIVMSG"] = &IrcServer::privmsg;
-	userCommands["QUIT"] = &IrcServer::quit;
 	userCommands["STATS"] = &IrcServer::stats;
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
-	userCommands["USER"] = &IrcServer::user;
 	userCommands["VERSION"] = &IrcServer::version;
-	userCommands["WHO"] = &IrcServer::who;
-	userCommands["WHOIS"] = &IrcServer::whois;
-	userCommands["WHOWAS"] = &IrcServer::whowas;
 }
 
 IrcServer::~IrcServer() {}
@@ -107,8 +113,7 @@ void IrcServer::setConfig(Config &cfg)
 void IrcServer::disconnect(TcpSocket *socket, const std::string &reason) throw()
 {
 	BasicConnection *c = network.getBySocket(socket);
-	if (c->type() == BasicConnection::USER)
-		disconnect(*static_cast<User *>(c), reason);
+	disconnect(*static_cast<User *>(c), reason);
 }
 
 
@@ -154,21 +159,18 @@ int IrcServer::exec(BasicConnection *sender, const IRC::Message &msg)
 {
 	if (!msg.isValid())
 		return (-1);
-	if (sender->type() == BasicConnection::USER)
-	{
-		User &u(*static_cast<User*>(sender));
-		if (!floodControl(u))
-			return (0);
-		userCommandsMap::const_iterator i(userCommands.find(msg.command()));
-		if (i == userCommands.end())
-			return (writeNum(u, IRC::Error::unknowncommand(msg.command())));
-		int commandStatus = (this->*(i->second))(u, msg);
-		CommandStats &stats = commandsStats[msg.command()];
-		++stats.count;
-		stats.byteCount += msg.entry().size();
-		return (commandStatus);
-	}
-	return (-1);
+	User &u = *static_cast<User*>(sender);
+	if (!floodControl(u))
+		return (0);
+	userCommandsMap &map = u.type() == User::USER ? userCommands : serviceCommands;
+	userCommandsMap::const_iterator i = map.find(msg.command());
+	if (i == map.end())
+		return (writeNum(u, IRC::Error::unknowncommand(msg.command())));
+	int commandStatus = (this->*(i->second))(u, msg);
+	CommandStats &stats = commandsStats[msg.command()];
+	++stats.count;
+	stats.byteCount += msg.entry().size();
+	return (commandStatus);
 }
 
 void IrcServer::writeMessage(User &dst, const std::string &command, const std::string &content)
@@ -198,11 +200,12 @@ void IrcServer::writeMotd(User &u)
 
 void IrcServer::writeWelcome(User &u)
 {
-	writeNum(u, IRC::Reply::welcome(u.prefix()));
+	writeNum(u, (u.type() == User::USER ? IRC::Reply::welcome(u.prefix()) : IRC::Reply::youreservice(u.nickname())));
 	writeNum(u, IRC::Reply::yourhost(config.servername, config.version));
 	writeNum(u, IRC::Reply::created(creationDate));
 	writeNum(u, IRC::Reply::myinfo(config.servername, config.version, "Oaiorsw", "IObeiklmnopstv"));
-	writeMotd(u);
+	if (u.type() == User::USER)
+		writeMotd(u);
 }
 
 void IrcServer::writeError(TcpSocket *s, std::string reason)

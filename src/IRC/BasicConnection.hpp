@@ -7,6 +7,7 @@ class BasicConnection
   public:
 	enum Type
 	{
+		SERVICE,
 		USER
 	};
 
@@ -15,9 +16,10 @@ class BasicConnection
 	Type			type() const;
 	TcpSocket		*socket() const;
 	unsigned		hopcount() const;
+	void			setType(const Type type);
 	void			writeLine(const std::string &content);
 	time_t			&clock();
-	bool					&pongExpected();
+	bool			&pongExpected();
 
   protected:
 	TcpSocket	*_socket;

@@ -45,8 +45,11 @@ class IrcServer
   private:
 	typedef int (IrcServer::*UserCommandPointer)(User &, const IRC::Message &);
 	typedef std::map<std::string, UserCommandPointer> userCommandsMap;
+	typedef std::map<std::string, UserCommandPointer> serviceCommandsMap;
 	typedef std::map<std::string, CommandStats> commandsStatsMap;
 	typedef IRC::Message::Params Params;
+
+	static const std::string _version;
 
 	time_t				creation;
 	std::string			creationDate;
@@ -54,6 +57,7 @@ class IrcServer
 	TcpServer			srv;
 	Network				network;
 	userCommandsMap		userCommands;
+	serviceCommandsMap	serviceCommands;
 	commandsStatsMap	commandsStats;
 
 	int	away(User &sender, const IRC::Message &msg);
@@ -76,6 +80,9 @@ class IrcServer
 	int	pong(User &sender, const IRC::Message &msg);
 	int	privmsg(User &sender, const IRC::Message &msg);
 	int	quit(User &sender, const IRC::Message &msg);
+	int	service(User &sender, const IRC::Message &msg);
+	int	servlist(User &sender, const IRC::Message &msg);
+	int	squery(User &sender, const IRC::Message &msg);
 	int	stats(User &sender, const IRC::Message &msg);
 	int	time(User &sender, const IRC::Message &msg);
 	int	topic(User &sender, const IRC::Message &msg);
