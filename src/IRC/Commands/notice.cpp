@@ -1,4 +1,5 @@
 #include "IrcServer.hpp"
+#include "libft.hpp"
 
 int IrcServer::notice(User &u, const IRC::Message &m)
 {
@@ -17,7 +18,7 @@ int IrcServer::notice(User &u, const IRC::Message &m)
 			const std::string mask = target->mask().substr(1);
 			if ((*target)[0] == '$')
 			{
-				if (Utils::match(mask, config.servername))
+				if (ft::match(mask, config.servername))
 					network.msgToAll((IRC::MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
 			}
 			else if ((*target)[0] == '#')
@@ -30,7 +31,7 @@ int IrcServer::notice(User &u, const IRC::Message &m)
 				toplevel = target->substr(dot);
 				if (toplevel.find('*') == std::string::npos && toplevel.find('?') == std::string::npos)
 					for (Network::UserMap::const_iterator it = network.users().begin(); it != network.users().end(); ++it)
-						if (Utils::match(mask, it->second->socket()->host()))
+						if (ft::match(mask, it->second->socket()->host()))
 							it->second->writeLine((IRC::MessageBuilder(it->second->prefix(), m.command()) << text).str());
 			}
 		}

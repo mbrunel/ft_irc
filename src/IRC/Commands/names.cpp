@@ -1,11 +1,11 @@
 #include "IrcServer.hpp"
-#include <algorithm>
+#include "libft.hpp"
 
 int IrcServer::names(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
 		return (writeNum(u, IRC::Error::notregistered()));
-	if (m.params().size() > 1 && !Utils::match(m.params()[1], config.servername))
+	if (m.params().size() > 1 && !ft::match(m.params()[1], config.servername))
 		return (writeNum(u, IRC::Error::nosuchserver(m.params()[1])));
 
 	const Network::ChannelMap &channels = network.channels();

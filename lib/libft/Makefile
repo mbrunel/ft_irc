@@ -1,9 +1,9 @@
-NAME		:= libIRC.a
+NAME		:= libft.a
 BUILD_DIR	:= .build
 SRC_DIR		:= src
 SRC			:= $(wildcard $(SRC_DIR)/*.cpp)
 CXX			:= clang++
-CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP -I ./inc -I ../libft/inc
+CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP -I ./inc
 OBJ			:= $(SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
 $(NAME): $(OBJ)

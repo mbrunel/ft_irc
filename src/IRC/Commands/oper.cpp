@@ -1,4 +1,5 @@
 #include "IrcServer.hpp"
+#include "libft.hpp"
 
 int IrcServer::oper(User &u, const IRC::Message &m)
 {
@@ -9,7 +10,7 @@ int IrcServer::oper(User &u, const IRC::Message &m)
 	Oper *o = network.getOper(m.params()[0]);
 	if (!o || o->pass != m.params()[1])
 		return (writeNum(u, IRC::Error::passwdmissmatch()));
-	if (!Utils::match(o->host, u.prefix()))
+	if (!ft::match(o->host, u.prefix()))
 		return (writeNum(u, IRC::Error::nooperhost()));
 	writeNum(u, IRC::Reply::youreoper());
 	u.setUmode(u.umode().flags() | UserMode::OPERATOR);

@@ -32,14 +32,11 @@
 *.app
 ircserv
 
+# Configuration
+config
+
 # Documentation
 doc/html
-
-# SSL
-*.ssl.*
-
-# Logs
-logfile.txt
 
 # Libraries
 lib/config4cpp

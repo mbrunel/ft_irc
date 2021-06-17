@@ -32,10 +32,9 @@ nospcrlfcl = !( NUL | space | ':' )
 ; 2nd step: extract arguments
 target     = nickname | servername
 msgto      = channel | targetmask | nickname
-channel    = ( '#' | '+' | '&' | ( '!' channelid ) ) chanstring [ ':' chanstring ]
+channel    = ( '#' | '+' ) chanstring [ ':' chanstring ]
 targetmask = ( '$' | '#' ) mask
 chanstring = !( NUL | space | BELL | ',' | ':' )
-channelid  = 5( digit | upper )
 key        = +24!( NUL | space | '\f' | '\t' | '\v' )
 
 ; 3rd step: wildcards matching

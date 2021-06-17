@@ -1,14 +1,19 @@
 A list of usefull commands :
 
+# Generate SSL certificate
 openssl req \
 		-newkey rsa:2048 -nodes -keyout ircserv.ssl.key \
 		-x509 -days 365 -out ircserv.ssl.crt \
 		-subj "/C=FR/ST=France/L=Paris/O=42/OU=Archeology/CN=42.fr/emailAddress=mbrunel@student.42.fr"
 
-nc localhsot 6667
+# CLI TCP connection
+rlwrap nc localhost 6667
 
-sudo lsof -i -P -n | grep LISTEN
-
+# CLI TCP connection (SSL)
 openssl s_client -connect localhost:6697
 
+# Checks open filee descriptors
+sudo lsof -i -P -n | grep LISTEN
+
+# Packet analyzing
 sudo tcpdump -XX -s0 -i lo src 127.0.0.1 and dst 127.0.0.1 and port 6697 and tcp

@@ -1,5 +1,6 @@
 #include <cstring>
 #include "Parser.hpp"
+#include "libft.hpp"
 
 namespace IRC
 {
@@ -29,7 +30,7 @@ namespace Parser
 			while ((++o).distance() < 3)
 				if (!std::isdigit(*o))
 					return (false);
-		Utils::to_upper(s = o.extract().c_str());
+		ft::to_upper(s = o.extract().c_str());
 		return (true);
 	}
 

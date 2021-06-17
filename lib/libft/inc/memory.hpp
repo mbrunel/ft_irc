@@ -1,13 +1,16 @@
 #pragma once
 
-template<class T>
-	class unique_ptr;
+namespace ft
+{
 
 template<class T>
-	class shared_ptr;
+class unique_ptr;
 
 template<class T>
-	class weak_ptr;
+class shared_ptr;
+
+template<class T>
+class weak_ptr;
 
 
 template <class T>
@@ -67,9 +70,9 @@ class shared_ptr
 		shared = old.shared;
 		++shared->shared_nb;
 	}
-	~shared_ptr() throw () { reset(); }
+	~shared_ptr() throw() { reset(); }
 
-	void reset() throw ()
+	void reset() throw()
 	{
 		if (!--shared->shared_nb)
 		{
@@ -131,3 +134,5 @@ class weak_ptr
 
 	friend class shared_ptr<T>;
 };
+
+} /* end of namespace ft */

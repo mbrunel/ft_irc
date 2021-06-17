@@ -1,4 +1,5 @@
 #include "IrcServer.hpp"
+#include "libft.hpp"
 
 IrcServerConfig::IrcServerConfig(){}
 
@@ -23,7 +24,7 @@ const std::string IrcServer::_version = "1.0.0";
 IrcServer::IrcServer() :
 creation(::time(NULL))
 {
-	creationDate = Utils::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
+	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	serviceCommands["KILL"] = &IrcServer::kill;
 	serviceCommands["MODE"] = &IrcServer::mode;
 	serviceCommands["NICK"] = &IrcServer::nick;

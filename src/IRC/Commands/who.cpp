@@ -1,6 +1,7 @@
 #include "IrcServer.hpp"
+#include "libft.hpp"
 
-int     IrcServer::who(User &u, const IRC::Message &m)
+int IrcServer::who(User &u, const IRC::Message &m)
 {
 	if (!u.isRegistered())
 		return (writeNum(u, IRC::Error::notregistered()));
@@ -35,7 +36,7 @@ int     IrcServer::who(User &u, const IRC::Message &m)
 			continue;
 		}
 
-		if (Utils::match(mask, c->name()))
+		if (ft::match(mask, c->name()))
 		{
 			const Channel::MemberMap &members = c->members();
 			Channel::MemberMap::const_iterator memberIter = members.begin();
@@ -94,10 +95,10 @@ int     IrcServer::who(User &u, const IRC::Message &m)
 	while (userIter != users.end())
 	{
 		User *us = userIter->second;
-		if (Utils::match(mask, us->nickname())
-		|| Utils::match(mask, us->realname())
-		|| Utils::match(mask, us->username())
-		|| Utils::match(mask, config.servername)
+		if (ft::match(mask, us->nickname())
+		|| ft::match(mask, us->realname())
+		|| ft::match(mask, us->username())
+		|| ft::match(mask, config.servername)
 		|| noParams)
 		{
 			// ---------------------------------------------- //

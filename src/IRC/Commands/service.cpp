@@ -1,4 +1,5 @@
 #include "IrcServer.hpp"
+#include "libft.hpp"
 
 int IrcServer::service(User &u, const IRC::Message &m)
 {
@@ -11,7 +12,7 @@ int IrcServer::service(User &u, const IRC::Message &m)
 		return (writeNum(u, IRC::Error::erroneusnickname(nick)));
 	if (network.getByNickname(nick) || network.isFnick(nick))
 		return (writeNum(u, IRC::Error::nicknameinuse(nick)));
-	if (!Utils::match(m.params()[2], config.servername))
+	if (!ft::match(m.params()[2], config.servername))
 		return (writeNum(u, IRC::Error::nosuchserver(m.params()[2])));
 	if (u.requirements().isSet(UserRequirement::PASS))
 	{
