@@ -4,7 +4,7 @@ Oper::Oper(){}
 
 Oper::Oper(std::string login, std::string pass, std::string host):login(login), pass(pass), host(host){}
 
-Config::Config(const std::string &file):_configfile(file)
+Config::Config(const std::string &file)
 {
 	cfg = Configuration::create();
 	try { cfg->parse(Configuration::INPUT_FILE, file.c_str()); }
@@ -19,22 +19,17 @@ Config::~Config() { cfg->destroy(); }
 
 std::string Config::configfile()
 {
-	return _configfile;
+	return cfg->fileName();
 }
 
-std::string Config::servername()
+std::string Config::tcpPort()
 {
-	return cfg->lookupString(IRC_SCOPE, "servername");
+	return cfg->lookupString(SERVER_SCOPE, "tcp-port");
 }
 
-std::string Config::serverpass()
+std::string Config::sslPort()
 {
-	return cfg->lookupString(IRC_SCOPE, "serverpass");
-}
-
-std::string Config::shortinfo()
-{
-	return cfg->lookupString(IRC_SCOPE, "shortinfo");
+	return cfg->lookupString(SERVER_SCOPE, "ssl-port", "");
 }
 
 std::string Config::certFile()
@@ -47,19 +42,14 @@ std::string Config::keyFile()
 	return cfg->lookupString(SERVER_SCOPE, "ssl-key", "");
 }
 
-std::string Config::tcpPort()
+int Config::maxConnections()
 {
-	return cfg->lookupString(SERVER_SCOPE, "tcp-port");
-}
-
-std::string Config::sslPort()
-{
-	return cfg->lookupString(SERVER_SCOPE, "ssl-port", 0);
+	return (cfg->lookupInt(SERVER_SCOPE, "maxconnections"));
 }
 
 bool Config::verbose()
 {
-	return (cfg->lookupBoolean(SERVER_SCOPE, "logs.verbose", true));
+	return (cfg->lookupBoolean(SERVER_SCOPE, "logs.verbose"));
 }
 
 std::string Config::logfile()
@@ -67,29 +57,54 @@ std::string Config::logfile()
 	return cfg->lookupString(SERVER_SCOPE, "logs.logfile", "");
 }
 
+std::string Config::servername()
+{
+	return cfg->lookupString(IRC_SCOPE, "servername");
+}
+
+std::string Config::serverpass()
+{
+	return cfg->lookupString(IRC_SCOPE, "serverpass", "");
+}
+
+std::string Config::shortinfo()
+{
+	return cfg->lookupString(IRC_SCOPE, "shortinfo");
+}
+
 std::string Config::motdfile()
 {
 	return cfg->lookupString(IRC_SCOPE, "motdfile");
 }
 
-int Config::maxConnections()
-{
-	return (cfg->lookupInt(SERVER_SCOPE, "maxconnections", 1080));
-}
-
 int Config::maxChannels()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchannels", 1080));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchannels"));
 }
 
 int Config::maxMasks()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks", 32));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks"));
 }
 
 size_t Config::historySize()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "limits.history_size", 5000));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.history_size"));
+}
+
+time_t Config::ping()
+{
+	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_interval"));
+}
+
+time_t Config::pong()
+{
+	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.pong_timeout"));
+}
+
+bool Config::floodControl()
+{
+	return (cfg->lookupBoolean(IRC_SCOPE, "limits.flood_control"));
 }
 
 void Config::opers(std::map<std::string, Oper> &o)
@@ -106,21 +121,6 @@ void Config::opers(std::map<std::string, Oper> &o)
 		std::string host = cfg->lookupString(names[i], "host", "*");
 		o[login] = Oper(login, pass, host);
 	}
-}
-
-time_t Config::ping()
-{
-	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_interval", 100));
-}
-
-time_t Config::pong()
-{
-	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_timeout", 100));
-}
-
-bool Config::floodControl()
-{
-	return (cfg->lookupBoolean(IRC_SCOPE, "limits.flood_control", "yes"));
 }
 
 void Config::fnicks(std::set<std::string> &f)

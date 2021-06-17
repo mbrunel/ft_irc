@@ -50,5 +50,4 @@ class Config
 
   private:
 	Configuration *cfg;
-	std::string _configfile;
 };

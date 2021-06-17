@@ -32,12 +32,15 @@ TcpServer::~TcpServer() throw()
 
 void TcpServer::init(Config &cfg)
 {
-	_ctx.sslInit(cfg.certFile().c_str(), cfg.keyFile().c_str());
 	setMaxConnections(cfg.maxConnections());
 	setVerbose(cfg.verbose());
 	setLogDestination(cfg.logfile());
-	listen(cfg.sslPort().c_str(), _ctx.ctx());
 	listen(cfg.tcpPort().c_str());
+	if (cfg.sslPort().size())
+	{
+		_ctx.load(cfg.certFile().c_str(), cfg.keyFile().c_str());
+		listen(cfg.sslPort().c_str(), _ctx.ctx());
+	}
 }
 
 void TcpServer::setUpListener(addrinfo *a, Listener *listener)

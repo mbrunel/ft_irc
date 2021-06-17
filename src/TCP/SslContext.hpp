@@ -8,7 +8,7 @@ struct SslContext
 {
   public :
 	SslContext();
-	void sslInit(const char *certificatePath, const char *keyPath);
+	void load(const char *certificatePath, const char *keyPath);
 	~SslContext() throw();
 
 	SSL_CTX *ctx();
