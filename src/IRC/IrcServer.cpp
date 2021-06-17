@@ -1,4 +1,5 @@
 #include "IrcServer.hpp"
+#include "libft.hpp"
 
 IrcServerConfig::IrcServerConfig(){}
 
@@ -13,7 +14,7 @@ IrcServerConfig::IrcServerConfig(Config &cfg):
 	flood(cfg.floodControl()),
 	pass(cfg.serverpass())
 	{
-		Utils::file_to_data(cfg.motdfile(), motd);
+		ft::file_to_data(cfg.motdfile(), motd);
 	}
 
 CommandStats::CommandStats() :
@@ -25,7 +26,7 @@ const std::string IrcServer::_version = "1.0.0";
 IrcServer::IrcServer() :
 creation(::time(NULL))
 {
-	creationDate = Utils::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
+	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	serviceCommands["KILL"] = &IrcServer::kill;
 	serviceCommands["MODE"] = &IrcServer::mode;
 	serviceCommands["NICK"] = &IrcServer::nick;
@@ -69,7 +70,7 @@ void IrcServer::run()
 {
 	while (1)
 	{
-		try { srv.select(); } catch(TcpServer::SigintException &e) { log() << "\rSIGINT catched, exiting properly" << std::endl; return ; }
+		try { srv.select(); } catch(TcpServer::SigintException &e) { return ; }
 		TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{

@@ -1,4 +1,5 @@
 #include "IrcServer.hpp"
+#include "libft.hpp"
 
 int IrcServer::whowas(User &sender, const IRC::Message &m)
 {
@@ -11,7 +12,7 @@ int IrcServer::whowas(User &sender, const IRC::Message &m)
 	if (m.params().size() > 1)
 		count = atoi(m.params()[1].c_str());
 	if (m.params().size() > 2)
-		if (!Utils::match(m.params()[2].mask(), config.servername))
+		if (!ft::match(m.params()[2].mask(), config.servername))
 			return writeNum(sender, IRC::Error::nosuchserver(m.params()[2]));
 	for (Params::const_iterator target = targets.begin(); target != targets.end(); ++target)
 	{

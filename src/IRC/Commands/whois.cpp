@@ -1,5 +1,5 @@
 #include "IrcServer.hpp"
-#include "Utils.hpp"
+#include "libft.hpp"
 
 int IrcServer::whois(User &sender, const IRC::Message &m)
 {
@@ -12,7 +12,7 @@ int IrcServer::whois(User &sender, const IRC::Message &m)
 		masks = Params(m.params()[0].split());
 	else
 	{
-		if (!Utils::match(m.params()[0].mask(), config.servername))
+		if (!ft::match(m.params()[0].mask(), config.servername))
 			return writeNum(sender, IRC::Error::nosuchserver(m.params()[0]));
 		masks = Params(m.params()[1].split());
 	}
@@ -22,7 +22,7 @@ int IrcServer::whois(User &sender, const IRC::Message &m)
 		for (Network::UserMap::const_iterator uit = network.users().begin(); uit != network.users().end(); ++uit)
 		{
 			User *u = uit->second;
-			if (Utils::match(mask->mask(), u->nickname()))
+			if (ft::match(mask->mask(), u->nickname()))
 			{
 				if (!found)
 					found = true;

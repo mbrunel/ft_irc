@@ -1,5 +1,5 @@
 #include "TcpServer.hpp"
-#include "Utils.hpp"
+#include "libft.hpp"
 
 int abortFd = -1;
 
@@ -69,7 +69,7 @@ void TcpServer::setLogDestination(const std::string &destfile)
 
 std::ostream &TcpServer::log() throw()
 {
-	return (_log << Utils::to_date(time(NULL), "%x - %I:%M:%S "));
+	return (_log << ft::to_date(time(NULL), "%x - %I:%M:%S "));
 }
 
 void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
@@ -82,7 +82,7 @@ void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
 	node = head;
 	while (node && i < 2)
 	{
-		unique_ptr<Listener> newListener;
+		ft::unique_ptr<Listener> newListener;
 		if (!ctx)
 			 newListener.reset(new Listener(node->ai_family));
 		else
@@ -110,7 +110,7 @@ TcpSocket *TcpServer::nextNewConnection() throw()
 		return (NULL);
 	Listener *listener = _incoming.front();
 	_incoming.pop_front();
-	unique_ptr<TcpSocket> newConnection;
+	ft::unique_ptr<TcpSocket> newConnection;
 	try {
 		newConnection.reset(listener->accept());
 		if (_connections.size() == _maxConnections)

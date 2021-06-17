@@ -1,4 +1,5 @@
-#include "Utils.hpp"
+#include <fstream>
+#include "libft.hpp"
 
 #define TO_DATE_BUFSIZE	160
 
@@ -36,7 +37,7 @@ static bool match_internal(const char *mask, const char *str)
 	return (match_internal(mask, str + 1));
 }
 
-namespace Utils
+namespace ft
 {
 
 void file_to_data(const std::string &filename, std::vector<std::string> &data)
@@ -66,9 +67,10 @@ std::string to_date(const time_t t, const char *format)
 	return (buf);
 }
 
-void to_upper(std::string &str)
+void to_upper(std::string &s)
 {
-	for (std::string::iterator c = str.begin(); c != str.end(); ++c) *c = toupper(*c);
+	for (size_t i = 0; i < s.size(); ++i)
+		s[i] = toupper(s[i]);
 }
 
 } /* end of namespace stdext */

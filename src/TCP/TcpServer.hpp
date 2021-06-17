@@ -10,7 +10,6 @@
 #include "TcpSocket.hpp"
 #include "SslListener.hpp"
 #include "SslContext.hpp"
-#include "smartptrs.hpp"
 #include "Config.hpp"
 
 class TcpServer

@@ -1,6 +1,6 @@
 #include <iomanip>
 #include "MessageBuilder.hpp"
-#include "Utils.hpp"
+#include "libft.hpp"
 
 static inline std::string numToString(const IRC::NumericCode code)
 {
@@ -63,7 +63,7 @@ MessageBuilder &MessageBuilder::operator<<(const std::string &arg)
 
 MessageBuilder &MessageBuilder::operator<<(unsigned arg)
 {
-	return (append(Utils::to_string(arg)));
+	return (append(ft::to_string(arg)));
 }
 
 MessageBuilder &MessageBuilder::append(const std::string &arg)

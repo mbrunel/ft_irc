@@ -1,10 +1,8 @@
 #pragma once
-#include <fstream>
 #include <sstream>
-#include <string>
 #include <vector>
 
-namespace Utils
+namespace ft
 {
 	void file_to_data(const std::string &filename, std::vector<std::string> &data);
 
@@ -21,4 +19,4 @@ namespace Utils
 		stringbuf << value;
 		return (stringbuf.str());
 	}
-}
+} /* end of namespace ft */

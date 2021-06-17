@@ -1,6 +1,6 @@
 #include <cctype>
 #include "Channel.hpp"
-#include "Utils.hpp"
+#include "libft.hpp"
 
 MemberMode::MemberMode(unsigned flags) :
 Mode(flags)
@@ -73,7 +73,7 @@ MaskSet::~MaskSet()
 bool MaskSet::inSet(const User &user) const
 {
 	for (const_iterator i = begin(); i != end(); ++i)
-		if (Utils::match(*i, user.prefix()))
+		if (ft::match(*i, user.prefix()))
 			return (1);
 	return (0);
 }
