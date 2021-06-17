@@ -26,6 +26,7 @@ const Network::UserMap &Network::users() const
 {
 	return (_users);
 }
+
 void Network::add(User *u)
 {
 	_connections[u->socket()] = u;

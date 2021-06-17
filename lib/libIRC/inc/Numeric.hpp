@@ -69,6 +69,8 @@ enum NumericCode
 	RPL_STATSCOMMANDS = 212,
 	RPL_ENDOFSTATS = 219,
 	RPL_UMODEIS = 221,
+	RPL_SERVLIST = 234,
+	RPL_SERVLISTEND = 235,
 	RPL_STATSUPTIME = 242,
 	RPL_STATSOLINE = 243,
 	RPL_LUSERCLIENT = 251,
@@ -112,6 +114,7 @@ enum NumericCode
 	RPL_ENDOFMOTD = 376,
 	RPL_YOUREOPER = 381,
 	RPL_REHASHING = 382,
+	RPL_YOURESERVICE = 383,
 	RPL_TIME = 391
 };
 
@@ -184,6 +187,8 @@ namespace Reply
 	const Numeric statscommands(const std::string &command, size_t count, size_t byteCount, size_t remoteCount);
 	const Numeric endofstats(const std::string &letter);
 	const Numeric umodeis(const std::string &modes);
+	const Numeric servlist(const std::string &name, const std::string &server, const std::string &mask, const std::string &type, size_t hopcount, const std::string &info);
+	const Numeric servlistend(const std::string &mask, const std::string &type);
 	const Numeric statuptime(time_t uptime);
 	const Numeric statoline(const std::string &hostmask, const std::string &name);
 	const Numeric away(const std::string &nickname, const std::string &reason);
@@ -210,6 +215,7 @@ namespace Reply
 	const Numeric info(const std::string &info);
 	const Numeric endofinfo();
 	const Numeric youreoper();
+	const Numeric youreservice(const std::string &servicename);
 	const Numeric time();
 	const Numeric lusersclient(size_t nb);
 	const Numeric lusersop(size_t nb);

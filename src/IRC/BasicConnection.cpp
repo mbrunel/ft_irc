@@ -18,6 +18,11 @@ unsigned BasicConnection::hopcount() const
 	return (_hopcount);
 }
 
+void BasicConnection::setType(const Type type)
+{
+	_type = type;
+}
+
 void BasicConnection::writeLine(const std::string &content)
 {
 	_socket->writeLine(content);

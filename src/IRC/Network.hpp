@@ -25,7 +25,7 @@ class Network
 	typedef std::set<std::string>						FnicksSet;
 	typedef std::list<BasicConnection *>				ZombieList;
 	typedef std::vector<UserInfo>						InfoVec;
-	typedef std::list<UserInfo>						HistoryList;
+	typedef std::list<UserInfo>							HistoryList;
 
 	Network();
 	~Network() throw();
