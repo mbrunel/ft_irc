@@ -32,7 +32,7 @@ $(NAME): $(OBJ)
 	@make -C $(LIBC4S_DIR) BUILD_TYPE=release CXX=$(CXX) > /dev/null 2>&1
 	@$(BUILD_MSG) $(notdir $(LIBC4S))
 	@make -C $(LIBFT_DIR) > /dev/null 2>&1
-	@$(BUILD_MSG) $(notdir $(LIBFT_DIR))
+	@$(BUILD_MSG) $(notdir $(LIBFT))
 	@make -C $(LIBIRC_DIR) > /dev/null 2>&1
 	@$(BUILD_MSG) $(notdir $(LIBIRC))
 	@$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
