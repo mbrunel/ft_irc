@@ -11,6 +11,7 @@
 #include "SslListener.hpp"
 #include "SslContext.hpp"
 #include "smartptrs.hpp"
+#include "Config.hpp"
 
 class TcpServer
 {
@@ -18,6 +19,7 @@ class TcpServer
 	TcpServer();
 	~TcpServer() throw();
 
+	void				init(Config &cfg);
 	size_t				nbConnections() const;
 	const std::string	&host() const;
 	void				listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
@@ -44,6 +46,7 @@ class TcpServer
 	std::ostream			_log;
 	std::ofstream			_logfile;
 	std::string				_host;
+	SslContext				_ctx;
 
 	void setUpListener(addrinfo *a, Listener *listener);
 

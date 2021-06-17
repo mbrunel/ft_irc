@@ -1,6 +1,5 @@
 #include "IrcServer.hpp"
 
-#define IRCSERVER_VERSION "1.0.0"
 #define IRCSERVER_DEBUGLEVEL ""
 #define IRCSERVER_COMMENTS "An obsolete IC server (please do not use it in real life)"
 

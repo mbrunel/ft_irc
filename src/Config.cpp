@@ -4,21 +4,10 @@ Oper::Oper(){}
 
 Oper::Oper(std::string login, std::string pass, std::string host):login(login), pass(pass), host(host){}
 
-Config::Config(int ac, char **av)
+Config::Config(const std::string &file)
 {
-	std::string configFile;
-
-	if (ac == 1)
-		configFile = "ircserv.cfg";
-	else if (ac == 2)
-		configFile = av[1];
-	else if (ac > 2)
-	{
-		usage();
-		exit(1);
-	}
 	cfg = Configuration::create();
-	try { cfg->parse(Configuration::INPUT_FILE, configFile.c_str()); }
+	try { cfg->parse(Configuration::INPUT_FILE, file.c_str()); }
 	catch (config4cpp::ConfigurationException &e)
 	{
 		cfg->destroy();
@@ -28,19 +17,19 @@ Config::Config(int ac, char **av)
 
 Config::~Config() { cfg->destroy(); }
 
-void Config::servername(std::string &n)
+std::string Config::configfile()
 {
-	n = cfg->lookupString(IRC_SCOPE, "servername");
+	return cfg->fileName();
 }
 
-void Config::serverpass(std::string &p)
+std::string Config::tcpPort()
 {
-	p = cfg->lookupString(IRC_SCOPE, "serverpass");
+	return cfg->lookupString(SERVER_SCOPE, "tcp-port");
 }
 
-void Config::shortinfo(std::string &s)
+std::string Config::sslPort()
 {
-	s = cfg->lookupString(IRC_SCOPE, "shortinfo");
+	return cfg->lookupString(SERVER_SCOPE, "ssl-port", "");
 }
 
 std::string Config::certFile()
@@ -53,19 +42,14 @@ std::string Config::keyFile()
 	return cfg->lookupString(SERVER_SCOPE, "ssl-key", "");
 }
 
-std::string Config::tcpPort()
+int Config::maxConnections()
 {
-	return cfg->lookupString(SERVER_SCOPE, "tcp-port");
-}
-
-std::string Config::sslPort()
-{
-	return cfg->lookupString(SERVER_SCOPE, "ssl-port", 0);
+	return (cfg->lookupInt(SERVER_SCOPE, "maxconnections"));
 }
 
 bool Config::verbose()
 {
-	return (cfg->lookupBoolean(SERVER_SCOPE, "logs.verbose", true));
+	return (cfg->lookupBoolean(SERVER_SCOPE, "logs.verbose"));
 }
 
 std::string Config::logfile()
@@ -73,33 +57,59 @@ std::string Config::logfile()
 	return cfg->lookupString(SERVER_SCOPE, "logs.logfile", "");
 }
 
-void Config::motdfile(std::string &m)
+std::string Config::servername()
 {
-	m = cfg->lookupString(IRC_SCOPE, "motdfile");
+	return cfg->lookupString(IRC_SCOPE, "servername");
 }
 
-int Config::maxConnections()
+std::string Config::serverpass()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "limits.maxconnections", 1080));
+	return cfg->lookupString(IRC_SCOPE, "serverpass", "");
+}
+
+std::string Config::shortinfo()
+{
+	return cfg->lookupString(IRC_SCOPE, "shortinfo");
+}
+
+std::string Config::motdfile()
+{
+	return cfg->lookupString(IRC_SCOPE, "motdfile");
 }
 
 int Config::maxChannels()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchannels", 1080));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchannels"));
 }
 
 int Config::maxMasks()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks", 32));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxchanmasks"));
 }
 
 size_t Config::historySize()
 {
-	return (cfg->lookupInt(IRC_SCOPE, "limits.history_size", 5000));
+	return (cfg->lookupInt(IRC_SCOPE, "limits.history_size"));
+}
+
+time_t Config::ping()
+{
+	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_interval"));
+}
+
+time_t Config::pong()
+{
+	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.pong_timeout"));
+}
+
+bool Config::floodControl()
+{
+	return (cfg->lookupBoolean(IRC_SCOPE, "limits.flood_control"));
 }
 
 void Config::opers(std::map<std::string, Oper> &o)
 {
+	o.clear();
 	config4cpp::StringVector names;
 	config4cpp::StringBuffer filterPattern;
 
@@ -113,31 +123,11 @@ void Config::opers(std::map<std::string, Oper> &o)
 	}
 }
 
-time_t Config::ping()
-{
-	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_interval", 100));
-}
-
-time_t Config::pong()
-{
-	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.ping_timeout", 100));
-}
-
-bool Config::floodControl()
-{
-	return (cfg->lookupBoolean(IRC_SCOPE, "limits.flood_control", "yes"));
-}
-
 void Config::fnicks(std::set<std::string> &f)
 {
+	f.clear();
 	config4cpp::StringVector nicks;
 
 	cfg->lookupList(IRC_SCOPE, "banned_nicks", nicks);
 	f = std::set<std::string>(nicks.c_array(), nicks.c_array() + nicks.length());
 }
-
-void Config::usage() const
-{
-	std::cout << "Usage : ./ircserv <configuration file path>" << std::endl;
-}
-

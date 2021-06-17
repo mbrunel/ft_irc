@@ -2,15 +2,21 @@
 #include "Config.hpp"
 #include <iostream>
 
+static void usage()
+{
+	std::cout << "./ircserv <configpath>" << std::endl;
+}
+
 int main(int ac, char **av)
 {
+	if (ac != 2)
+	{
+		usage();
+		return 1;
+	}
 	IrcServer irc;
   try {
-	Config cfg(ac, av);
-	SslContext ctx(cfg.certFile().c_str(), cfg.keyFile().c_str());
-	irc.setConfig(cfg);
-	irc.listen(cfg.tcpPort().c_str());
-	irc.listen(cfg.sslPort().c_str(), ctx.ctx());
+	irc.loadConfig(av[1]);
 	irc.run();
   } catch (std::exception &e) {
 		irc.log() << e.what() << std::endl;

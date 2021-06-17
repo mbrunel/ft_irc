@@ -30,6 +30,19 @@ TcpServer::~TcpServer() throw()
 		_logfile.close();
 }
 
+void TcpServer::init(Config &cfg)
+{
+	setMaxConnections(cfg.maxConnections());
+	setVerbose(cfg.verbose());
+	setLogDestination(cfg.logfile());
+	listen(cfg.tcpPort().c_str());
+	if (cfg.sslPort().size())
+	{
+		_ctx.load(cfg.certFile().c_str(), cfg.keyFile().c_str());
+		listen(cfg.sslPort().c_str(), _ctx.ctx());
+	}
+}
+
 void TcpServer::setUpListener(addrinfo *a, Listener *listener)
 {
 	listener->setReuseAddr();
@@ -103,7 +116,7 @@ TcpSocket *TcpServer::nextNewConnection() throw()
 		if (_connections.size() == _maxConnections)
 			throw MsgException("Too many connections");
 		_connections.push_back(newConnection.get());
-		log() << newConnection->ip() << " CONNECTED" << std::endl;
+		log() << newConnection->host() << " CONNECTED" << std::endl;
 	}
 	catch (std::exception &e) {
 		log() << e.what() << std::endl;

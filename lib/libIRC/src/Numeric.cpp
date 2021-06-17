@@ -531,6 +531,11 @@ namespace Reply
 	{
 		return (Numeric(RPL_ENDOFWHOWAS, nick + " :End of WHOWAS"));
 	}
+
+	const Numeric rehashing(const std::string &filename)
+	{
+		return (Numeric(RPL_REHASHING, filename + ": Rehashing"));
+	}
 } /* end of namespace Reply */
 
 } /* end of namespace IRC */
