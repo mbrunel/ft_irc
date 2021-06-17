@@ -37,7 +37,7 @@ class IrcServer
 
 	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
 	std::ostream	&log() throw();
-	void			run() throw();
+	void			run();
 	void			loadConfig(const std::string &);
 
 	const static std::string _version;

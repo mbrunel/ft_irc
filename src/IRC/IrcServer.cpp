@@ -61,7 +61,7 @@ IrcServer::~IrcServer() {}
 
 std::ostream &IrcServer::log() throw() { return srv.log(); }
 
-void IrcServer::run() throw()
+void IrcServer::run()
 {
 	while (1)
 	{

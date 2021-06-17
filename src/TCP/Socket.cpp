@@ -22,7 +22,7 @@ void Socket::bind(sockaddr *addr, socklen_t addr_size)
 {
 	if (::bind(_fd, addr, addr_size) == -1)
 		throw ErrnoException("bind");
-	memcpy(reinterpret_cast<char *>(&_addr), reinterpret_cast<char *>(&addr), addr_size);
+	memcpy(&_addr, &addr, addr_size);
 }
 
 void Socket::setReuseAddr()

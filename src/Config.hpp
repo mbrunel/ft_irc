@@ -9,7 +9,6 @@
 
 #define SERVER_SCOPE "ServerConfig"
 #define IRC_SCOPE "IrcConfig"
-#define DEFAULT_CFG_FILE "ircserv.cfg"
 
 typedef config4cpp::Configuration Configuration;
 

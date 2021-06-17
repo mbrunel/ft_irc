@@ -2,11 +2,21 @@
 #include "Config.hpp"
 #include <iostream>
 
+static void usage()
+{
+	std::cout << "./ircserv <configpath>" << std::endl;
+}
+
 int main(int ac, char **av)
 {
+	if (ac != 2)
+	{
+		usage();
+		return 1;
+	}
 	IrcServer irc;
   try {
-	irc.loadConfig(ac == 1 ? DEFAULT_CFG_FILE : av[1]);
+	irc.loadConfig(av[1]);
 	irc.run();
   } catch (std::exception &e) {
 		irc.log() << e.what() << std::endl;
