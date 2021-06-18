@@ -2,7 +2,6 @@
 #include <openssl/ssl.h>
 #include <errno.h>
 #include <string.h>
-#include "exceptions.hpp"
 #include "TcpSocket.hpp"
 #include "SslContext.hpp"
 

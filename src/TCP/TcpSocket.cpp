@@ -4,7 +4,7 @@ TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(
 {
 	socklen_t addrLen = sizeof(_addr);
 	if ((_fd = accept(listenerFd, (sockaddr *)&_addr, &addrLen)) == -1)
-		throw ErrnoException("accept");
+		throw ft::system_error("accept");
 	if (family() == AF_INET)
 	{
 		_port = ntohs(((sockaddr_in *)&_addr)->sin_port);
@@ -17,14 +17,14 @@ TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(
 		if (!(inet_ntop(AF_INET6, &_addr, buf, 100)))
 		{
 			close();
-			throw ErrnoException("inet_ntop");
+			throw ft::system_error("inet_ntop");
 		}
 		_ip = buf;
 	}
 	else
 	{
 		close();
-		throw MsgException("Unknown IP family");
+		throw ft::system_error(EPFNOSUPPORT, "accept");
 	}
 	char buf[NI_MAXHOST];
 	if (!getnameinfo((sockaddr *)&_addr, addrLen, buf, sizeof(buf), NULL, 0, NI_NAMEREQD))
@@ -74,7 +74,7 @@ int TcpSocket::IO()
 		buf[nb] = '\0';
 		_readBuf += buf;
 		if (_readBuf.size() >= 2048)
-			throw MsgException("socket is flooded");
+			throw std::runtime_error("socket is flooded");
 	}
 	return (1);
 }
@@ -83,7 +83,7 @@ int TcpSocket::send(const void *buf, size_t n, int flags)
 {
 	int nb;
 	if ((nb = ::send(_fd, buf, n, flags)) == -1)
-		throw ErrnoException("send");
+		throw ft::system_error("send");
 	return (nb);
 }
 
@@ -91,7 +91,7 @@ int TcpSocket::recv(void *buf, size_t n, int flags)
 {
 	int nb;
 	if ((nb = ::recv(_fd, buf, n, flags)) == -1)
-		throw ErrnoException("recv");
+		throw ft::system_error("recv");
 	return (nb);
 }
 

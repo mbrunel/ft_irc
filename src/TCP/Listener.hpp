@@ -2,7 +2,6 @@
 #include <sys/socket.h>
 #include <stdint.h>
 #include <netdb.h>
-#include "exceptions.hpp"
 #include "TcpSocket.hpp"
 
 class Listener : public Socket

@@ -2,10 +2,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <fcntl.h>
-#include <string>
-#include <unistd.h>
-#include "exceptions.hpp"
+#include "system_error.hpp"
 
 /**
  * \class Socket

@@ -5,13 +5,13 @@ SslSocket::SslSocket(int listenerFd, SSL_CTX *ctx):TcpSocket(listenerFd)
 	if (!(_session = SSL_new(ctx)))
 	{
 		close();
-		throw SslException("SSL_new");
+		throw tcp::SslException("SSL_new");
 	}
 	if (SSL_set_fd(_session, _fd) == -1)
 	{
 		SSL_free(_session);
 		close();
-		throw SslException("SSL_set_fd");
+		throw tcp::SslException("SSL_set_fd");
 	}
 	_state = WANT_READ;
 }
@@ -46,7 +46,7 @@ void SslSocket::SSL_accept()
 	if (!(ret = ::SSL_accept(_session)))
 		_state = (State)SSL_get_error(_session, 0);
 	else if (ret < 0)
-		throw SslException("SSL_accept");
+		throw tcp::SslException("SSL_accept");
 	else
 		_state = SUCCESS;
 }
@@ -56,7 +56,7 @@ int SslSocket::send(const void *buf, size_t n, int flags)
 	(void)flags;
 	int nb;
 	if ((nb = SSL_write(_session, buf, n)) <= 0)
-		throw SslException("SSL_write");
+		throw tcp::SslException("SSL_write");
 	return (nb);
 }
 
@@ -65,6 +65,6 @@ int SslSocket::recv(void *buf, size_t n, int flags)
 	(void)flags;
 	int nb;
 	if ((nb = SSL_read(_session, buf, n)) < 0)
-		throw SslException("SSL_read");
+		throw tcp::SslException("SSL_read");
 	return (nb);
 }
