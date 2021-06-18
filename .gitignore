@@ -32,6 +32,9 @@
 *.app
 ircserv
 
+# Bot
+bot/nestor
+
 # Configuration
 config
 
