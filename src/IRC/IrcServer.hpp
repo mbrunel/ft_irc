@@ -6,19 +6,20 @@
 
 struct IrcServerConfig
 {
-	std::string configfile;
-	std::string servername;
-	std::string shortinfo;
-	size_t		maxChannels;
-	size_t		maxMasks;
-	time_t		ping;
-	time_t		pong;
-	bool		flood;
-	std::string	pass;
-	std::vector<std::string> motd;
+	std::string					configfile;
+	std::string					servername;
+	std::string					shortinfo;
+	size_t						maxChannels;
+	size_t						maxMasks;
+	time_t						ping;
+	time_t						pong;
+	bool						flood;
+	std::string					pass;
+	std::vector<std::string>	motd;
 
 	IrcServerConfig();
 	IrcServerConfig(Config &cfg);
+	~IrcServerConfig();
 };
 
 struct CommandStats
@@ -57,9 +58,12 @@ class IrcServer
 	typedef IRC::Message::Params Params;
 
 	static const std::string _version;
+	static const size_t maxLineSize;
 
 	State				_state;
 	time_t				creation;
+	std::ofstream		logfile;
+	std::ostream		_log;
 	bool				init;
 	std::string			creationDate;
 	IrcServerConfig		config;

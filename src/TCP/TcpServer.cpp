@@ -11,13 +11,14 @@ void abortSelect(int sig) throw()
 	abortFd = -2;
 }
 
-TcpServer::TcpServer():_maxConnections(1024), _verbose(true), _log(std::cerr.rdbuf())
+TcpServer::TcpServer():_maxConnections(1024)
 {
 	_hint.ai_family = AF_UNSPEC;
 	_hint.ai_socktype = SOCK_STREAM;
 	_hint.ai_protocol = IPPROTO_TCP;
 	_hint.ai_flags = AI_PASSIVE;
 	signal(SIGINT, abortSelect);
+	signal(SIGPIPE, SIG_IGN);
 }
 
 TcpServer::~TcpServer() throw()
@@ -26,21 +27,6 @@ TcpServer::~TcpServer() throw()
 		disconnect(_connections.front());
 	for (std::list<Listener *>::iterator it = _listeners.begin(); it != _listeners.end(); it++)
 		delete *it;
-	if (_logfile.is_open())
-		_logfile.close();
-}
-
-void TcpServer::init(Config &cfg)
-{
-	setMaxConnections(cfg.maxConnections());
-	setVerbose(cfg.verbose());
-	setLogDestination(cfg.logfile());
-	listen(cfg.tcpPort().c_str());
-	if (cfg.sslPort().size())
-	{
-		_ctx.load(cfg.certFile().c_str(), cfg.keyFile().c_str());
-		listen(cfg.sslPort().c_str(), _ctx.ctx());
-	}
 }
 
 void TcpServer::setUpListener(addrinfo *a, Listener *listener)
@@ -58,35 +44,26 @@ const std::string &TcpServer::host() const { return (_host); }
 
 void TcpServer::setMaxConnections(size_t maxConnections) { _maxConnections = maxConnections; }
 
-void TcpServer::setVerbose(bool verbose) { _verbose = verbose; }
-
-void TcpServer::setLogDestination(const std::string &destfile)
+void TcpServer::loadSslConfig(const std::string &certificatePath, const std::string &keyPath)
 {
-	_logfile.open(destfile.c_str(), std::ios::out);
-	if (!_logfile.fail())
-		_log.rdbuf(_logfile.rdbuf());
+	_ctx.load(certificatePath.c_str(), keyPath.c_str());
 }
 
-std::ostream &TcpServer::log() throw()
-{
-	return (_log << ft::to_date(time(NULL), "%x - %I:%M:%S "));
-}
-
-void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
+void TcpServer::listen(const std::string &port, bool tls, size_t maxQueueLen)
 {
 	addrinfo *head, *node;
 	int i = 0;
 
-	if (getaddrinfo(NULL, port, &_hint, &head))
+	if (getaddrinfo(NULL, port.c_str(), &_hint, &head))
 		throw ft::system_error("getaddrinfo");
 	node = head;
 	while (node && i < 2)
 	{
 		ft::unique_ptr<Listener> newListener;
-		if (!ctx)
+		if (!tls)
 			 newListener.reset(new Listener(node->ai_family));
 		else
-			newListener.reset(new SslListener(node->ai_family, ctx));
+			newListener.reset(new SslListener(node->ai_family, _ctx.ctx()));
 		setUpListener(node, newListener.get());
 		newListener->listen(maxQueueLen);
 		_listeners.push_back(newListener.get());
@@ -116,7 +93,6 @@ TcpSocket *TcpServer::nextNewConnection() throw()
 		if (_connections.size() == _maxConnections)
 			throw std::exception();
 		_connections.push_back(newConnection.get());
-		log() << newConnection->host() << " CONNECTED" << std::endl;
 	}
 	catch (std::exception &e) {
 		return nextNewConnection();
@@ -145,9 +121,10 @@ void TcpServer::select()
 		FD_SET((*it)->fd(), &readSet);
 	for (std::list<TcpSocket *>::iterator it = _connections.begin(); it != _connections.end(); it++)
 	{
-		FD_SET((*it)->fd(), &readSet);
-		if (!(*it)->isWbufEmpty())
-			FD_SET((*it)->fd(), &writeSet);
+		TcpSocket *c = *it;
+		FD_SET(c->fd(), &readSet);
+		if (!c->isWbufEmpty())
+			FD_SET(c->fd(), &writeSet);
 	}
 	abortFd = _listeners.front()->fd();
 	if (abortFd != -2)
@@ -160,11 +137,12 @@ void TcpServer::select()
 			_incoming.push_back(*it);
 	for (std::list<TcpSocket *>::iterator it = _connections.begin(); it != _connections.end(); it++)
 	{
-		if (FD_ISSET((*it)->fd(), &readSet))
-			(*it)->_isReadable = true;
-		if (FD_ISSET((*it)->fd(), &writeSet))
-			(*it)->_isWriteable = true;
-		if (!(*it)->isRbufEmpty() || (*it)->_isReadable || (*it)->_isWriteable)
-			_pending.push_back(*it);
+		TcpSocket *c = *it;
+		if (FD_ISSET(c->fd(), &readSet))
+			c->_isReadable = true;
+		if (FD_ISSET(c->fd(), &writeSet))
+			c->_isWriteable = true;
+		if (c->readBufSize() || c->_isReadable || c->_isWriteable)
+			_pending.push_back(c);
 	}
 }

@@ -21,13 +21,11 @@ class TcpServer
 	void				init(Config &cfg);
 	size_t				nbConnections() const;
 	const std::string	&host() const;
-	void				listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
+	void				loadSslConfig(const std::string &certificatePath, const std::string &keyPath);
+	void				listen(const std::string &port, bool tls = false, size_t maxQueueLen = 5);
 	void				setMaxConnections(size_t MaxConnections);
-	void				setVerbose(bool verbose);
-	void				setLogDestination(const std::string &destfile);
 
 	void				disconnect(TcpSocket *client) throw();
-	std::ostream		&log() throw();
 	TcpSocket			*nextNewConnection() throw();
 	TcpSocket			*nextPendingConnection() throw();
 	void				select();
@@ -41,9 +39,6 @@ class TcpServer
 	std::list<TcpSocket*>	_connections;
 	std::list<TcpSocket*>	_pending;
 	size_t					_maxConnections;
-	bool					_verbose;
-	std::ostream			_log;
-	std::ofstream			_logfile;
 	std::string				_host;
 	SslContext				_ctx;
 

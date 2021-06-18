@@ -23,21 +23,27 @@ SslSocket::~SslSocket() throw()
 
 bool SslSocket::isWbufEmpty() const { return (TcpSocket::isWbufEmpty() && _state == SUCCESS); }
 
-int SslSocket::IO()
+bool SslSocket::fill()
 {
 	if (_state == SUCCESS)
-		return TcpSocket::IO();
+		return TcpSocket::fill();
 	if (_state == WANT_READ && _isReadable)
 	{
 		_isReadable = false;
 		SSL_accept();
 	}
+	return true;
+}
+
+void SslSocket::flush()
+{
+	if (_state == SUCCESS)
+		return TcpSocket::flush();
 	if (_state == WANT_WRITE && _isWriteable)
 	{
 		_isWriteable = false;
 		SSL_accept();
 	}
-	return (1);
 }
 
 void SslSocket::SSL_accept()

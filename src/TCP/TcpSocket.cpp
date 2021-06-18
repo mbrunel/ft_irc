@@ -1,4 +1,7 @@
 #include "TcpSocket.hpp"
+#include <iostream>
+const size_t TcpSocket::ipv6MaxSize = 39;
+const size_t TcpSocket::readSize = 1024;
 
 TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(false)
 {
@@ -12,9 +15,9 @@ TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(
 	}
 	else if (family() == AF_INET6)
 	{
-		char buf[100];
+		char buf[ipv6MaxSize];
 		_port = ntohs(((sockaddr_in6 *)&_addr)->sin6_port);
-		if (!(inet_ntop(AF_INET6, &_addr, buf, 100)))
+		if (!(inet_ntop(AF_INET6, &_addr, buf, ipv6MaxSize)))
 		{
 			close();
 			throw ft::system_error("inet_ntop");
@@ -33,50 +36,54 @@ TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(
 		_host = _ip;
 }
 
+
 TcpSocket::~TcpSocket() throw() { close(); }
 
-bool TcpSocket::isRbufEmpty() const { return (_readBuf.empty()); }
-
 bool TcpSocket::isWbufEmpty() const { return (_writeBuf.empty()); }
+
+size_t TcpSocket::readBufSize() const { return (_writeBuf.size()); }
 
 void TcpSocket::writeLine(const std::string &data) throw()
 {
 	_writeBuf += data + '\n';
 }
 
-bool TcpSocket::readLine(std::string &line) throw()
+bool TcpSocket::readLine(std::string &line)
 {
-	line = "";
+	if (!fill())
+		return false;
+	line.clear();
 	size_t sep;
 	if ((sep = _readBuf.find_first_of('\n')) == std::string::npos)
 		if ((sep = _readBuf.find_first_of('\r')) == std::string::npos)
-			return false;
+			return true;
 	line = _readBuf.substr(0, sep + 1);
 	_readBuf.erase(0, sep + 1);
 	return (true);
 }
 
-int TcpSocket::IO()
+bool TcpSocket::fill()
 {
-	if (_isWriteable && !isWbufEmpty())
-	{
-		_isWriteable = false;
-		send(_writeBuf.c_str(), _writeBuf.size());
-		_writeBuf.clear();
-	}
 	if (_isReadable)
 	{
-		char buf[1025];
+		char buf[readSize + 1];
 		int nb;
 		_isReadable = false;
-		if (!(nb = recv(buf, 1024)))
-			return (0);
+		if (!(nb = recv(buf, readSize)))
+			return false;
 		buf[nb] = '\0';
 		_readBuf += buf;
-		if (_readBuf.size() >= 2048)
-			throw std::runtime_error("socket is flooded");
 	}
-	return (1);
+	return true;
+}
+
+void TcpSocket::flush()
+{
+	if (!_isWriteable || isWbufEmpty())
+		return ;
+	_isWriteable = false;
+	send(_writeBuf.c_str(), _writeBuf.size());
+	_writeBuf.clear();
 }
 
 int TcpSocket::send(const void *buf, size_t n, int flags)

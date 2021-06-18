@@ -13,7 +13,8 @@ class SslSocket : public TcpSocket
 	SslSocket(int listenerFd, SSL_CTX *ctx);
 	virtual ~SslSocket() throw();
 
-	int					IO();
+	bool				fill();
+	void				flush();
 	SslSocket::State	state() const;
 
   protected:

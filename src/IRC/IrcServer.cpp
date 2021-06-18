@@ -4,28 +4,32 @@
 IrcServerConfig::IrcServerConfig(){}
 
 IrcServerConfig::IrcServerConfig(Config &cfg):
-	configfile(cfg.configfile()),
-	servername(cfg.servername()),
-	shortinfo(cfg.shortinfo()),
-	maxChannels(cfg.maxChannels()),
-	maxMasks(cfg.maxMasks()),
-	ping(cfg.ping()),
-	pong(cfg.pong()),
-	flood(cfg.floodControl()),
-	pass(cfg.serverpass())
-	{
-		ft::file_to_data(cfg.motdfile(), motd);
-	}
+configfile(cfg.configfile()),
+servername(cfg.servername()),
+shortinfo(cfg.shortinfo()),
+maxChannels(cfg.maxChannels()),
+maxMasks(cfg.maxMasks()),
+ping(cfg.ping()),
+pong(cfg.pong()),
+flood(cfg.floodControl()),
+pass(cfg.serverpass())
+{
+	ft::file_to_data(cfg.motdfile(), motd);
+}
+
+IrcServerConfig::~IrcServerConfig() {}
 
 CommandStats::CommandStats() :
 count(0), byteCount(0)
 {}
 
 const std::string IrcServer::_version = "1.0.0";
+const size_t IrcServer::maxLineSize = 2048;
 
 IrcServer::IrcServer() :
 _state(ALIVE),
 creation(::time(NULL)),
+_log(std::cerr.rdbuf()),
 init(true)
 {
 	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
@@ -66,11 +70,15 @@ init(true)
 	userCommands["VERSION"] = &IrcServer::version;
 }
 
-IrcServer::~IrcServer() {}
+IrcServer::~IrcServer()
+{
+	if (logfile.is_open())
+		logfile.close();
+}
 
 IrcServer::State IrcServer::state() const { return _state; }
 
-std::ostream &IrcServer::log() throw() { return srv.log(); }
+std::ostream &IrcServer::log() throw() { return _log << ft::to_date(::time(NULL), "%x - %I:%M:%S "); }
 
 void IrcServer::run()
 {
@@ -82,27 +90,34 @@ void IrcServer::run()
 		{
 			User *u = new User(newSocket, config.pass.size() ? UserRequirement::ALL : UserRequirement::ALL_EXCEPT_PASS);
 			writeMessage(*u, "NOTICE", "Connection established");
+			log() << u->socket()->host() << " CONNECTED" << std::endl;
 			network.add(u);
 		}
 		police();
 		TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()) && _state == ALIVE)
 		{
+			std::string line;
 			try {
-				if (!socket->IO())
+				socket->flush();
+				if (!socket->readLine(line))
 				{
 					disconnect(socket, "Remote host closed connection");
 					continue ;
 				}
+				if (socket->readBufSize() > maxLineSize)
+				{
+					disconnect(socket, "Socket's buffer size has exceed the limit");
+					continue ;
+				}
+				if (line.empty())
+					continue ;
 			}
 			catch (std::exception &e) {
 				log() << e.what() << std::endl;
 				disconnect(socket, e.what());
 				continue ;
 			}
-			std::string line;
-			if (!socket->readLine(line))
-				continue ;
 			exec(network.getBySocket(socket), IRC::Message(line));
 		}
 	}
@@ -114,9 +129,18 @@ void IrcServer::loadConfig(const std::string &file)
 
 	if (init)
 	{
-		srv.init(cfg);
+		logfile.open(cfg.logfile().c_str(), std::ios::out);
+		if (!logfile.fail())
+			_log.rdbuf(logfile.rdbuf());
+		srv.listen(cfg.tcpPort().c_str());
+		if (cfg.sslPort().size())
+		{
+			srv.loadSslConfig(cfg.certFile(), cfg.keyFile());
+			srv.listen(cfg.sslPort().c_str(), true);
+		}
 		init = false;
 	}
+	srv.setMaxConnections(cfg.maxConnections());
 	cfg.opers(network.opers());
 	cfg.fnicks(network.fnicks());
 	network.setHistorySize(cfg.historySize());
@@ -234,7 +258,7 @@ void IrcServer::police()
 
 	while ((z = network.nextZombie()))
 	{
-		try { z->socket()->IO(); } catch(std::exception &e) {}
+		try { z->socket()->flush(); } catch(std::exception &e) {}
 		srv.disconnect(z->socket());
 		delete z;
 	}
