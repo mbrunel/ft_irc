@@ -12,6 +12,12 @@ static inline std::string numToString(const IRC::NumericCode code)
 namespace IRC
 {
 
+MessageBuilder::MessageBuilder(const std::string &command) :
+_command(command),
+_lastArgSet(false),
+_size(command.size() + 2)
+{}
+
 MessageBuilder::MessageBuilder(const std::string &prefix, const std::string &command) :
 _prefix(prefix),
 _command(command),
@@ -50,7 +56,9 @@ size_t MessageBuilder::size() const
 std::string MessageBuilder::str() const
 {
 	std::stringstream s;
-	s << ':' << _prefix << ' ' << _command << _args.str();
+	if (_prefix.size())
+		s << ':' << _prefix << ' ';
+	s << _command << _args.str();
 	if (_lastArgSet)
 		s << " :" << _lastArg;
 	return (s.str());
