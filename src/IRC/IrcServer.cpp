@@ -24,7 +24,9 @@ count(0), byteCount(0)
 const std::string IrcServer::_version = "1.0.0";
 
 IrcServer::IrcServer() :
-creation(::time(NULL))
+_state(ALIVE),
+creation(::time(NULL)),
+init(true)
 {
 	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	serviceCommands["KILL"] = &IrcServer::kill;
@@ -46,6 +48,7 @@ creation(::time(NULL))
 	serviceCommands["WHOWAS"] = &IrcServer::whowas;
 	userCommands = serviceCommands;
 	userCommands["AWAY"] = &IrcServer::away;
+	userCommands["DIE"] = &IrcServer::die;
 	userCommands["INFO"] = &IrcServer::info;
 	userCommands["INVITE"] = &IrcServer::invite;
 	userCommands["JOIN"] = &IrcServer::join;
@@ -56,6 +59,7 @@ creation(::time(NULL))
 	userCommands["NAMES"] = &IrcServer::names;
 	userCommands["PART"] = &IrcServer::part;
 	userCommands["REHASH"] = &IrcServer::rehash;
+	userCommands["RESTART"] = &IrcServer::restart;
 	userCommands["STATS"] = &IrcServer::stats;
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
@@ -64,13 +68,15 @@ creation(::time(NULL))
 
 IrcServer::~IrcServer() {}
 
+IrcServer::State IrcServer::state() const { return _state; }
+
 std::ostream &IrcServer::log() throw() { return srv.log(); }
 
 void IrcServer::run()
 {
-	while (1)
+	while (_state == ALIVE)
 	{
-		try { srv.select(); } catch(TcpServer::SigintException &e) { return ; }
+		try { srv.select(); } catch(TcpServer::SigintException &e) { _state = DIE; return ; }
 		TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{
@@ -80,7 +86,7 @@ void IrcServer::run()
 		}
 		police();
 		TcpSocket *socket;
-		while ((socket = srv.nextPendingConnection()))
+		while ((socket = srv.nextPendingConnection()) && _state == ALIVE)
 		{
 			try {
 				if (!socket->IO())
@@ -104,7 +110,6 @@ void IrcServer::run()
 
 void IrcServer::loadConfig(const std::string &file)
 {
-	static bool init = true;
 	Config cfg(file);
 
 	if (init)

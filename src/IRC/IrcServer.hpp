@@ -35,12 +35,21 @@ class IrcServer
 	IrcServer();
 	~IrcServer();
 
+	enum State
+	{
+		ALIVE,
+		RESTART,
+		DIE
+	};
+
 	void			listen(const char *port, SSL_CTX *ctx = NULL, size_t maxQueueLen = 3);
 	std::ostream	&log() throw();
+	State			state() const;
 	void			run();
 	void			loadConfig(const std::string &);
 
   private:
+
 	typedef int (IrcServer::*UserCommandPointer)(User &, const IRC::Message &);
 	typedef std::map<std::string, UserCommandPointer> userCommandsMap;
 	typedef std::map<std::string, UserCommandPointer> serviceCommandsMap;
@@ -49,7 +58,9 @@ class IrcServer
 
 	static const std::string _version;
 
+	State				_state;
 	time_t				creation;
+	bool				init;
 	std::string			creationDate;
 	IrcServerConfig		config;
 	TcpServer			srv;
@@ -59,6 +70,7 @@ class IrcServer
 	commandsStatsMap	commandsStats;
 
 	int	away(User &sender, const IRC::Message &msg);
+	int	die(User &sender, const IRC::Message &msg);
 	int	info(User &sender, const IRC::Message &msg);
 	int	invite(User &sender, const IRC::Message &msg);
 	int	join(User &sender, const IRC::Message &msg);
@@ -79,6 +91,7 @@ class IrcServer
 	int	privmsg(User &sender, const IRC::Message &msg);
 	int	quit(User &sender, const IRC::Message &msg);
 	int rehash(User &sender, const IRC::Message &msg);
+	int restart(User &sender, const IRC::Message &msg);
 	int	service(User &sender, const IRC::Message &msg);
 	int	servlist(User &sender, const IRC::Message &msg);
 	int	squery(User &sender, const IRC::Message &msg);

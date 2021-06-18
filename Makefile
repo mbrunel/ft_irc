@@ -8,7 +8,7 @@ LIB_DIR		:= lib
 LIBC4S_DIR	:= $(LIB_DIR)/config4cpp
 LIBC4S		:= $(LIBC4S_DIR)/lib/libconfig4cpp.a
 LIBFT_DIR	:= $(LIB_DIR)/libft
-LIBFT		:= $(LIBFT_DIR)/libIRC.a
+LIBFT		:= $(LIBFT_DIR)/libft.a
 LIBIRC_DIR	:= $(LIB_DIR)/libIRC
 LIBIRC		:= $(LIBIRC_DIR)/libIRC.a
 SUB_DIR		:= $(dir $(wildcard src/*/.))
@@ -42,6 +42,8 @@ all: $(NAME) $(CERT)
 
 bonus: all
 
+certs: $(SSL_CERT)
+
 clean:
 	@make -C $(LIBFT_DIR) clean > /dev/null 2>&1
 	@$(REMOVE_MSG) $(notdir $(LIBFT_DIR))
@@ -74,4 +76,4 @@ $(SSL_CERT):
 
 -include $(OBJ:.o=.d)
 
-.PHONY: all bonus clean fclean re run
+.PHONY: all bonus certs clean fclean re run
