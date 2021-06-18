@@ -4,7 +4,7 @@
 
 static void usage()
 {
-	std::cout << "./ircserv <configpath>" << std::endl;
+	std::cout << "usage : ./ircserv <configpath>" << std::endl;
 }
 
 int main(int ac, char **av)

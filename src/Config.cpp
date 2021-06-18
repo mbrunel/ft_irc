@@ -42,19 +42,9 @@ std::string Config::keyFile()
 	return cfg->lookupString(SERVER_SCOPE, "ssl-key", "");
 }
 
-int Config::maxConnections()
-{
-	return (cfg->lookupInt(SERVER_SCOPE, "maxconnections"));
-}
-
-bool Config::verbose()
-{
-	return (cfg->lookupBoolean(SERVER_SCOPE, "logs.verbose"));
-}
-
 std::string Config::logfile()
 {
-	return cfg->lookupString(SERVER_SCOPE, "logs.logfile", "");
+	return cfg->lookupString(SERVER_SCOPE, "logfile", "");
 }
 
 std::string Config::servername()
@@ -75,6 +65,11 @@ std::string Config::shortinfo()
 std::string Config::motdfile()
 {
 	return cfg->lookupString(IRC_SCOPE, "motdfile");
+}
+
+int Config::maxConnections()
+{
+	return (cfg->lookupInt(IRC_SCOPE, "limits.maxconnections"));
 }
 
 int Config::maxChannels()
