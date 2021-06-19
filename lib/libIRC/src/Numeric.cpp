@@ -536,6 +536,11 @@ namespace Reply
 	{
 		return (Numeric(RPL_REHASHING, filename + ": Rehashing"));
 	}
+
+	const Numeric userhostreply(const std::string &msg)
+	{
+		return (Numeric(RPL_USERHOST, msg));
+	}
 } /* end of namespace Reply */
 
 } /* end of namespace IRC */

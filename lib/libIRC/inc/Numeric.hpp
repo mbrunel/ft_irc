@@ -79,6 +79,7 @@ enum NumericCode
 	RPL_LUSERCHANNELS = 254,
 	RPL_LUSERME = 255,
 	RPL_AWAY = 301,
+	RPL_USERHOST = 302,
 	RPL_UNAWAY = 305,
 	RPL_NOWAWAY = 306,
 	RPL_WHOISUSER = 311,
@@ -235,6 +236,8 @@ namespace Reply
 	const Numeric whowasuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname);
 	const Numeric endofwhowas(const std::string &nick);
 	const Numeric rehashing(const std::string &filename);
+	const Numeric userhostreply(const std::string &msg);
+
 } /* end of namespace Reply */
 
 } /* end of namespace IRC */
