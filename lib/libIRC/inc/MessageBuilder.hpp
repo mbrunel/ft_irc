@@ -12,6 +12,12 @@ class MessageBuilder
 {
 public:
 	/**
+	 * Constructs a new custom message without prefix.
+	 * \param command Keyword used by client/server to identify the message
+	 */
+	MessageBuilder(const std::string &command);
+
+	/**
 	 * Constructs a new custom message.
 	 * \param prefix Origin of the message
 	 * \param command Keyword used by client/server to identify the message

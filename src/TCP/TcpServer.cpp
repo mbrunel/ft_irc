@@ -78,7 +78,7 @@ void TcpServer::listen(const char *port, SSL_CTX *ctx, size_t maxQueueLen)
 	int i = 0;
 
 	if (getaddrinfo(NULL, port, &_hint, &head))
-		throw ErrnoException("getaddrinfo");
+		throw ft::system_error("getaddrinfo");
 	node = head;
 	while (node && i < 2)
 	{
@@ -114,12 +114,11 @@ TcpSocket *TcpServer::nextNewConnection() throw()
 	try {
 		newConnection.reset(listener->accept());
 		if (_connections.size() == _maxConnections)
-			throw MsgException("Too many connections");
+			throw std::exception();
 		_connections.push_back(newConnection.get());
 		log() << newConnection->host() << " CONNECTED" << std::endl;
 	}
 	catch (std::exception &e) {
-		log() << e.what() << std::endl;
 		return nextNewConnection();
 	}
 	return newConnection.release();
@@ -142,8 +141,6 @@ void TcpServer::select()
 
 	FD_ZERO(&readSet);
 	FD_ZERO(&writeSet);
-	if (_listeners.empty())
-		throw MsgException("No open port on server.");
 	for (std::list<Listener *>::iterator it = _listeners.begin(); it != _listeners.end(); it++)
 		FD_SET((*it)->fd(), &readSet);
 	for (std::list<TcpSocket *>::iterator it = _connections.begin(); it != _connections.end(); it++)
