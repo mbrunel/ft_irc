@@ -3,6 +3,7 @@
 #include "IRC.hpp"
 #include "Network.hpp"
 #include "TcpServer.hpp"
+#include <fstream>
 
 struct IrcServerConfig
 {
@@ -67,7 +68,7 @@ class IrcServer
 	bool				init;
 	std::string			creationDate;
 	IrcServerConfig		config;
-	TcpServer			srv;
+	tcp::TcpServer			srv;
 	Network				network;
 	userCommandsMap		userCommands;
 	serviceCommandsMap	serviceCommands;
@@ -108,14 +109,14 @@ class IrcServer
 	int whois(User &sender, const IRC::Message &msg);
 	int whowas(User &sender, const IRC::Message &msg);
 
-	void	disconnect(TcpSocket *socket, const std::string &reason) throw();
+	void	disconnect(tcp::TcpSocket *socket, const std::string &reason) throw();
 	void	disconnect(User &user, const std::string &reason, bool notifyUserQuit = false) throw();
 	int		exec(BasicConnection *sender, const IRC::Message &msg);
 	void	writeMessage(User &dst, const std::string &command, const std::string &content);
 	int		writeNum(User &dst, const IRC::Numeric &response);
 	void	writeWelcome(User &user);
 	void	writeMotd(User &user);
-	void	writeError(TcpSocket *s, std::string reason);
+	void	writeError(tcp::TcpSocket *s, std::string reason);
 	void	police();
 	bool	floodControl(User &u);
 

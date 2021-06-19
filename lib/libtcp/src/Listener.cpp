@@ -1,4 +1,9 @@
 #include "Listener.hpp"
+#include "system_error.hpp"
+#include <sys/socket.h>
+
+namespace tcp
+{
 
 Listener::Listener(int family):Socket() { socket(family); }
 
@@ -11,3 +16,5 @@ void Listener::listen(int maxQueueLen)
 }
 
 TcpSocket *Listener::accept() { return (new TcpSocket(_fd)); }
+
+} /* end of namespace tcp */

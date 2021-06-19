@@ -84,8 +84,8 @@ void IrcServer::run()
 {
 	while (_state == ALIVE)
 	{
-		try { srv.select(); } catch(TcpServer::SigintException &e) { _state = DIE; return ; }
-		TcpSocket *newSocket;
+		try { srv.select(); } catch(tcp::TcpServer::SigintException &e) { _state = DIE; return ; }
+		tcp::TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{
 			User *u = new User(newSocket, config.pass.size() ? UserRequirement::ALL : UserRequirement::ALL_EXCEPT_PASS);
@@ -94,7 +94,7 @@ void IrcServer::run()
 			network.add(u);
 		}
 		police();
-		TcpSocket *socket;
+		tcp::TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()) && _state == ALIVE)
 		{
 			std::string line;
@@ -147,7 +147,7 @@ void IrcServer::loadConfig(const std::string &file)
 	config = IrcServerConfig(cfg);
 }
 
-void IrcServer::disconnect(TcpSocket *socket, const std::string &reason) throw()
+void IrcServer::disconnect(tcp::TcpSocket *socket, const std::string &reason) throw()
 {
 	BasicConnection *c = network.getBySocket(socket);
 	disconnect(*static_cast<User *>(c), reason);
@@ -194,6 +194,7 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 
 int IrcServer::exec(BasicConnection *sender, const IRC::Message &msg)
 {
+	log() << msg << std::endl;
 	if (!msg.isValid())
 		return (-1);
 	User &u = *static_cast<User*>(sender);
@@ -245,7 +246,7 @@ void IrcServer::writeWelcome(User &u)
 		writeMotd(u);
 }
 
-void IrcServer::writeError(TcpSocket *s, std::string reason)
+void IrcServer::writeError(tcp::TcpSocket *s, std::string reason)
 {
 	s->writeLine((IRC::MessageBuilder(config.servername, "ERROR") << reason).str());
 }

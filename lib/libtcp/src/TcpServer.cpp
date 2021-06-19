@@ -1,7 +1,20 @@
 #include "TcpServer.hpp"
+#include "SslListener.hpp"
 #include "libft.hpp"
+#include <sys/select.h>
+#include <sys/signal.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <unistd.h>
+
+namespace tcp
+{
 
 int abortFd = -1;
+
+const size_t TcpServer::defaultMaxConnections = 1024;
+const timeval TcpServer::selectTimeout = {5, 0};
 
 void abortSelect(int sig) throw()
 {
@@ -13,6 +26,7 @@ void abortSelect(int sig) throw()
 
 TcpServer::TcpServer():_maxConnections(1024)
 {
+	bzero(&_hint, sizeof(_hint));
 	_hint.ai_family = AF_UNSPEC;
 	_hint.ai_socktype = SOCK_STREAM;
 	_hint.ai_protocol = IPPROTO_TCP;
@@ -113,7 +127,7 @@ void TcpServer::select()
 {
 	fd_set readSet;
 	fd_set writeSet;
-	struct timeval timeout = {5, 0};
+	struct timeval timeout = selectTimeout;
 
 	FD_ZERO(&readSet);
 	FD_ZERO(&writeSet);
@@ -146,3 +160,5 @@ void TcpServer::select()
 			_pending.push_back(c);
 	}
 }
+
+} /* end of namespace tcp */

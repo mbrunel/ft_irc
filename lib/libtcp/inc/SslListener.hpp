@@ -1,13 +1,10 @@
 #pragma once
-#include <errno.h>
-#include <openssl/ssl.h>
-#include <stdexcept>
-#include <stdint.h>
-#include <string>
-#include <string.h>
 #include "Listener.hpp"
 #include "TcpSocket.hpp"
-#include "SslSocket.hpp"
+#include <openssl/ssl.h>
+
+namespace tcp
+{
 
 class SslListener : public Listener
 {
@@ -23,3 +20,5 @@ class SslListener : public Listener
 	SslListener(const SslListener &);
 	SslListener &operator=(const SslListener &);
 };
+
+} /* end of namespace tcp */

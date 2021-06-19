@@ -1,15 +1,14 @@
 #pragma once
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netdb.h>
 #include <string>
-#include <unistd.h>
 #include "Socket.hpp"
+#include "stdint.h"
+
+namespace tcp
+{
 
 class TcpSocket : public Socket
 {
   public:
-	TcpSocket(int listenerFd);
 	virtual ~TcpSocket() throw();
 
 	const std::string	&ip() const;
@@ -24,7 +23,8 @@ class TcpSocket : public Socket
 
   protected:
 
-	TcpSocket(int fd, sockaddr *addr, socklen_t addrlen);
+	TcpSocket();
+	TcpSocket(int listenerFd);
 
 	static const size_t ipv6MaxSize;
 	static const size_t readSize;
@@ -42,10 +42,12 @@ class TcpSocket : public Socket
 	virtual bool	isWbufEmpty() const;
 
   private:
-	TcpSocket();
 	TcpSocket(const TcpSocket &other);
 	TcpSocket &operator=(const TcpSocket &other);
 
 	friend class TcpServer;
+	friend class TcpClient;
 	friend class Listener;
 };
+
+} /* end of namespace tcp */

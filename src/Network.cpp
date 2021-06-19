@@ -49,7 +49,7 @@ void Network::clear() throw()
 		delete *i;
 }
 
-BasicConnection *Network::getBySocket(TcpSocket *socket)
+BasicConnection *Network::getBySocket(tcp::TcpSocket *socket)
 {
 	ConnectionMap::const_iterator i = _connections.find(socket);
 	return (i == _connections.end() ? NULL : i->second);

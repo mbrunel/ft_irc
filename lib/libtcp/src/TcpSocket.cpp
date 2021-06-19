@@ -1,7 +1,17 @@
 #include "TcpSocket.hpp"
-#include <iostream>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <unistd.h>
+#include "libft.hpp"
+
+namespace tcp
+{
+
 const size_t TcpSocket::ipv6MaxSize = 39;
 const size_t TcpSocket::readSize = 1024;
+
+TcpSocket::TcpSocket():Socket(), _isReadable(false), _isWriteable(false) {}
 
 TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(false)
 {
@@ -41,7 +51,7 @@ TcpSocket::~TcpSocket() throw() { close(); }
 
 bool TcpSocket::isWbufEmpty() const { return (_writeBuf.empty()); }
 
-size_t TcpSocket::readBufSize() const { return (_writeBuf.size()); }
+size_t TcpSocket::readBufSize() const { return (_readBuf.size()); }
 
 void TcpSocket::writeLine(const std::string &data) throw()
 {
@@ -77,6 +87,8 @@ bool TcpSocket::fill()
 	return true;
 }
 
+
+
 void TcpSocket::flush()
 {
 	if (!_isWriteable || isWbufEmpty())
@@ -107,3 +119,5 @@ const std::string &TcpSocket::ip() const { return (_ip); }
 uint16_t TcpSocket::port() const { return (_port); }
 
 const std::string &TcpSocket::host() const { return _host; }
+
+} /* end of namespace tcp */

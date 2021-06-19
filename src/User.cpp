@@ -43,7 +43,7 @@ const unsigned short UserMode::_lowerFlagTable[] =
 	RESTRICTED, MARK, 0, 0, 0, WALLOPS, 0, 0, 0
 };
 
-User::User(TcpSocket *socket, UserRequirement::Flag requirements) :
+User::User(tcp::TcpSocket *socket, UserRequirement::Flag requirements) :
 BasicConnection(socket, USER),
 _requirements(requirements),
 _joinedChannels(0),

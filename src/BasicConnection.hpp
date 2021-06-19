@@ -14,7 +14,7 @@ class BasicConnection
 	virtual ~BasicConnection();
 
 	Type			type() const;
-	TcpSocket		*socket() const;
+	tcp::TcpSocket	*socket() const;
 	unsigned		hopcount() const;
 	void			setType(const Type type);
 	void			writeLine(const std::string &content);
@@ -22,11 +22,11 @@ class BasicConnection
 	bool			&pongExpected();
 
   protected:
-	TcpSocket	*_socket;
-	Type		_type;
-	unsigned	_hopcount;
-	time_t		_clock;
-	bool		_pongExpected;
+	tcp::TcpSocket	*_socket;
+	Type			_type;
+	unsigned		_hopcount;
+	time_t			_clock;
+	bool			_pongExpected;
 
-	BasicConnection(TcpSocket *socket, Type type, unsigned hopcount = 0);
+	BasicConnection(tcp::TcpSocket *socket, Type type, unsigned hopcount = 0);
 };

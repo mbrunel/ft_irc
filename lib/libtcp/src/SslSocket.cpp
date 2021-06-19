@@ -1,4 +1,17 @@
 #include "SslSocket.hpp"
+#include "SslContext.hpp"
+
+namespace tcp
+{
+
+SslSocket::SslSocket(SSL_CTX *ctx):TcpSocket()
+{
+	if (!(_session = SSL_new(ctx)))
+	{
+		close();
+		throw tcp::SslException("SSL_new");
+	}
+}
 
 SslSocket::SslSocket(int listenerFd, SSL_CTX *ctx):TcpSocket(listenerFd)
 {
@@ -19,6 +32,13 @@ SslSocket::SslSocket(int listenerFd, SSL_CTX *ctx):TcpSocket(listenerFd)
 SslSocket::~SslSocket() throw()
 {
 	SSL_free(_session);
+}
+
+void SslSocket::socket(int family)
+{
+	Socket::socket(family);
+	if (SSL_set_fd(_session, _fd) == -1)
+		throw tcp::SslException("SSL_set_fd");
 }
 
 bool SslSocket::isWbufEmpty() const { return (TcpSocket::isWbufEmpty() && _state == SUCCESS); }
@@ -74,3 +94,5 @@ int SslSocket::recv(void *buf, size_t n, int flags)
 		throw tcp::SslException("SSL_read");
 	return (nb);
 }
+
+} /* end of namespace tcp */

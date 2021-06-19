@@ -54,7 +54,7 @@ public:
 class User : public BasicConnection
 {
 public:
-	User(TcpSocket *socket, UserRequirement::Flag requirements);
+	User(tcp::TcpSocket *socket, UserRequirement::Flag requirements);
 	virtual ~User();
 
 	bool					isRegistered() const;

@@ -1,5 +1,8 @@
 #include "SslContext.hpp"
 
+namespace tcp
+{
+
 bool _sslInit = false;
 
 SslContext::SslContext()
@@ -32,3 +35,5 @@ SslContext::~SslContext() throw()
 }
 
 SSL_CTX *SslContext::ctx() { return _ctx; }
+
+} /* end of namespace tcp */

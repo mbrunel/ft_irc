@@ -18,7 +18,7 @@ struct UserInfo
 class Network
 {
   public:
-	typedef std::map<TcpSocket *, BasicConnection *>	ConnectionMap;
+	typedef std::map<tcp::TcpSocket *, BasicConnection *>	ConnectionMap;
 	typedef std::map<std::string, User *>				UserMap;
 	typedef std::map<std::string, Channel *>			ChannelMap;
 	typedef std::map<std::string, Oper>					OperMap;
@@ -38,7 +38,7 @@ class Network
 	void				add(User *user);
 	void				add(Channel *channel);
 	void				clear() throw();
-	BasicConnection		*getBySocket(TcpSocket *socket);
+	BasicConnection		*getBySocket(tcp::TcpSocket *socket);
 	User				*getByNickname(const std::string &nickname);
 	Channel				*getByChannelname(const std::string &channelname);
 	void				msgToAll(const std::string &msg, BasicConnection *origin = NULL);

@@ -8,7 +8,7 @@ BasicConnection::Type BasicConnection::type() const
 	return (_type);
 }
 
-TcpSocket *BasicConnection::socket() const
+tcp::TcpSocket *BasicConnection::socket() const
 {
 	return (_socket);
 }
@@ -38,7 +38,7 @@ bool &BasicConnection::pongExpected()
 	return _pongExpected;
 }
 
-BasicConnection::BasicConnection(TcpSocket *socket, Type type, unsigned hopcount) :
+BasicConnection::BasicConnection(tcp::TcpSocket *socket, Type type, unsigned hopcount) :
 _socket(socket),
 _type(type),
 _hopcount(hopcount),

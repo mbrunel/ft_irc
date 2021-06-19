@@ -1,16 +1,12 @@
 #pragma once
-#include <sys/select.h>
-#include <sys/signal.h>
-#include <iostream>
-#include <fstream>
 #include <list>
-#include <time.h>
-#include <assert.h>
+#include <netdb.h>
 #include "Listener.hpp"
 #include "TcpSocket.hpp"
-#include "SslListener.hpp"
 #include "SslContext.hpp"
-#include "Config.hpp"
+
+namespace tcp
+{
 
 class TcpServer
 {
@@ -18,7 +14,6 @@ class TcpServer
 	TcpServer();
 	~TcpServer() throw();
 
-	void				init(Config &cfg);
 	size_t				nbConnections() const;
 	const std::string	&host() const;
 	void				loadSslConfig(const std::string &certificatePath, const std::string &keyPath);
@@ -33,6 +28,10 @@ class TcpServer
 	class SigintException : public std::exception {};
 
   private:
+
+	static const size_t defaultMaxConnections;
+	static const timeval selectTimeout;
+
 	addrinfo				_hint;
 	std::list<Listener*>	_listeners;
 	std::list<Listener*>	_incoming;
@@ -47,3 +46,5 @@ class TcpServer
 	TcpServer(const TcpServer &);
 	TcpServer &operator=(const TcpServer &);
 };
+
+} /* end of namespace tcp */
