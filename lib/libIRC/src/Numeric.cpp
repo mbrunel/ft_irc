@@ -454,7 +454,7 @@ namespace Reply
 
 	const Numeric time()
 	{
-		return (Numeric(RPL_TIME, ft::to_date(::time(NULL), "%x - %I:%M:%S")));
+		return (Numeric(RPL_TIME, ft::to_date(::time(NULL), "%x - %I:%M:%S %z")));
 	}
 
 	const Numeric lusersclient(size_t nb)

@@ -1,8 +1,8 @@
 #pragma once
-#include <sys/socket.h>
-#include <stdint.h>
-#include <netdb.h>
 #include "TcpSocket.hpp"
+
+namespace tcp
+{
 
 class Listener : public Socket
 {
@@ -18,3 +18,5 @@ class Listener : public Socket
 	Listener(const Listener &);
 	Listener &operator=(const Listener &);
 };
+
+} /* end of namespace tcp */
