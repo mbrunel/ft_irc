@@ -219,7 +219,7 @@ namespace Reply
 	const Numeric youreoper();
 	const Numeric youreservice(const std::string &servicename);
 	const Numeric time();
-	const Numeric lusersclient(size_t nb);
+	const Numeric lusersclient(size_t users, size_t services, size_t servers);
 	const Numeric lusersop(size_t nb);
 	const Numeric lusersunknown(size_t nb);
 	const Numeric luserschannels(size_t nb);

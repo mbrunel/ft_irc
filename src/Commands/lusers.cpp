@@ -11,7 +11,7 @@ int IrcServer::lusers(User &u, const IRC::Message &m)
 		return (writeNum(u, IRC::Error::nosuchserver(m.params()[1])));
 	Network::UserMap umap = network.users();
 	Network::UserMap::const_iterator ium = umap.begin();
-	writeNum(u, IRC::Reply::lusersclient(umap.size()));
+	writeNum(u, IRC::Reply::lusersclient(umap.size(), network.services().size(), 1));
 	int nbOp = 0;
 	int nbClients = 0;
 	int nbUnknown = 0;

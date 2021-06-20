@@ -10,11 +10,11 @@ int IrcServer::servlist(User &u, const IRC::Message &m)
 	std::string mask;
 	if (m.params().size())
 		mask = m.params()[0].mask();
-	const Network::UserMap &map = network.users();
-	for (Network::UserMap::const_iterator i = map.begin(); i != map.end(); ++i)
+	const Network::ServiceMap &map = network.services();
+	for (Network::ServiceMap::const_iterator i = map.begin(); i != map.end(); ++i)
 	{
 		const User *s = i->second;
-		if (s->type() != User::SERVICE || (mask.size() && !ft::match(mask, s->nickname())))
+		if ((mask.size() && !ft::match(mask, s->nickname())))
 			continue ;
 		writeNum(u, IRC::Reply::servlist(s->nickname(), config.servername, IRC_WILDCARD, IRC_WILDCARD, s->hopcount(), s->realname()));
 	}

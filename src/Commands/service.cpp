@@ -10,7 +10,7 @@ int IrcServer::service(User &u, const IRC::Message &m)
 	const IRC::Param &nick = m.params()[0];
 	if (!nick.isNickname())
 		return (writeNum(u, IRC::Error::erroneusnickname(nick)));
-	if (network.getByNickname(nick) || network.isFnick(nick))
+	if (network.getByServicename(nick) || network.isFnick(nick))
 		return (writeNum(u, IRC::Error::nicknameinuse(nick)));
 	if (!ft::match(m.params()[2], config.servername))
 		return (writeNum(u, IRC::Error::nosuchserver(m.params()[2])));
@@ -24,7 +24,7 @@ int IrcServer::service(User &u, const IRC::Message &m)
 	u.setType(User::SERVICE);
 	u.setNickname(nick);
 	u.setRealname(m.params()[5]);
-	network.add(&u);
+	network.addService(&u);
 	u.unsetRequirement(UserRequirement::NICK);
 	u.unsetRequirement(UserRequirement::USER);
 	writeWelcome(u);

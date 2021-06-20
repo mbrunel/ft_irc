@@ -20,6 +20,7 @@ class Network
   public:
 	typedef std::map<tcp::TcpSocket *, BasicConnection *>	ConnectionMap;
 	typedef std::map<std::string, User *>				UserMap;
+	typedef std::map<std::string, User *>				ServiceMap;
 	typedef std::map<std::string, Channel *>			ChannelMap;
 	typedef std::map<std::string, Oper>					OperMap;
 	typedef std::set<std::string>						FnicksSet;
@@ -33,17 +34,21 @@ class Network
 	const ChannelMap	&channels() const;
 	const ConnectionMap	&connections() const;
 	const UserMap		&users() const;
+	const ServiceMap	&services() const;
 	OperMap				&opers();
 	FnicksSet			&fnicks();
 	void				add(User *user);
 	void				add(Channel *channel);
+	void				addService(User *service);
 	void				clear() throw();
 	BasicConnection		*getBySocket(tcp::TcpSocket *socket);
 	User				*getByNickname(const std::string &nickname);
 	Channel				*getByChannelname(const std::string &channelname);
+	User				*getByServicename(const std::string &servicename);
 	void				msgToAll(const std::string &msg, BasicConnection *origin = NULL);
 	void				remove(User *user) throw();
 	void				remove(const Channel *chan) throw();
+	void				removeService(User *user) throw();
 	void				resetUserReceipt();
 	Oper				*getOper(const std::string &login);
 	bool				isFnick(const std::string &nick);
@@ -57,6 +62,7 @@ class Network
   private:
 	ConnectionMap	_connections;
 	UserMap			_users;
+	ServiceMap		_services;
 	ChannelMap		_channels;
 	OperMap			_opers;
 	FnicksSet		_fnicks;
