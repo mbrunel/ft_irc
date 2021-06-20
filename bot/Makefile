@@ -9,7 +9,7 @@ SRC			:= main.cpp
 CXX			:= clang++
 CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP \
 			   -I $(LIBFT_DIR)/inc -I $(LIBIRC_DIR)/inc
-LDFLAGS		:= -L $(LIBIRC_DIR) -lIRC -L $(LIBFT_DIR) -lft
+LDFLAGS		:= -L $(LIBIRC_DIR) -lIRC -L $(LIBFT_DIR) -lft -lcurl
 OBJ			:= $(SRC:%.cpp=$(BUILD_DIR)/%.o)
 
 $(NAME): $(OBJ)

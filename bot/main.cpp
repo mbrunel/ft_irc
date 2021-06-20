@@ -1,14 +1,16 @@
 #include <arpa/inet.h>
+#include <curl/curl.h>
 #include <sys/socket.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <iostream>
 #include <limits>
+#include <map>
+#include <netdb.h>
+#include <unistd.h>
 #include "IRC.hpp"
-#include "system_error.hpp"
+#include "libft.hpp"
 
 static int parsePort(const char *s)
 {
@@ -17,18 +19,76 @@ static int parsePort(const char *s)
 	return (s < s2 && !*s2 && port <= std::numeric_limits<uint16_t>::max() ? port : -1);
 }
 
-static int usage()
+struct Argument
 {
-	std::cerr << "usage: nestor [HOST] [PORT] [PASS: optionnal]" << std::endl;
-	return (EXIT_FAILURE);
-}
+	std::string name, description;
+
+	Argument(const std::string &name, const std::string &description) :
+	name(name), description(description)
+	{}
+};
+
+typedef std::vector<Argument> Arguments;
+typedef std::vector<std::string> Params;
+
+template<class T>
+struct Command
+{
+	T			command;
+	std::string	description;
+	Arguments	args, opts;
+
+	Command(const T &command = T(), const std::string &description = "", const Arguments &args = Arguments(), const Arguments &opts = Arguments()) :
+	command(command), description(description), args(args), opts(opts)
+	{}
+
+	std::string usage() const
+	{
+		std::stringstream buf;
+		for (size_t i = 0; i < args.size(); ++i)
+			buf << ' ' << args[i].name;
+		for (size_t i = 0; i < opts.size(); ++i)
+			buf << " [" << opts[i].name << ']';
+		return (buf.str());
+	}
+};
 
 class NestorBot
 {
+	typedef int (NestorBot::*CommandPointer)(const IRC::Param &, const Params &);
+	typedef Command<CommandPointer> Command;
+	typedef std::map<std::string, Command> CommandsMap;
+
+	static const size_t BUFSIZE = 1024;
+	static const size_t CMDMAXSIZE = 20;
+	static const size_t JOKEMAXSIZE = 256;
+
 public:
-	NestorBot(const char *hostname, uint16_t port, const std::string &pass) :
-	_socket(-1), _n(0)
+	NestorBot(const std::string &jokesFile, const char *hostname, uint16_t port, const std::string &pass) :
+	_curl(NULL), _socket(-1), _n(0)
 	{
+		_buf[0] = '\0';
+
+		Command cmd(&NestorBot::help, "View a list of all available commands");
+		cmd.opts.push_back(Argument("COMMAND", "View the full description of a command"));
+		_commands["HELP"] = cmd;
+		_commands["JOKE"] = Command(&NestorBot::joke, "Ask for a joke");
+		_commands["ROLL"] = Command(&NestorBot::roll, "Roll a dice");
+		cmd = Command(&NestorBot::weather, "Request a weather report");
+		cmd.args.push_back(Argument("LOCATION", "A city name, a country, GPS coordinates..."));
+		_commands["WEATHER"] = cmd;
+
+		std::ifstream f(jokesFile.c_str(), std::ios_base::in);
+		if (!f.is_open())
+			throw ft::system_error("std::ifstream");
+		for (std::string line; std::getline(f, line);)
+		{
+			if (line.size() > JOKEMAXSIZE)
+				line.resize(JOKEMAXSIZE);
+			_jokes.push_back(line);
+		}
+		f.close();
+
 		sockaddr_in serv_addr;
 		hostent *host = gethostbyname(hostname);
 		if (!host)
@@ -42,35 +102,178 @@ public:
 		if (connect(_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
 			throw ft::system_error("connect");
 		if (pass.size())
-			send((IRC::MessageBuilder("PASS") << pass));
-		send((IRC::MessageBuilder("SERVICE") << "Nestor" << "*" << "*" << "*" << "*" << "Nestor bot"));
+			writeLine(IRC::MessageBuilder("PASS") << pass);
+		writeLine(IRC::MessageBuilder("SERVICE") << "Nestor" << "*" << "*" << "*" << "*" << "Nestor bot");
+		flush();
+
+		if (!(_curl = curl_easy_init()))
+			throw ft::system_error("curl_easy_init");
 	}
 
 	~NestorBot()
 	{
+		if (_curl)
+			curl_easy_cleanup(_curl);
 		if (_socket >= 0)
 			close(_socket);
 	}
 
 	void run()
 	{
-		while (readline())
+		for (; readline(); flush())
 		{
-			std::cerr << "LINE: " << _line;
 			IRC::Message m(_line);
-			std::cerr << m << std::endl;
 			if (m.command() == "PING")
-				send((IRC::MessageBuilder("PONG") << m.params()[0]));
+				writeLine(IRC::MessageBuilder("PONG") << m.params()[0]);
+			else if (m.command() == "SQUERY")
+			{
+				Params args = split(m.params()[0]);
+				if (args.empty())
+				{
+					writeError(m.prefix().nickname(), "No command given.");
+					continue ;
+				}
+				std::string command = args[0];
+				ft::to_upper(command);
+				CommandsMap::const_iterator i = _commands.find(command);
+				if (i == _commands.end())
+				{
+					if (command.size() > CMDMAXSIZE)
+						command = command.substr(0, CMDMAXSIZE);
+					writeError(m.prefix().nickname(), command + " - Command not found. Type /SQUERY Nestor HELP for more information.");
+				}
+				else if (args.size() - 1 < i->second.args.size() || (this->*(i->second.command))(m.prefix().nickname(), args) < 0)
+					writeLine(m.prefix().nickname(), "USAGE: /SQUERY Nestor " + command + i->second.usage());
+			}
 		}
 	}
 
 private:
-	static const size_t BUFSIZE = 1024;
+	CommandsMap					_commands;
+	std::vector<std::string>	_jokes;
+	CURL						*_curl;
+	int							_socket;
+	char						_buf[BUFSIZE + 1];
+	size_t						_n;
+	std::string					_line, _wBuf;
 
-	int			_socket;
-	char		_buf[BUFSIZE + 1];
-	size_t		_n;
-	std::string	_line;
+	int help(const IRC::Param &nick, const Params &args)
+	{
+		if (args.size() < 2)
+		{
+			writeLine(nick , "< Nestor Bot - HELP >");
+			writeLine(nick , "Use /SQUERY Nestor HELP [COMMAND] to view more information about a specific command.");
+			writeLine(nick , "Commands list:");
+			for (CommandsMap::const_iterator i = _commands.begin(); i != _commands.end(); ++i)
+				writeLine(nick , i->first + ": " + i->second.description);
+			return 0;
+		}
+		std::string command = args[1];
+		ft::to_upper(command);
+		CommandsMap::const_iterator i = _commands.find(command);
+		if (i == _commands.end())
+			return (-1);
+		const Command &c = i->second;
+		writeLine(nick , "< Nestor Bot - HELP - " + i->first + " >");
+		writeLine(nick , '\t' + c.description);
+		writeLine(nick , "Usage:");
+		writeLine(nick , '\t' + c.usage());
+		if (c.args.size())
+		{
+			writeLine(nick , "Arguments list:");
+			for (size_t i = 0; i < c.args.size(); ++i)
+				writeLine(nick , '\t' + c.args[i].name + ": " + c.args[i].description);
+		}
+		if (c.opts.size())
+		{
+			writeLine(nick , "Optional arguments list:");
+			for (size_t i = 0; i < c.opts.size(); ++i)
+				writeLine(nick , '\t' + c.opts[i].name + ": " + c.args[i].description);
+		}
+		return (0);
+	}
+
+	int joke(const IRC::Param &nick, const Params &)
+	{
+		writeLine(nick, _jokes[std::rand() % _jokes.size()]);
+		return (0);
+	}
+
+	int roll(const IRC::Param &nick, const Params &)
+	{
+		writeLine(nick, ft::to_string(std::rand() % 6));
+		return (0);
+	}
+
+	int weather(const IRC::Param &nick, const Params &args)
+	{
+		const std::string set = "\\;{}()*&$%?#/!=";
+		for (size_t i = 0; i < set.size(); ++i)
+			if (std::memchr(args[1].c_str(), set[i], args[1].size()))
+			{
+				writeError(nick, "WEATHER - Illegal argument");
+				return (0);
+			}
+		const std::string location = "https://wttr.in/" + args[1] + "?0A&lang=en";
+		std::stringstream ss;
+		curl_easy_setopt(_curl, CURLOPT_URL, location.c_str());
+		curl_easy_setopt(_curl, CURLOPT_VERBOSE, 0L);
+		curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, &NestorBot::writeCallback);
+		curl_easy_setopt(_curl, CURLOPT_WRITEDATA, &ss);
+		CURLcode r = curl_easy_perform(_curl);
+		if (r != CURLE_OK)
+			writeError(nick, "WEATHER - Service temporary unavailable");
+		else
+			for (std::string line; std::getline(ss, line);)
+				writeLine(nick, line);
+		return (0);
+	}
+
+	void writeError(const IRC::Param &nick, const std::string &content)
+	{
+		writeLine(nick, "ERROR: " + content);
+	}
+
+	void writeLine(const IRC::Param &nick, const std::string &content)
+	{
+		writeLine(IRC::MessageBuilder("NOTICE") << nick << content);
+	}
+
+	void writeLine(const IRC::MessageBuilder &message)
+	{
+		_wBuf += message.str();
+		_wBuf += '\n';
+	}
+
+	Params split(const std::string &s) const
+	{
+		std::stringstream ss;
+		Params args;
+
+		ss << s;
+		for (std::string word; ss >> word;)
+			args.push_back(word);
+		return (args);
+	}
+
+	void flush()
+	{
+		if (_wBuf.empty())
+			return ;
+		const char *p = _wBuf.c_str();
+		size_t n = _wBuf.size();
+		while (n > 0)
+		{
+			ssize_t m = ::send(_socket, p, n, 0);
+			if (m < 0)
+				break ;
+			p += m;
+			n -= m;
+		}
+		_wBuf.clear();
+		if (n)
+			throw ft::system_error("send");
+	}
 
 	bool readline()
 	{
@@ -94,26 +297,18 @@ private:
 	{
 		ssize_t n = ::recv(_socket, _buf + _n, BUFSIZE - _n, flags);
 		if (n < 0)
-			_n = 0;
+			throw ft::system_error("recv");
 		else
 			_n += n;
 		_buf[_n] = 0;
 		return (n < 0 ? 0 : n);
 	}
 
-	void send(const IRC::MessageBuilder &message, int flags = 0) const
+	static size_t writeCallback(void *contents, size_t size, size_t nmemb, void *userp)
 	{
-		std::string buf = message.str() + '\n';
-		const char *p = buf.c_str();
-		size_t n = buf.size();
-		while (n > 0)
-		{
-			ssize_t m = ::send(_socket, p, n, flags);
-			if (m < 0)
-				throw ft::system_error("send");
-			p += m;
-			n -= m;
-		}
+		size_t n = size * nmemb;
+		static_cast<std::stringstream *>(userp)->write(static_cast<const char *>(contents), n);
+		return n;
 	}
 };
 
@@ -121,11 +316,15 @@ int main(int ac, const char **av)
 {
 	int port;
 
-	if (ac < 3 || (port = parsePort(av[2])) < 0)
-		return usage();
+	if (ac < 4 || (port = parsePort(av[3])) < 0)
+	{
+		std::cerr << "usage: nestor JOKES_FILE HOST PORT [PASS]" << std::endl;
+		return (EXIT_FAILURE);
+	}
+	std::srand(getpid() * ::time(NULL));
 	try
 	{
-		NestorBot bot(av[1], port, (ac > 3 ? av[3] : ""));
+		NestorBot bot(av[1], av[2], port, (ac > 4 ? av[4] : ""));
 		try
 		{
 			bot.run();
