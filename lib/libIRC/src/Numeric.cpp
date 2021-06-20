@@ -46,6 +46,11 @@ namespace Error
 		return (Numeric(ERR_TOOMANYTARGETS, target + " :Duplicate recipients. No message delivered"));
 	}
 
+	const Numeric nosuchservice(const std::string &servicename)
+	{
+		return (Numeric(ERR_NOSUCHSERVICE, servicename + " :No such service"));
+	}
+
 	const Numeric noorigin()
 	{
 		return (Numeric(ERR_NOORIGIN, ":No origin specified"));
