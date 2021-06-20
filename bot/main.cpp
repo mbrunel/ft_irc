@@ -201,7 +201,7 @@ private:
 
 	int roll(const IRC::Param &nick, const Params &)
 	{
-		writeLine(nick, ft::to_string(std::rand() % 6));
+		writeLine(nick, ft::to_string((std::rand() % 6) + 1));
 		return (0);
 	}
 
