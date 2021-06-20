@@ -13,7 +13,7 @@ enum NumericCode
 	ERR_TOOMANYCHANNELS = 405,
 	ERR_WASNOSUCHNICK = 406,
 	ERR_TOOMANYTARGETS = 407,
-	ERR_NOSCUCHSERVICE = 408,
+	ERR_NOSUCHSERVICE = 408,
 	ERR_NOORIGIN = 409,
 	ERR_NORECIPIENT = 411,
 	ERR_NOTEXTTOSEND = 412,
@@ -135,6 +135,7 @@ namespace Error
 	const Numeric toomanychannels(const std::string &channelname);
 	const Numeric wasnosuchnick(const std::string &nickname);
 	const Numeric toomanytargets(const std::string &target);
+	const Numeric nosuchservice(const std::string &servicename);
 	const Numeric noorigin();
 	const Numeric norecipient(const std::string &command);
 	const Numeric notexttosend();
@@ -218,7 +219,7 @@ namespace Reply
 	const Numeric youreoper();
 	const Numeric youreservice(const std::string &servicename);
 	const Numeric time();
-	const Numeric lusersclient(size_t nb);
+	const Numeric lusersclient(size_t users, size_t services, size_t servers);
 	const Numeric lusersop(size_t nb);
 	const Numeric lusersunknown(size_t nb);
 	const Numeric luserschannels(size_t nb);

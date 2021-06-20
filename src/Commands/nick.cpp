@@ -2,6 +2,8 @@
 
 int IrcServer::nick(User &u, const IRC::Message &m)
 {
+	if (u.type() == User::SERVICE)
+		return (writeNum(u, IRC::Error::alreadyregistred()));
 	if (!m.params().size())
 		return (writeNum(u, IRC::Error::nonicknamegiven()));
 	if (!u.requirements().isSet(UserRequirement::NICK) && u.umode().isSet(UserMode::RESTRICTED))

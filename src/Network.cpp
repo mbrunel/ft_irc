@@ -27,6 +27,11 @@ const Network::UserMap &Network::users() const
 	return (_users);
 }
 
+const Network::ServiceMap &Network::services() const
+{
+	return (_services);
+}
+
 void Network::add(User *u)
 {
 	_connections[u->socket()] = u;
@@ -39,11 +44,19 @@ void Network::add(Channel *c)
 	_channels[c->name()] = c;
 }
 
+void Network::addService(User *u)
+{
+	_connections[u->socket()] = u;
+	_services[u->nickname()] = u;
+}
+
 void Network::clear() throw()
 {
 	for (UserMap::iterator i = _users.begin(); i != _users.end(); ++i)
 		delete i->second;
 	for (ChannelMap::iterator i = _channels.begin(); i != _channels.end(); ++i)
+		delete i->second;
+	for (ServiceMap::iterator i = _services.begin(); i != _services.end(); ++i)
 		delete i->second;
 	for (ZombieList::iterator i = _zombies.begin(); i != _zombies.end(); ++i)
 		delete *i;
@@ -67,6 +80,12 @@ Channel *Network::getByChannelname(const std::string &key)
 	return (i == _channels.end() ? NULL : i->second);
 }
 
+User *Network::getByServicename(const std::string &key)
+{
+	ServiceMap::const_iterator i = _services.find(key);
+	return (i == _services.end() ? NULL : i->second);
+}
+
 void Network::remove(User *u) throw()
 {
 	if (!u->hopcount())
@@ -77,6 +96,13 @@ void Network::remove(User *u) throw()
 void Network::remove(const Channel *c) throw()
 {
 	_channels.erase(c->name());
+}
+
+void Network::removeService(User *u) throw()
+{
+	if (!u->hopcount())
+		_connections.erase(u->socket());
+	_services.erase(u->nickname());
 }
 
 void Network::msgToAll(const std::string &msg, BasicConnection *origin)

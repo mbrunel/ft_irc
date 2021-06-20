@@ -46,6 +46,11 @@ namespace Error
 		return (Numeric(ERR_TOOMANYTARGETS, target + " :Duplicate recipients. No message delivered"));
 	}
 
+	const Numeric nosuchservice(const std::string &servicename)
+	{
+		return (Numeric(ERR_NOSUCHSERVICE, servicename + " :No such service"));
+	}
+
 	const Numeric noorigin()
 	{
 		return (Numeric(ERR_NOORIGIN, ":No origin specified"));
@@ -457,9 +462,9 @@ namespace Reply
 		return (Numeric(RPL_TIME, ft::to_date(::time(NULL), "%x - %I:%M:%S %z")));
 	}
 
-	const Numeric lusersclient(size_t nb)
+	const Numeric lusersclient(size_t users, size_t services, size_t servers)
 	{
-		return (Numeric(RPL_LUSERCLIENT, ":There are " + ft::to_string(nb) + " users on 1 server"));	
+		return (Numeric(RPL_LUSERCLIENT, ":There are " + ft::to_string(users) + " users and " + ft::to_string(services) + " services on " + ft::to_string(servers) + " server"));	
 	}
 
 	const Numeric lusersop(size_t nb)
