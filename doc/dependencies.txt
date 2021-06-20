@@ -1,0 +1,3 @@
+doxygen
+libcurl4-openssl-dev
+libssl-dev

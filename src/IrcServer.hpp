@@ -104,6 +104,7 @@ class IrcServer
 	int	time(User &sender, const IRC::Message &msg);
 	int	topic(User &sender, const IRC::Message &msg);
 	int	user(User &sender, const IRC::Message &msg);
+	int userhost(User &sender, const IRC::Message &msg);
 	int	version(User &sender, const IRC::Message &msg);
 	int	who(User &sender, const IRC::Message &msg);
 	int whois(User &sender, const IRC::Message &msg);

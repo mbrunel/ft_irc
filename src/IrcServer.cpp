@@ -67,6 +67,7 @@ init(true)
 	userCommands["STATS"] = &IrcServer::stats;
 	userCommands["TIME"] = &IrcServer::time;
 	userCommands["TOPIC"] = &IrcServer::topic;
+	userCommands["USERHOST"] = &IrcServer::userhost;
 	userCommands["VERSION"] = &IrcServer::version;
 }
 
