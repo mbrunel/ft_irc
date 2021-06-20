@@ -26,14 +26,15 @@ class SslSocket : public TcpSocket
 	bool	isWbufEmpty() const;
 
   private:
-	SSL		*_session;
-	State	_state;
+	SSL			*_session;
+	State		_state;
 
 	void SSL_accept();
+	void SSL_connect();
 
 	SslSocket(const SslSocket &other);
 	SslSocket &operator=(const SslSocket &other);
-	
+
 	friend class SslListener;
 	friend class TcpClient;
 };

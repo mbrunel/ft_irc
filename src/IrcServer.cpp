@@ -97,28 +97,32 @@ void IrcServer::run()
 		tcp::TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()) && _state == ALIVE)
 		{
-			std::string line;
-			try {
+			try
+			{
 				socket->flush();
-				if (!socket->readLine(line))
+				while (socket->canReadLine())
 				{
-					disconnect(socket, "Remote host closed connection");
-					continue ;
+					std::string line;
+					if (!socket->readLine(line))
+					{
+						disconnect(socket, "Remote host closed connection");
+						continue ;
+					}
+					if (socket->readBufSize() > maxLineSize)
+					{
+						disconnect(socket, "Socket's buffer size has exceed the limit");
+						continue ;
+					}
+					if (line.empty())
+						continue ;
+					exec(network.getBySocket(socket), IRC::Message(line));
 				}
-				if (socket->readBufSize() > maxLineSize)
-				{
-					disconnect(socket, "Socket's buffer size has exceed the limit");
-					continue ;
-				}
-				if (line.empty())
-					continue ;
 			}
 			catch (std::exception &e) {
 				log() << e.what() << std::endl;
 				disconnect(socket, e.what());
 				continue ;
 			}
-			exec(network.getBySocket(socket), IRC::Message(line));
 		}
 	}
 }

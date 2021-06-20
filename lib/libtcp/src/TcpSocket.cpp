@@ -11,9 +11,9 @@ namespace tcp
 const size_t TcpSocket::ipv6MaxSize = 39;
 const size_t TcpSocket::readSize = 1024;
 
-TcpSocket::TcpSocket():Socket(), _isReadable(false), _isWriteable(false) {}
+TcpSocket::TcpSocket():Socket(), _isReadable(false), _isWriteable(false), _newline(std::string::npos) {}
 
-TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(false)
+TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(false), _newline(std::string::npos)
 {
 	socklen_t addrLen = sizeof(_addr);
 	if ((_fd = accept(listenerFd, (sockaddr *)&_addr, &addrLen)) == -1)
@@ -58,17 +58,25 @@ void TcpSocket::writeLine(const std::string &data) throw()
 	_writeBuf += data + '\n';
 }
 
+bool TcpSocket::canReadLine()
+{
+	if (_newline == std::string::npos && !_isReadable)
+		if ((_newline = _readBuf.find_first_of('\n')) == std::string::npos)
+			if ((_newline = _readBuf.find_first_of('\r')) == std::string::npos)
+				return false;
+	return true;
+}
+
 bool TcpSocket::readLine(std::string &line)
 {
+	line.clear();
 	if (!fill())
 		return false;
-	line.clear();
-	size_t sep;
-	if ((sep = _readBuf.find_first_of('\n')) == std::string::npos)
-		if ((sep = _readBuf.find_first_of('\r')) == std::string::npos)
-			return true;
-	line = _readBuf.substr(0, sep + 1);
-	_readBuf.erase(0, sep + 1);
+	if (!canReadLine())
+		return true;
+	line = _readBuf.substr(0, _newline + 1);
+	_readBuf.erase(0, _newline + 1);
+	_newline = std::string::npos;
 	return (true);
 }
 
@@ -81,13 +89,11 @@ bool TcpSocket::fill()
 		_isReadable = false;
 		if (!(nb = recv(buf, readSize)))
 			return false;
-		buf[nb] = '\0';
+		buf[nb > 0 ? nb : 0] = '\0';
 		_readBuf += buf;
 	}
 	return true;
 }
-
-
 
 void TcpSocket::flush()
 {
@@ -102,7 +108,8 @@ int TcpSocket::send(const void *buf, size_t n, int flags)
 {
 	int nb;
 	if ((nb = ::send(_fd, buf, n, flags)) == -1)
-		throw ft::system_error("send");
+		if (errno != EWOULDBLOCK)
+			throw ft::system_error("send");
 	return (nb);
 }
 
@@ -110,7 +117,8 @@ int TcpSocket::recv(void *buf, size_t n, int flags)
 {
 	int nb;
 	if ((nb = ::recv(_fd, buf, n, flags)) == -1)
-		throw ft::system_error("recv");
+		if (errno != EWOULDBLOCK)
+			throw ft::system_error("recv");
 	return (nb);
 }
 

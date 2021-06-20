@@ -5,7 +5,7 @@ namespace tcp
 
 bool _sslInit = false;
 
-SslContext::SslContext()
+SslContext::SslContext(Type type)
 {
 	if (!_sslInit)
 	{
@@ -15,7 +15,7 @@ SslContext::SslContext()
 		ERR_load_crypto_strings();
 		_sslInit = true;
 	}
-	if (!(_ctx = SSL_CTX_new(SSLv23_server_method())))
+	if (!(_ctx = SSL_CTX_new(type == SERVER ? SSLv23_server_method() : SSLv23_client_method())))
 		throw tcp::SslException("SSL_CTX_new");
 }
 

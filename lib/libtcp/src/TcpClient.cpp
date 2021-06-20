@@ -7,21 +7,26 @@
 namespace tcp
 {
 
-TcpClient::TcpClient(const std::string &host, const std::string &port, bool ipv6)
+TcpClient::TcpClient(const std::string &host, const std::string &port, bool ipv6):ctx(SslContext::CLIENT)
 {
 	signal(SIGPIPE, SIG_IGN);
 	_socket = new TcpSocket();
-	try { connect(host, port, ipv6); }
+	try {connect(host, port, ipv6); }
 	catch (std::exception &e) { delete _socket; throw; }
 
 }
 
-TcpClient::TcpClient(const std::string &host, const std::string &port, const std::string &certificatePath, const std::string &keyPath, bool ipv6)
+TcpClient::TcpClient(const std::string &host, const std::string &port, bool ipv6,
+					const std::string &certificatePath, const std::string &keyPath):ctx(SslContext::CLIENT)
 {
 	signal(SIGPIPE, SIG_IGN);
 	ctx.load(certificatePath.c_str(), keyPath.c_str());
 	_socket = new SslSocket(ctx.ctx());
-	try { connect(host, port, ipv6); }
+	try {
+		connect(host, port, ipv6);
+		_socket->unsetNonblock();
+		(static_cast<SslSocket *>(_socket))->SSL_connect();
+	}
 	catch (std::exception &e) { delete _socket; throw; }
 }
 
@@ -54,19 +59,24 @@ void TcpClient::writeLine(const std::string &line)
 	_socket->writeLine(line);
 }
 
-void TcpClient::send()
+void TcpClient::flush()
 {
 	_socket->_isWriteable = true;
-	//_socket->unsetNonblock();
+	_socket->unsetNonblock();
 	_socket->flush();
 }
 
-bool TcpClient::canReadLine(){ return (!!_socket->_readBuf.size()); }
-
-bool TcpClient::readLine(std::string &line)
+bool TcpClient::tryReadLine(std::string &line)
 {
 	_socket->_isReadable = true;
-	//_socket->setNonblock();
+	_socket->setNonblock();
+	return _socket->readLine(line);
+}
+
+bool TcpClient::waitForLine(std::string &line)
+{
+	_socket->_isReadable = true;
+	_socket->unsetNonblock();
 	return _socket->readLine(line);
 }
 

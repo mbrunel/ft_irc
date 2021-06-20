@@ -16,6 +16,7 @@ class TcpSocket : public Socket
 	const std::string	&host() const;
 	size_t				readBufSize() const;
 
+	bool				canReadLine();
 	bool				readLine(std::string &line);
 	void				writeLine(const std::string &data) throw();
 	virtual bool		fill();
@@ -36,6 +37,7 @@ class TcpSocket : public Socket
 	bool		_isWriteable;
 	std::string	_readBuf;
 	std::string	_writeBuf;
+	size_t		_newline;
 
 	virtual int		recv(void *buf, size_t size, int flags = 0);
 	virtual int		send(const void *buf, size_t size, int flags = 0);

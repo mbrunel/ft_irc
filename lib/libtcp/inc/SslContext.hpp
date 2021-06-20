@@ -9,11 +9,12 @@ namespace tcp
 class SslException : public std::runtime_error
 {
 public:
+
 	SslException(const std::string &what_arg) :
 	std::runtime_error(what_arg + ": " + (ERR_reason_error_string(ERR_peek_error()) ? ERR_reason_error_string(ERR_peek_error()) : "No reason")),
 	_sslCode(ERR_get_error())
 	{}
-	
+
 	virtual ~SslException() throw()
 	{}
 
@@ -29,7 +30,10 @@ private:
 struct SslContext
 {
   public :
-	SslContext();
+
+	enum Type {CLIENT, SERVER};
+
+	SslContext(Type type);
 	void load(const char *certificatePath, const char *keyPath);
 	~SslContext() throw();
 

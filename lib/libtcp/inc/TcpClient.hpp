@@ -9,14 +9,15 @@ class TcpClient
 {
   public:
 	TcpClient(const std::string &host, const std::string &port, bool ipv6);
-	TcpClient(const std::string &host, const std::string &port, const std::string &certificatePath, const std::string &keyPath, bool ipv6);
+	TcpClient(const std::string &host, const std::string &port, bool ipv6,
+				const std::string &certificatePath, const std::string &keyPath);
 	~TcpClient();
 
 	const TcpSocket &socket() const;
+	bool tryReadLine(std::string &line);
+	bool waitForLine(std::string &line);
 	void writeLine(const std::string &line);
-	void send();
-	bool canReadLine();
-	bool readLine(std::string &line);
+	void flush();
 
   private:
 	TcpSocket *_socket;
