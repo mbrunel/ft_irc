@@ -147,7 +147,7 @@ void TcpServer::select()
 	}
 	if (alive)
 		::select(FD_SETSIZE + 1, &readSet, &writeSet, NULL, &timeout);
-	if (!alive);
+	if (!alive)
 		throw SigintException();
 	for (std::list<Listener *>::iterator it = _listeners.begin(); it != _listeners.end(); it++)
 		if (FD_ISSET((*it)->fd(), &readSet))
