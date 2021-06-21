@@ -15,8 +15,7 @@ LIBTCP_DIR	:= $(LIB_DIR)/libtcp
 LIBTCP		:= $(LIBTCP_DIR)/libtcp.a
 SRC			:= $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
 CXX			:= clang++
-CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP -g \
-			   -I ./src -I ./src/Commands \
+CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP -I ./src -I ./src/Commands \
 			   -I ./$(LIBC4S_DIR)/include -I ./$(LIBFT_DIR)/inc -I ./$(LIBIRC_DIR)/inc -I ./$(LIBTCP_DIR)/inc
 LDFLAGS		:= -lcrypto -lssl -L ./$(LIBC4S_DIR)/lib -lconfig4cpp -L ./$(LIBFT_DIR) -lft -L ./$(LIBIRC_DIR) -lIRC -L ./$(LIBTCP_DIR) -ltcp
 OBJ			:= $(SRC:src/%.cpp=$(BUILD_DIR)/%.o)

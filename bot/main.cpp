@@ -80,22 +80,13 @@ public:
 		cmd.args.push_back(Argument("LOCATION", "A city name, a country, GPS coordinates..."));
 		_commands["WEATHER"] = cmd;
 
-		std::ifstream f(jokesFile.c_str(), std::ios_base::in);
-		if (!f.is_open())
-			throw ft::system_error("std::ifstream");
-		for (std::string line; std::getline(f, line);)
-		{
-			if (line.size() > JOKEMAXSIZE)
-				line.resize(JOKEMAXSIZE);
-			_jokes.push_back(line);
-		}
-		f.close();
+		ft::fileToData(jokesFile, _jokes, JOKEMAXSIZE);
 		if (pass.size())
 			TcpClient::writeLine((IRC::MessageBuilder("PASS") << pass).str());
 		TcpClient::writeLine((IRC::MessageBuilder("SERVICE") << "Nestor" << "*" << "*" << "*" << "*" << "Nestor bot").str());
 		flush();
 		if (!(_curl = curl_easy_init()))
-			throw ft::system_error("curl_easy_init");
+			throw ft::systemError("curl_easy_init");
 	}
 
 	~NestorBot()
@@ -110,7 +101,9 @@ public:
 		for (; waitForLine(line) && alive; flush())
 		{
 			IRC::Message m(line);
-			std::cout << m << std::endl;
+			#ifndef NDEBUG
+				std::cout << m << std::endl;
+			#endif
 			if (m.command() == "PING")
 				TcpClient::writeLine((IRC::MessageBuilder("PONG") << m.params()[0]).str());
 			else if (m.command() == "SQUERY")
@@ -122,7 +115,7 @@ public:
 					continue ;
 				}
 				std::string command = args[0];
-				ft::to_upper(command);
+				ft::toUpper(command);
 				CommandsMap::const_iterator i = _commands.find(command);
 				if (i == _commands.end())
 				{
@@ -153,7 +146,7 @@ private:
 			return 0;
 		}
 		std::string command = args[1];
-		ft::to_upper(command);
+		ft::toUpper(command);
 		CommandsMap::const_iterator i = _commands.find(command);
 		if (i == _commands.end())
 			return (-1);
@@ -161,7 +154,7 @@ private:
 		writeLine(nick , "< Nestor Bot - HELP - " + i->first + " >");
 		writeLine(nick , '\t' + c.description);
 		writeLine(nick , "Usage:");
-		writeLine(nick , '\t' + c.usage());
+		writeLine(nick , '\t' + i->first + c.usage());
 		if (c.args.size())
 		{
 			writeLine(nick , "Arguments list:");
@@ -172,7 +165,7 @@ private:
 		{
 			writeLine(nick , "Optional arguments list:");
 			for (size_t i = 0; i < c.opts.size(); ++i)
-				writeLine(nick , '\t' + c.opts[i].name + ": " + c.args[i].description);
+				writeLine(nick , '\t' + c.opts[i].name + ": " + c.opts[i].description);
 		}
 		return (0);
 	}
@@ -185,7 +178,7 @@ private:
 
 	int roll(const IRC::Param &nick, const Params &)
 	{
-		writeLine(nick, ft::to_string((std::rand() % 6) + 1));
+		writeLine(nick, ft::toString((std::rand() % 6) + 1));
 		return (0);
 	}
 

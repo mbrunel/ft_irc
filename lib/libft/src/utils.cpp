@@ -1,7 +1,7 @@
 #include <fstream>
 #include "libft.hpp"
 
-#define TO_DATE_BUFSIZE	160
+#define toDate_BUFSIZE	160
 
 // std::string goes brrr
 static bool match_internal(const char *mask, const char *str)
@@ -40,16 +40,18 @@ static bool match_internal(const char *mask, const char *str)
 namespace ft
 {
 
-void file_to_data(const std::string &filename, std::vector<std::string> &data)
+void fileToData(const std::string &filename, std::vector<std::string> &data, size_t sizeLine)
 {
 	std::ifstream f(filename.c_str(), std::ios_base::in);
 	std::string line;
 
+	if (!f.is_open())
+		throw ft::systemError("std::ifstream");
 	data.clear();
 	while (std::getline(f, line))
 	{
-		if (line.size() > 80)
-			line.resize(80);
+		if (line.size() > sizeLine)
+			line.resize(sizeLine);
 		data.push_back(line);
 	}
 }
@@ -59,15 +61,15 @@ bool match(const std::string &mask, const std::string &str)
 	return (match_internal(mask.c_str(), str.c_str()));
 }
 
-std::string to_date(const time_t t, const char *format)
+std::string toDate(const time_t t, const char *format)
 {
-	char buf[TO_DATE_BUFSIZE];
+	char buf[toDate_BUFSIZE];
 
 	strftime(buf, sizeof(buf), format, localtime(&t));
 	return (buf);
 }
 
-void to_upper(std::string &s)
+void toUpper(std::string &s)
 {
 	for (size_t i = 0; i < s.size(); ++i)
 		s[i] = toupper(s[i]);

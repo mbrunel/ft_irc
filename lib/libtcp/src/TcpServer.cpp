@@ -68,7 +68,7 @@ void TcpServer::listen(const std::string &port, bool tls, size_t maxQueueLen)
 	int i = 0;
 
 	if (getaddrinfo(NULL, port.c_str(), &_hint, &head))
-		throw ft::system_error("getaddrinfo");
+		throw ft::systemError("getaddrinfo");
 	node = head;
 	try {
 		while (node && i < 2)

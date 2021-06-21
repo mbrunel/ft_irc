@@ -40,7 +40,7 @@ void TcpClient::connect(const std::string &host, const std::string &port, bool i
 	hint.ai_protocol = IPPROTO_TCP;
 
 	if (getaddrinfo(host.c_str(), port.c_str(), &hint, &head))
-		throw ft::system_error("getaddrinfo");
+		throw ft::systemError("getaddrinfo");
 	try {
 		for (node = head; node != NULL; node = node->ai_next)
 		{

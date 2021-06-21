@@ -97,11 +97,6 @@ time_t Config::pong()
 	return (cfg->lookupDurationSeconds(IRC_SCOPE, "limits.pong_timeout"));
 }
 
-bool Config::floodControl()
-{
-	return (cfg->lookupBoolean(IRC_SCOPE, "limits.flood_control"));
-}
-
 void Config::opers(std::map<std::string, Oper> &o)
 {
 	o.clear();
