@@ -58,22 +58,26 @@ void TcpSocket::writeLine(const std::string &data) throw()
 	_writeBuf += data + '\n';
 }
 
-bool TcpSocket::canReadLine()
+bool TcpSocket::isLine()
 {
-	if (_newline == std::string::npos && !_isReadable)
+	if (_newline == std::string::npos)
 		if ((_newline = _readBuf.find_first_of('\n')) == std::string::npos)
 			if ((_newline = _readBuf.find_first_of('\r')) == std::string::npos)
 				return false;
 	return true;
 }
 
+bool TcpSocket::canReadLine()
+{
+	return (isLine() || _isReadable);
+}
+
 bool TcpSocket::readLine(std::string &line)
 {
 	line.clear();
-	if (!fill())
-		return false;
-	if (!canReadLine())
-		return true;
+	if (!isLine())
+		if (!fill())
+			return false;
 	line = _readBuf.substr(0, _newline + 1);
 	_readBuf.erase(0, _newline + 1);
 	_newline = std::string::npos;

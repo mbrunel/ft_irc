@@ -8,15 +8,18 @@
 #include <limits>
 #include <map>
 #include <netdb.h>
+#include <signal.h>
 #include <unistd.h>
 #include "IRC.hpp"
 #include "libft.hpp"
+#include "TcpClient.hpp"
 
-static int parsePort(const char *s)
+bool alive = true;
+
+void handler(int sig)
 {
-	char *s2 = NULL;
-	unsigned long port = std::strtoul(s, &s2, 10);
-	return (s < s2 && !*s2 && port <= std::numeric_limits<uint16_t>::max() ? port : -1);
+	(void)sig;
+	alive = false;
 }
 
 struct Argument
@@ -53,7 +56,7 @@ struct Command
 	}
 };
 
-class NestorBot
+class NestorBot : public tcp::TcpClient
 {
 	typedef int (NestorBot::*CommandPointer)(const IRC::Param &, const Params &);
 	typedef Command<CommandPointer> Command;
@@ -64,11 +67,10 @@ class NestorBot
 	static const size_t JOKEMAXSIZE = 256;
 
 public:
-	NestorBot(const std::string &jokesFile, const char *hostname, uint16_t port, const std::string &pass) :
-	_curl(NULL), _socket(-1), _n(0)
+	NestorBot(const std::string &jokesFile, const std::string &hostname, const std::string &port, const std::string &pass, const std::string &cert, const std::string &key) :
+	tcp::TcpClient(hostname, port, false, cert, key),
+	_curl(NULL)
 	{
-		_buf[0] = '\0';
-
 		Command cmd(&NestorBot::help, "View a list of all available commands");
 		cmd.opts.push_back(Argument("COMMAND", "View the full description of a command"));
 		_commands["HELP"] = cmd;
@@ -88,24 +90,10 @@ public:
 			_jokes.push_back(line);
 		}
 		f.close();
-
-		sockaddr_in serv_addr;
-		hostent *host = gethostbyname(hostname);
-		if (!host)
-			throw ft::system_error("gethostbyname");
-		if ((_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-			throw ft::system_error("socket");
-		bzero(&serv_addr, sizeof(serv_addr));
-		serv_addr.sin_family = AF_INET;
-		memcpy(&(serv_addr.sin_addr), host->h_addr, host->h_length);
-		serv_addr.sin_port = htons(port);
-		if (connect(_socket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-			throw ft::system_error("connect");
 		if (pass.size())
-			writeLine(IRC::MessageBuilder("PASS") << pass);
-		writeLine(IRC::MessageBuilder("SERVICE") << "Nestor" << "*" << "*" << "*" << "*" << "Nestor bot");
+			TcpClient::writeLine((IRC::MessageBuilder("PASS") << pass).str());
+		TcpClient::writeLine((IRC::MessageBuilder("SERVICE") << "Nestor" << "*" << "*" << "*" << "*" << "Nestor bot").str());
 		flush();
-
 		if (!(_curl = curl_easy_init()))
 			throw ft::system_error("curl_easy_init");
 	}
@@ -114,17 +102,17 @@ public:
 	{
 		if (_curl)
 			curl_easy_cleanup(_curl);
-		if (_socket >= 0)
-			close(_socket);
 	}
 
 	void run()
 	{
-		for (; readline(); flush())
+		std::string line;
+		for (; waitForLine(line) && alive; flush())
 		{
-			IRC::Message m(_line);
+			IRC::Message m(line);
+			std::cout << m << std::endl;
 			if (m.command() == "PING")
-				writeLine(IRC::MessageBuilder("PONG") << m.params()[0]);
+				TcpClient::writeLine((IRC::MessageBuilder("PONG") << m.params()[0]).str());
 			else if (m.command() == "SQUERY")
 			{
 				Params args = split(m.params()[0]);
@@ -152,10 +140,6 @@ private:
 	CommandsMap					_commands;
 	std::vector<std::string>	_jokes;
 	CURL						*_curl;
-	int							_socket;
-	char						_buf[BUFSIZE + 1];
-	size_t						_n;
-	std::string					_line, _wBuf;
 
 	int help(const IRC::Param &nick, const Params &args)
 	{
@@ -236,13 +220,7 @@ private:
 
 	void writeLine(const IRC::Param &nick, const std::string &content)
 	{
-		writeLine(IRC::MessageBuilder("NOTICE") << nick << content);
-	}
-
-	void writeLine(const IRC::MessageBuilder &message)
-	{
-		_wBuf += message.str();
-		_wBuf += '\n';
+		TcpClient::writeLine((IRC::MessageBuilder("NOTICE") << nick << content).str());
 	}
 
 	Params split(const std::string &s) const
@@ -256,54 +234,6 @@ private:
 		return (args);
 	}
 
-	void flush()
-	{
-		if (_wBuf.empty())
-			return ;
-		const char *p = _wBuf.c_str();
-		size_t n = _wBuf.size();
-		while (n > 0)
-		{
-			ssize_t m = ::send(_socket, p, n, 0);
-			if (m < 0)
-				break ;
-			p += m;
-			n -= m;
-		}
-		_wBuf.clear();
-		if (n)
-			throw ft::system_error("send");
-	}
-
-	bool readline()
-	{
-		_line.clear();
-		char *sep = strchr(_buf, '\n');
-		if (!sep && !recv(0))
-			return (0);
-		if ((sep = strchr(_buf, '\n')))
-		{
-			char c = sep[1];
-			sep[1] = '\0';
-			_line = _buf;
-			sep[1] = c;
-			memmove(_buf, sep + 1, BUFSIZE - _line.size());
-			_n -= _line.size();
-		}
-		return (1);
-	}
-
-	size_t recv(int flags = 0)
-	{
-		ssize_t n = ::recv(_socket, _buf + _n, BUFSIZE - _n, flags);
-		if (n < 0)
-			throw ft::system_error("recv");
-		else
-			_n += n;
-		_buf[_n] = 0;
-		return (n < 0 ? 0 : n);
-	}
-
 	static size_t writeCallback(void *contents, size_t size, size_t nmemb, void *userp)
 	{
 		size_t n = size * nmemb;
@@ -314,17 +244,18 @@ private:
 
 int main(int ac, const char **av)
 {
-	int port;
-
-	if (ac < 4 || (port = parsePort(av[3])) < 0)
+	signal(SIGINT, handler);
+	signal(SIGPIPE, SIG_IGN);
+	siginterrupt(SIGINT, 1);
+	if (ac < 4)
 	{
-		std::cerr << "usage: nestor JOKES_FILE HOST PORT [PASS]" << std::endl;
+		std::cerr << "usage: nestor JOKES_FILE HOST PORT [PASS] [ssl-cert ssl-key]" << std::endl;
 		return (EXIT_FAILURE);
 	}
 	std::srand(getpid() * ::time(NULL));
 	try
 	{
-		NestorBot bot(av[1], av[2], port, (ac > 4 ? av[4] : ""));
+		NestorBot bot(av[1], av[2], av[3], (ac > 4 ? av[4] : ""), (ac > 5 ? av[5] : ""), (ac > 6 ? av[6] : ""));
 		try
 		{
 			bot.run();

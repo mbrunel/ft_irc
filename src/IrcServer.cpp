@@ -101,9 +101,9 @@ void IrcServer::run()
 			try
 			{
 				socket->flush();
+				std::string line;
 				while (socket->canReadLine())
 				{
-					std::string line;
 					if (!socket->readLine(line))
 					{
 						disconnect(socket, "Remote host closed connection");
