@@ -34,7 +34,6 @@ init(true)
 {
 	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	serviceCommands["KILL"] = &IrcServer::kill;
-	serviceCommands["MODE"] = &IrcServer::mode;
 	serviceCommands["NICK"] = &IrcServer::nick;
 	serviceCommands["NOTICE"] = &IrcServer::notice;
 	serviceCommands["OPER"] = &IrcServer::oper;
@@ -59,6 +58,7 @@ init(true)
 	userCommands["KICK"] = &IrcServer::kick;
 	userCommands["LIST"] = &IrcServer::list;
 	userCommands["LUSERS"] = &IrcServer::lusers;
+	serviceCommands["MODE"] = &IrcServer::mode;
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NAMES"] = &IrcServer::names;
 	userCommands["PART"] = &IrcServer::part;
@@ -192,7 +192,10 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 	else
 		errorReason << " (" << reason << ')';
 	writeError(u.socket(), errorReason.str());
-	network.remove(&u);
+	if (u.type() == User::SERVICE)
+		network.removeService(&u);
+	else
+		network.remove(&u);
 	network.newZombie(&u);
 	log() << u.socket()->host() << ' ' << errorReason.str() << std::endl;
 }
@@ -205,7 +208,7 @@ int IrcServer::exec(BasicConnection *sender, const IRC::Message &msg)
 	User &u = *static_cast<User*>(sender);
 	if (!floodControl(u))
 		return (0);
-	userCommandsMap &map = u.type() == User::USER ? userCommands : serviceCommands;
+	userCommandsMap &map = u.type() == User::SERVICE ? serviceCommands : userCommands;
 	userCommandsMap::const_iterator i = map.find(msg.command());
 	if (i == map.end())
 		return (writeNum(u, IRC::Error::unknowncommand(msg.command())));
