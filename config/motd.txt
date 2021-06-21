@@ -1,26 +1,11 @@
 Welcome to our broken IRC server!
 
-                    [48;2;86;98;246m[97m          [0m
-              [48;2;86;98;246m[97m                      [0m
-           [48;2;86;98;246m[97m                            [0m
-        [48;2;86;98;246m[97m                                  [0m
-      [48;2;86;98;246m[97m                                      [0m
-     [48;2;86;98;246m[97m         osy+              +yyo         [0m
-    [48;2;86;98;246m[97m      oymMMMMN+     ++     +mMMMMmho      [0m
-   [48;2;86;98;246m[97m     hNMMMMMNhyhdmNMMMMMMNmdhyhNMMMMMNh     [0m
-   [48;2;86;98;246m[97m    oMMMMMMMMMNddmMMMMMMMMmddNMMMMMMMMMs    [0m
-  [48;2;86;98;246m[97m     +MMMMMMMMd    oNMMMMNo    hMMMMMMMMo     [0m
-  [48;2;86;98;246m[97m      NMMMMMMMo     dMMMMd     oMMMMMMMN      [0m
-  [48;2;86;98;246m[97m      yMMMMMMMmo  +yMMMMMMy+  omMMMMMMMh      [0m
-  [48;2;86;98;246m[97m      +NMMMMMMMMMNMMMMMMMMMMNMMMMMMMMMN+      [0m
-   [48;2;86;98;246m[97m      oMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMo      [0m
-   [48;2;86;98;246m[97m       sMMMMMMMMMMMMMMMMMMMMMMMMMMMMs       [0m
-    [48;2;86;98;246m[97m       sNMMMMMMMMMMMMMMMMMMMMMMMMMs       [0m
-     [48;2;86;98;246m[97m       ohmMMMMMMdmmmmmmdMMMMMMmho       [0m
-      [48;2;86;98;246m[97m          +syhs        ohyso          [0m
-        [48;2;86;98;246m[97m                                  [0m
-           [48;2;86;98;246m[97m                            [0m
-              [48;2;86;98;246m[97m                      [0m
-                    [48;2;86;98;246m[97m          [0m
+      ::::::::::: ::::::::           :::      ::::::::
+         :+:    :+:    :+:         :+:      :+:    :+:
+        +:+    +:+               +:+ +:+         +:+
+       +#+    +#+              +#+  +:+       +#+
+      +#+    +#+             +#+#+#+#+#+   +#+
+     #+#    #+#    #+#            #+#    #+#
+########### ########             ###   ##########
 
 Don't forget to install Discord on your computer next time 🙃

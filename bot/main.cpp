@@ -191,7 +191,7 @@ private:
 				writeError(nick, "WEATHER - Illegal argument");
 				return (0);
 			}
-		const std::string location = "https://wttr.in/" + args[1] + "?0A&lang=en";
+		const std::string location = "https://wttr.in/" + args[1] + "?0AT&lang=en";
 		std::stringstream ss;
 		curl_easy_setopt(_curl, CURLOPT_URL, location.c_str());
 		curl_easy_setopt(_curl, CURLOPT_VERBOSE, 0L);
