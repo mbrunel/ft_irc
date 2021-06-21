@@ -13,7 +13,7 @@ ping(cfg.ping()),
 pong(cfg.pong()),
 pass(cfg.serverpass())
 {
-	if (cfg.motdfile().empty())
+	if (cfg.motdfile().size())
 		ft::fileToData(cfg.motdfile(), motd, 80);
 }
 
