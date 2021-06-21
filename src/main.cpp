@@ -7,6 +7,9 @@ static void usage()
 	std::cout << "usage : ./ircserv <configpath>" << std::endl;
 }
 
+#include <libgen.h>
+#include <unistd.h>
+
 int main(int ac, char **av)
 {
 	IrcServer::State state = IrcServer::ALIVE;
@@ -16,11 +19,15 @@ int main(int ac, char **av)
 		usage();
 		return 1;
 	}
+    char tmp[256];
+	strncpy(tmp, av[1], 256);
+	char *filename = basename(av[1]);
+	chdir(dirname(tmp));
 	while (state != IrcServer::DIE)
 	{
 		IrcServer irc;
 		try {
-			irc.loadConfig(av[1]);
+			irc.loadConfig(filename);
 			irc.run();
 			state = irc.state();
 		}
