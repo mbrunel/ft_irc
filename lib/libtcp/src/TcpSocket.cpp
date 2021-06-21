@@ -17,7 +17,7 @@ TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(
 {
 	socklen_t addrLen = sizeof(_addr);
 	if ((_fd = accept(listenerFd, (sockaddr *)&_addr, &addrLen)) == -1)
-		throw ft::system_error("accept");
+		throw ft::systemError("accept");
 	if (family() == AF_INET)
 	{
 		_port = ntohs(((sockaddr_in *)&_addr)->sin_port);
@@ -30,14 +30,14 @@ TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(
 		if (!(inet_ntop(AF_INET6, &_addr, buf, ipv6MaxSize)))
 		{
 			close();
-			throw ft::system_error("inet_ntop");
+			throw ft::systemError("inet_ntop");
 		}
 		_ip = buf;
 	}
 	else
 	{
 		close();
-		throw ft::system_error(EPFNOSUPPORT, "accept");
+		throw ft::systemError(EPFNOSUPPORT, "accept");
 	}
 	char buf[NI_MAXHOST];
 	if (!getnameinfo((sockaddr *)&_addr, addrLen, buf, sizeof(buf), NULL, 0, NI_NAMEREQD))
@@ -58,22 +58,26 @@ void TcpSocket::writeLine(const std::string &data) throw()
 	_writeBuf += data + '\n';
 }
 
-bool TcpSocket::canReadLine()
+bool TcpSocket::isLine()
 {
-	if (_newline == std::string::npos && !_isReadable)
+	if (_newline == std::string::npos)
 		if ((_newline = _readBuf.find_first_of('\n')) == std::string::npos)
 			if ((_newline = _readBuf.find_first_of('\r')) == std::string::npos)
 				return false;
 	return true;
 }
 
+bool TcpSocket::canReadLine()
+{
+	return (isLine() || _isReadable);
+}
+
 bool TcpSocket::readLine(std::string &line)
 {
 	line.clear();
-	if (!fill())
-		return false;
-	if (!canReadLine())
-		return true;
+	if (!isLine())
+		if (!fill())
+			return false;
 	line = _readBuf.substr(0, _newline + 1);
 	_readBuf.erase(0, _newline + 1);
 	_newline = std::string::npos;
@@ -109,7 +113,7 @@ int TcpSocket::send(const void *buf, size_t n, int flags)
 	int nb;
 	if ((nb = ::send(_fd, buf, n, flags)) == -1)
 		if (errno != EWOULDBLOCK)
-			throw ft::system_error("send");
+			throw ft::systemError("send");
 	return (nb);
 }
 
@@ -118,7 +122,7 @@ int TcpSocket::recv(void *buf, size_t n, int flags)
 	int nb;
 	if ((nb = ::recv(_fd, buf, n, flags)) == -1)
 		if (errno != EWOULDBLOCK)
-			throw ft::system_error("recv");
+			throw ft::systemError("recv");
 	return (nb);
 }
 

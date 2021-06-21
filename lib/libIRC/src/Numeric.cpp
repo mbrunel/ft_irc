@@ -306,7 +306,7 @@ namespace Reply
 
 	const Numeric servlist(const std::string &name, const std::string &server, const std::string &mask, const std::string &type, size_t hopcount, const std::string &info)
 	{
-		return (Numeric(RPL_SERVLIST, name + ' ' + server + ' ' + mask + ' ' + type + ' ' + ft::to_string(hopcount) + " :" + info));
+		return (Numeric(RPL_SERVLIST, name + ' ' + server + ' ' + mask + ' ' + type + ' ' + ft::toString(hopcount) + " :" + info));
 	}
 
 	const Numeric servlistend(const std::string &mask, const std::string &type)
@@ -349,7 +349,7 @@ namespace Reply
 
 	const Numeric list(const std::string &channel, size_t visible, const std::string &topic)
 	{
-		return (Numeric(RPL_LIST, channel + ' ' + ft::to_string(visible) + " :" + topic));
+		return (Numeric(RPL_LIST, channel + ' ' + ft::toString(visible) + " :" + topic));
 	}
 
 	const Numeric listend()
@@ -459,32 +459,32 @@ namespace Reply
 
 	const Numeric time()
 	{
-		return (Numeric(RPL_TIME, ft::to_date(::time(NULL), "%x - %I:%M:%S %z")));
+		return (Numeric(RPL_TIME, ft::toDate(::time(NULL), "%x - %I:%M:%S %z")));
 	}
 
 	const Numeric lusersclient(size_t users, size_t services, size_t servers)
 	{
-		return (Numeric(RPL_LUSERCLIENT, ":There are " + ft::to_string(users) + " users and " + ft::to_string(services) + " services on " + ft::to_string(servers) + " server"));	
+		return (Numeric(RPL_LUSERCLIENT, ":There are " + ft::toString(users) + " users and " + ft::toString(services) + " services on " + ft::toString(servers) + " server"));	
 	}
 
 	const Numeric lusersop(size_t nb)
 	{
-		return (Numeric(RPL_LUSEROP, ft::to_string(nb) + " :operator(s) online"));
+		return (Numeric(RPL_LUSEROP, ft::toString(nb) + " :operator(s) online"));
 	}
 
 	const Numeric lusersunknown(size_t nb)
 	{
-		return (Numeric(RPL_LUSERUNKNOWN, ft::to_string(nb) + " :unknown connection(s)"));
+		return (Numeric(RPL_LUSERUNKNOWN, ft::toString(nb) + " :unknown connection(s)"));
 	}
 
 	const Numeric luserschannels(size_t nb)
 	{
-		return (Numeric(RPL_LUSERCHANNELS, ft::to_string(nb) + " :channels formed"));
+		return (Numeric(RPL_LUSERCHANNELS, ft::toString(nb) + " :channels formed"));
 	}
 
 	const Numeric lusersme(size_t nb)
 	{
-		return (Numeric(RPL_LUSERME, ":I have " + ft::to_string(nb) + " clients and 1 server"));
+		return (Numeric(RPL_LUSERME, ":I have " + ft::toString(nb) + " clients and 1 server"));
 	}
 
 	const Numeric whoisuser(const std::string &nick, const std::string &user, const std::string &host, const std::string &realname)
@@ -504,7 +504,7 @@ namespace Reply
 
 	const Numeric whoisidle(const std::string &nick, size_t idle)
 	{
-		return (Numeric(RPL_WHOISIDLE, nick + " " + ft::to_string(idle) + " :seconds idle"));
+		return (Numeric(RPL_WHOISIDLE, nick + " " + ft::toString(idle) + " :seconds idle"));
 	}
 
 	const Numeric whoischannels(const std::string &nick, const std::string &status, const std::string &channel)

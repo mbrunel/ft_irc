@@ -7,25 +7,24 @@
 namespace tcp
 {
 
-TcpClient::TcpClient(const std::string &host, const std::string &port, bool ipv6):ctx(SslContext::CLIENT)
-{
-	signal(SIGPIPE, SIG_IGN);
-	_socket = new TcpSocket();
-	try {connect(host, port, ipv6); }
-	catch (std::exception &e) { delete _socket; throw; }
-
-}
-
 TcpClient::TcpClient(const std::string &host, const std::string &port, bool ipv6,
 					const std::string &certificatePath, const std::string &keyPath):ctx(SslContext::CLIENT)
 {
 	signal(SIGPIPE, SIG_IGN);
-	ctx.load(certificatePath.c_str(), keyPath.c_str());
-	_socket = new SslSocket(ctx.ctx());
+	if (certificatePath.empty())
+		_socket = new TcpSocket();
+	else
+	{
+		ctx.load(certificatePath.c_str(), keyPath.c_str());
+		_socket = new SslSocket(ctx.ctx());
+	}
 	try {
 		connect(host, port, ipv6);
-		_socket->unsetNonblock();
-		(static_cast<SslSocket *>(_socket))->SSL_connect();
+		if (!certificatePath.empty())
+		{
+			_socket->unsetNonblock();
+			(static_cast<SslSocket *>(_socket))->SSL_connect();
+		}
 	}
 	catch (std::exception &e) { delete _socket; throw; }
 }
@@ -41,15 +40,21 @@ void TcpClient::connect(const std::string &host, const std::string &port, bool i
 	hint.ai_protocol = IPPROTO_TCP;
 
 	if (getaddrinfo(host.c_str(), port.c_str(), &hint, &head))
-		throw ft::system_error("getaddrinfo");
-	for (node = head; node != NULL; node = node->ai_next)
-	{
-		_socket->socket(node->ai_family);
-		if (_socket->fd() == -1)
-			continue ;
-		if (::connect(_socket->fd(), node->ai_addr, node->ai_addrlen) != -1)
-			break;
-		_socket->close();
+		throw ft::systemError("getaddrinfo");
+	try {
+		for (node = head; node != NULL; node = node->ai_next)
+		{
+			_socket->socket(node->ai_family);
+			if (_socket->fd() == -1)
+				continue ;
+			if (::connect(_socket->fd(), node->ai_addr, node->ai_addrlen) != -1)
+				break;
+			_socket->close();
+		}
+	}
+	catch (std::exception &e) {
+		freeaddrinfo(head);
+		throw ;
 	}
 	freeaddrinfo(head);
 }

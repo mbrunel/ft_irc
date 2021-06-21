@@ -11,10 +11,10 @@ maxChannels(cfg.maxChannels()),
 maxMasks(cfg.maxMasks()),
 ping(cfg.ping()),
 pong(cfg.pong()),
-flood(cfg.floodControl()),
 pass(cfg.serverpass())
 {
-	ft::file_to_data(cfg.motdfile(), motd);
+	if (cfg.motdfile().empty())
+		ft::fileToData(cfg.motdfile(), motd, 80);
 }
 
 IrcServerConfig::~IrcServerConfig() {}
@@ -32,7 +32,7 @@ creation(::time(NULL)),
 _log(std::cerr.rdbuf()),
 init(true)
 {
-	creationDate = ft::to_date(creation, "%a %b %d %Y at %H:%M:%S %Z");
+	creationDate = ft::toDate(creation, "%a %b %d %Y at %H:%M:%S %Z");
 	serviceCommands["KILL"] = &IrcServer::kill;
 	serviceCommands["NICK"] = &IrcServer::nick;
 	serviceCommands["NOTICE"] = &IrcServer::notice;
@@ -58,7 +58,7 @@ init(true)
 	userCommands["KICK"] = &IrcServer::kick;
 	userCommands["LIST"] = &IrcServer::list;
 	userCommands["LUSERS"] = &IrcServer::lusers;
-	serviceCommands["MODE"] = &IrcServer::mode;
+	userCommands["MODE"] = &IrcServer::mode;
 	userCommands["MOTD"] = &IrcServer::motd;
 	userCommands["NAMES"] = &IrcServer::names;
 	userCommands["PART"] = &IrcServer::part;
@@ -79,7 +79,7 @@ IrcServer::~IrcServer()
 
 IrcServer::State IrcServer::state() const { return _state; }
 
-std::ostream &IrcServer::log() throw() { return _log << ft::to_date(::time(NULL), "%x - %I:%M:%S "); }
+std::ostream &IrcServer::log() throw() { return _log << ft::toDate(::time(NULL), "%x - %I:%M:%S "); }
 
 void IrcServer::run()
 {
@@ -101,9 +101,9 @@ void IrcServer::run()
 			try
 			{
 				socket->flush();
+				std::string line;
 				while (socket->canReadLine())
 				{
-					std::string line;
 					if (!socket->readLine(line))
 					{
 						disconnect(socket, "Remote host closed connection");
@@ -202,9 +202,11 @@ void IrcServer::disconnect(User &u, const std::string &reason, bool notifyUserQu
 
 int IrcServer::exec(BasicConnection *sender, const IRC::Message &msg)
 {
-	log() << msg << std::endl;
 	if (!msg.isValid())
 		return (-1);
+	#ifndef NDEBUG
+		log() << msg << std::endl;
+	#endif
 	User &u = *static_cast<User*>(sender);
 	if (!floodControl(u))
 		return (0);
@@ -239,8 +241,8 @@ void IrcServer::writeMotd(User &u)
 	}
 	writeNum(u, IRC::Reply::motdstart(config.servername));
 	writeNum(u, IRC::Reply::motd(config.motd.front()));
-	for (std::vector<std::string>::iterator it = ++config.motd.begin(); it != config.motd.end(); ++it)
-		writeNum(u, IRC::Reply::motd(*it));
+	for (size_t i = 0; i < config.motd.size(); ++i)
+		writeNum(u, IRC::Reply::motd(config.motd[i]));
 	writeNum(u, IRC::Reply::endofmotd());
 }
 
@@ -290,7 +292,7 @@ void IrcServer::police()
 
 bool IrcServer::floodControl(User &u)
 {
-	if (u.pongExpected() || config.flood == false)
+	if (u.type() == User::SERVICE || u.pongExpected())
 		return true;
 	time_t ctime = ::time(NULL);
 	if (u.clock() - ctime >= 10)

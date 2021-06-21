@@ -20,9 +20,9 @@ int IrcServer::whowas(User &sender, const IRC::Message &m)
 		if (!h.size())
 			writeNum(sender, IRC::Error::wasnosuchnick(*target));
 		else
-			for (Network::InfoVec::iterator it = h.begin(); it != h.end(); ++it)
+			for (size_t i = 0; i < h.size(); ++i)
 			{
-				writeNum(sender, IRC::Reply::whowasuser(*target, it->username, it->host, it->realname));
+				writeNum(sender, IRC::Reply::whowasuser(*target, h[i].username, h[i].host, h[i].realname));
 				writeNum(sender, IRC::Reply::whoisserver(*target, config.servername, config.shortinfo));
 			}
 	}

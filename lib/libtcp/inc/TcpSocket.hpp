@@ -16,6 +16,7 @@ class TcpSocket : public Socket
 	const std::string	&host() const;
 	size_t				readBufSize() const;
 
+	bool				isLine();
 	bool				canReadLine();
 	bool				readLine(std::string &line);
 	void				writeLine(const std::string &data) throw();

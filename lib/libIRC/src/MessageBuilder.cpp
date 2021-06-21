@@ -71,7 +71,7 @@ MessageBuilder &MessageBuilder::operator<<(const std::string &arg)
 
 MessageBuilder &MessageBuilder::operator<<(unsigned arg)
 {
-	return (append(ft::to_string(arg)));
+	return (append(ft::toString(arg)));
 }
 
 MessageBuilder &MessageBuilder::append(const std::string &arg)

@@ -5,18 +5,18 @@
 
 namespace ft
 {
-	class system_error : public std::runtime_error
+	class systemError : public std::runtime_error
 	{
 	public:
-		system_error(const std::string &what_arg) :
+		systemError(const std::string &what_arg) :
 		std::runtime_error(what_arg + ": " + std::strerror(errno)), _code(errno)
 		{}
 
-		system_error(const int code, const std::string &what_arg) :
+		systemError(const int code, const std::string &what_arg) :
 		std::runtime_error(what_arg + ": " + std::strerror(code)), _code(code)
 		{}
 
-		virtual ~system_error() throw()
+		virtual ~systemError() throw()
 		{}
 
 		int code() const throw()

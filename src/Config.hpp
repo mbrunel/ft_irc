@@ -38,7 +38,6 @@ class Config
 	std::string logfile();
 	time_t ping();
 	time_t pong();
-	bool floodControl();
 	int maxConnections();
 	int maxChannels();
 	int maxMasks();
