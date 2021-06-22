@@ -1,33 +1,34 @@
 #include "IrcServer.hpp"
 #include "Config.hpp"
 #include <iostream>
+#include <libgen.h>
+#include <unistd.h>
 
 static void usage()
 {
 	std::cout << "usage : ./ircserv <configpath>" << std::endl;
 }
 
-#include <libgen.h>
-#include <unistd.h>
-
 int main(int ac, char **av)
 {
 	IrcServer::State state = IrcServer::ALIVE;
+	char workdir[256];
 
 	if (ac != 2)
 	{
 		usage();
 		return 1;
 	}
-    char tmp[256];
-	strncpy(tmp, av[1], 256);
-	char *filename = basename(av[1]);
-	chdir(dirname(tmp));
+	else if (chdir(dirname(strncpy(workdir, av[1], 256))))
+	{
+		perror(workdir);
+		return 1;
+	}
 	while (state != IrcServer::DIE)
 	{
 		IrcServer irc;
 		try {
-			irc.loadConfig(filename);
+			irc.loadConfig(basename(av[1]));
 			irc.run();
 			state = irc.state();
 		}
