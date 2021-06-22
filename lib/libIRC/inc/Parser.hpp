@@ -4,19 +4,22 @@
 namespace IRC
 {
 
+/**
+ * Contains some grammar rules from RFC 2812
+ */
 namespace Parser
 {
-	bool	asChannel(Context &o, std::string &s);
-	bool	asCommand(Context &o, std::string &s);
-	bool	asHost(Context &o, std::string &s);
-	bool	asHostname(Context &o, std::string &s);
-	bool	asNickname(Context &o, std::string &s);
-	bool	asUser(Context &o, std::string &s);
-	bool	isNumber(Context &o, size_t min, size_t max);
-	bool	isXNumber(Context &o, size_t min, size_t max);
-	bool	isIPv4(Context &o);
-	bool	isIPv6(Context &o);
-	bool	isShortname(Context &o);
+	bool asChannel(Context &c, std::string &s);
+	bool asCommand(Context &c, std::string &s);
+	bool asHost(Context &c, std::string &s);
+	bool asHostname(Context &c, std::string &s);
+	bool asNickname(Context &c, std::string &s);
+	bool asUser(Context &c, std::string &s);
+	bool isNumber(Context &c, size_t min, size_t max);
+	bool isXNumber(Context &c, size_t min, size_t max);
+	bool isIPv4(Context &c);
+	bool isIPv6(Context &c);
+	bool isShortname(Context &c);
 }
 
 } /* end of namespace IRC */

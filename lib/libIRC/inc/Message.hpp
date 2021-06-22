@@ -5,18 +5,43 @@
 namespace IRC
 {
 
+/**
+ * Parse any message using the IRC protocol.
+ * \par Format:
+ * [ ':' prefix hspace ] command [ params ] "\r\n"
+ */
 class Message : public Expression
 {
 public:
 	typedef std::vector<Param> Params;
 
+	/**
+	 * Constructs a message.
+	 * \param entry A line ending with "\n" or "\r\n" 
+	 */
 	Message(const std::string &entry);
+
 	virtual ~Message();
 
-	const std::string	&entry() const;
-	const Prefix		&prefix() const;
-	const std::string	&command() const;
-	const Params		&params() const;
+	/**
+	 * \return Return raw entry
+	*/
+	const std::string &entry() const;
+
+	/**
+	 * \return Return the optional prefix
+	*/
+	const Prefix &prefix() const;
+
+	/**
+	 * \return Return the command which is an alphabetic string or 3 digits
+	*/
+	const std::string &command() const;
+
+	/**
+	 * \return Return optional arguments
+	*/
+	const Params &params() const;
 
 private:
 	const std::string	_entry;
@@ -24,11 +49,11 @@ private:
 	std::string			_command;
 	Params				_params;
 
-	bool	parseMiddle(Context &o);
-	void	parseTrailing(Context &o);
-	bool	interpret(Context &o);
+	bool parseMiddle(Context &c);
+	void parseTrailing(Context &c);
+	bool interpret(Context &c);
 };
 
-std::ostream	&operator<<(std::ostream &o, const Message &m);
+std::ostream &operator<<(std::ostream &o, const Message &m);
 
 } /* end of namespace IRC */

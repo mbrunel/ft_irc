@@ -4,6 +4,9 @@
 namespace IRC
 {
 
+/**
+ * All possible error and reply codes.
+ */
 enum NumericCode
 {
 	ERR_NOSUCHNICK = 401,
@@ -119,6 +122,9 @@ enum NumericCode
 	RPL_TIME = 391
 };
 
+/**
+ * Contains a numeric code and its content formatted according to the context.
+ */
 struct Numeric
 {
 	const NumericCode	code;
@@ -126,6 +132,9 @@ struct Numeric
 	Numeric(const NumericCode code, const std::string &content);
 };
 
+/**
+ * All possibles errors from the IRC protocol.
+ */
 namespace Error
 {
 	const Numeric nosuchnick(const std::string &nickname);
@@ -178,6 +187,10 @@ namespace Error
 	const Numeric usersdontmatch();
 } /* end of namespace Error */
 
+
+/**
+ * All possibles replies from the IRC protocol.
+ */
 namespace Reply
 {
 	const Numeric welcome(const std::string &userPrefix);

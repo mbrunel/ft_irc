@@ -35,41 +35,41 @@ const Message::Params &Message::params() const
 	return (_params);
 }
 
-bool Message::parseMiddle(Context &o)
+bool Message::parseMiddle(Context &c)
 {
-	o.resetDistance();
-	if (!o.isNospcrlfcl())
+	c.resetDistance();
+	if (!c.isNospcrlfcl())
 		return (false);
-	while ((++o).isNospcrlfcl() || *o == ':');
-	_params.push_back(o.extract());
+	while ((++c).isNospcrlfcl() || *c == ':');
+	_params.push_back(c.extract());
 	return (true);
 }
 
-void Message::parseTrailing(Context &o)
+void Message::parseTrailing(Context &c)
 {
-	o.resetDistance();
-	while (*o == ':' || *o == ' ' || o.isNospcrlfcl())
-		++o;
-	if (o.distance())
-		_params.push_back(o.extract());
+	c.resetDistance();
+	while (*c == ':' || *c == ' ' || c.isNospcrlfcl())
+		++c;
+	if (c.distance())
+		_params.push_back(c.extract());
 }
 
-bool Message::interpret(Context &o)
+bool Message::interpret(Context &c)
 {
-	if ((*o == ':' && (!_prefix.interpret(++o) || *(o++) != ' ')) ||
-	!Parser::asCommand(o, _command))
+	if ((*c == ':' && (!_prefix.interpret(++c) || *(c++) != ' ')) ||
+	!Parser::asCommand(c, _command))
 		return (reject());
-	for (size_t i = 14; *o == ' '; --i)
-		if (*(++o) == ':' || !i)
+	for (size_t i = 14; *c == ' '; --i)
+		if (*(++c) == ':' || !i)
 		{
-			if (*o == ':')
-				++o;
-			parseTrailing(o);
+			if (*c == ':')
+				++c;
+			parseTrailing(c);
 			break ;
 		}
-		else if (!parseMiddle(o))
+		else if (!parseMiddle(c))
 			return (reject());
-	if ((*o != '\n' && (*o != '\r' || *(++o) != '\n')) || *(++o))
+	if ((*c != '\n' && (*c != '\r' || *(++c) != '\n')) || *(++c))
 		return (reject());
 	return (accept());
 }

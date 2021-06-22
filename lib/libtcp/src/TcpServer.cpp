@@ -73,7 +73,7 @@ void TcpServer::listen(const std::string &port, bool tls, size_t maxQueueLen)
 	try {
 		while (node && i < 2)
 		{
-			ft::unique_ptr<Listener> newListener;
+			ft::uniquePtr<Listener> newListener;
 			if (!tls)
 				newListener.reset(new Listener(node->ai_family));
 			else
@@ -106,7 +106,7 @@ TcpSocket *TcpServer::nextNewConnection() throw()
 		return (NULL);
 	Listener *listener = _incoming.front();
 	_incoming.pop_front();
-	ft::unique_ptr<TcpSocket> newConnection;
+	ft::uniquePtr<TcpSocket> newConnection;
 	try {
 		newConnection.reset(listener->accept());
 		if (_connections.size() == _maxConnections)

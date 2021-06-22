@@ -4,21 +4,23 @@ namespace ft
 {
 
 template<class T>
-class unique_ptr;
+class uniquePtr;
 
 template<class T>
-class shared_ptr;
+class sharedPtr;
 
 template<class T>
-class weak_ptr;
+class weakPtr;
 
-
+/**
+ * Implementation of std::unique_ptr for C++98
+ */
 template <class T>
-class unique_ptr
+class uniquePtr
 {
   public:
-	unique_ptr(T *ptr = NULL):ptr(ptr) {}
-	virtual ~unique_ptr() throw() { delete ptr; }
+	uniquePtr(T *ptr = NULL):ptr(ptr) {}
+	virtual ~uniquePtr() throw() { delete ptr; }
 
 	T *release() throw()
 	{
@@ -39,8 +41,8 @@ class unique_ptr
 
   private:
 	T *ptr;
-	unique_ptr<T> &operator=(const unique_ptr<T> &);
-	unique_ptr(const unique_ptr<T> &);
+	uniquePtr<T> &operator=(const uniquePtr<T> &);
+	uniquePtr(const uniquePtr<T> &);
 };
 
 template <class T>
@@ -52,25 +54,28 @@ struct ControlBlock
 	ControlBlock(T *ptr = NULL):shared_nb(1), weak_nb(0), ptr(ptr) {}
 };
 
+/**
+ * Implementation of std::shared_ptr for C++98
+ */
 template <class T>
-class shared_ptr
+class sharedPtr
 {
   public:
-	shared_ptr(T *ptr = NULL)
+	sharedPtr(T *ptr = NULL)
 	{
 		shared = new ControlBlock<T>(ptr);
 	}
-	shared_ptr(const shared_ptr<T> &old)
+	sharedPtr(const sharedPtr<T> &old)
 	{
 		shared = old.shared;
 		++shared->shared_nb;
 	}
-	shared_ptr(const weak_ptr<T> &old)
+	sharedPtr(const weakPtr<T> &old)
 	{
 		shared = old.shared;
 		++shared->shared_nb;
 	}
-	~shared_ptr() throw() { reset(); }
+	~sharedPtr() throw() { reset(); }
 
 	void reset() throw()
 	{
@@ -96,30 +101,33 @@ class shared_ptr
 
   private:
 	ControlBlock<T> *shared;
-	shared_ptr &operator=(const shared_ptr<T> &);
+	sharedPtr &operator=(const sharedPtr<T> &);
 
-	friend class weak_ptr<T>;
+	friend class weakPtr<T>;
 };
 
+/**
+ * Implementation of std::weak_ptr for C++98
+ */
 template <class T>
-class weak_ptr
+class weakPtr
 {
   public:
-	weak_ptr(const shared_ptr<T> &old)
+	weakPtr(const sharedPtr<T> &old)
 	{
 		shared = old.shared;
 		++shared->weak_nb;
 	}
-	weak_ptr(const weak_ptr<T> &old)
+	weakPtr(const weakPtr<T> &old)
 	{
 		shared = old.shared;
 		++shared->weak_nb;
 	}
-	~weak_ptr() throw() { reset(); }
+	~weakPtr() throw() { reset(); }
 
-	shared_ptr<T> lock() const throw()
+	sharedPtr<T> lock() const throw()
 	{
-		return shared->shared_nb ? shared_ptr<T>(*this) : shared_ptr<T>(NULL);
+		return shared->shared_nb ? sharedPtr<T>(*this) : sharedPtr<T>(NULL);
 	}
 
 	void reset() throw()
@@ -130,9 +138,9 @@ class weak_ptr
 
   private:
 	ControlBlock<T> *shared;
-	weak_ptr &operator=(const weak_ptr<T> &);
+	weakPtr &operator=(const weakPtr<T> &);
 
-	friend class shared_ptr<T>;
+	friend class sharedPtr<T>;
 };
 
 } /* end of namespace ft */

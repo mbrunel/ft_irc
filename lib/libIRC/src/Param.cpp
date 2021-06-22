@@ -96,12 +96,12 @@ std::vector<Param> Param::split(char d) const
 	return (v);
 }
 
-bool Param::check(bool (*parsing_func)(Context &, std::string &)) const
+bool Param::check(bool (*parsingFunc)(Context &, std::string &)) const
 {
 	std::string	s;
 	Context		c(*this);
 
-	return (parsing_func(c, s) && !*c);
+	return (parsingFunc(c, s) && !*c);
 }
 
 } /* end of namespace IRC */
