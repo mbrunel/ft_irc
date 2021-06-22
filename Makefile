@@ -15,8 +15,8 @@ LIBTCP_DIR	:= $(LIB_DIR)/libtcp
 LIBTCP		:= $(LIBTCP_DIR)/libtcp.a
 SRC			:= $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
 CXX			:= clang++
-CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP -I ./src -I ./src/Commands \
-			   -I ./$(LIBC4S_DIR)/include -I ./$(LIBFT_DIR)/inc -I ./$(LIBIRC_DIR)/inc -I ./$(LIBTCP_DIR)/inc
+CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP -D NDEBUG \
+			   -I ./src -I ./src/Commands -I ./$(LIBC4S_DIR)/include -I ./$(LIBFT_DIR)/inc -I ./$(LIBIRC_DIR)/inc -I ./$(LIBTCP_DIR)/inc
 LDFLAGS		:= -lcrypto -lssl -L ./$(LIBC4S_DIR)/lib -lconfig4cpp -L ./$(LIBFT_DIR) -lft -L ./$(LIBIRC_DIR) -lIRC -L ./$(LIBTCP_DIR) -ltcp
 OBJ			:= $(SRC:src/%.cpp=$(BUILD_DIR)/%.o)
 C_RED		:= \033[31m
@@ -56,6 +56,10 @@ clean:
 	@rm -rf $(BUILD_DIR)
 	@$(REMOVE_MSG) $(BUILD_DIR)
 
+doc:
+	@doxygen doxygen.conf
+	$(BUILD_MSG) "Doxygen documentation"
+
 fclean: clean
 	@make -C $(LIBC4S_DIR) clean > /dev/null 2>&1
 	@$(REMOVE_MSG) $(notdir $(LIBC4S))
@@ -84,4 +88,4 @@ $(SSL_CERT):
 
 -include $(OBJ:.o=.d)
 
-.PHONY: all bonus certs clean fclean re run
+.PHONY: all bonus certs clean doc fclean re run
