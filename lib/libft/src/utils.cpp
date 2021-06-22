@@ -1,7 +1,7 @@
 #include <fstream>
 #include "libft.hpp"
 
-#define toDate_BUFSIZE	160
+#define TODATE_BUFSIZE	256
 
 // std::string goes brrr
 static bool match_internal(const char *mask, const char *str)
@@ -56,20 +56,20 @@ void fileToData(const std::string &filename, std::vector<std::string> &data, siz
 	}
 }
 
-bool match(const std::string &mask, const std::string &str)
+bool match(const std::string &mask, const std::string &str) throw()
 {
 	return (match_internal(mask.c_str(), str.c_str()));
 }
 
-std::string toDate(const time_t t, const char *format)
+std::string toDate(const time_t t, const char *format) throw()
 {
-	char buf[toDate_BUFSIZE];
+	char buf[TODATE_BUFSIZE];
 
 	strftime(buf, sizeof(buf), format, localtime(&t));
 	return (buf);
 }
 
-void toUpper(std::string &s)
+void toUpper(std::string &s) throw()
 {
 	for (size_t i = 0; i < s.size(); ++i)
 		s[i] = toupper(s[i]);

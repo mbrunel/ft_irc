@@ -10,25 +10,25 @@ Prefix::Prefix()
 Prefix::~Prefix()
 {}
 
-bool Prefix::interpret(Context &o)
+bool Prefix::interpret(Context &c)
 {
-	Context oServername(o);
+	Context oServername(c);
 
 	Parser::asHostname(oServername, _servername);
-	if (!Parser::asNickname(o, _nickname) && !_servername.size())
+	if (!Parser::asNickname(c, _nickname) && !_servername.size())
 		return (reject());
 	if (_servername.size() > _nickname.size())
 	{
-		o = oServername;
+		c = oServername;
 		_nickname.clear();
 		return (accept());
 	}
 	_servername.clear();
-	if (*o == '!' && !Parser::asUser(++o, _user))
+	if (*c == '!' && !Parser::asUser(++c, _user))
 		return (reject());
-	if (*o == '@')
+	if (*c == '@')
 	{
-		if (!Parser::asHost(++o, _host))
+		if (!Parser::asHost(++c, _host))
 			return (reject());
 	}
 	else if (_user.size())

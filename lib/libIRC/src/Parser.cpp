@@ -7,146 +7,146 @@ namespace IRC
 
 namespace Parser
 {
-	bool asChannel(Context &o, std::string &s)
+	bool asChannel(Context &c, std::string &s)
 	{
-		o.resetDistance();
-		if (!strchr("#+", *o))
+		c.resetDistance();
+		if (!strchr("#+", *c))
 			return (false);
-		while ((++o).distance() < 50 && *o && *o != ',' && *o != '\b');
-		if (o.distance() < 2)
+		while ((++c).distance() < 50 && *c && *c != ',' && *c != '\b');
+		if (c.distance() < 2)
 			return (false);
-		s = o.extract();
+		s = c.extract();
 		return (true);
 	}
 
-	bool asCommand(Context &o, std::string &s)
+	bool asCommand(Context &c, std::string &s)
 	{
-		o.resetDistance();
-		if (std::isalpha(*o))
-			while (std::isalpha(*(++o)));
-		else if (!std::isdigit(*o))
+		c.resetDistance();
+		if (std::isalpha(*c))
+			while (std::isalpha(*(++c)));
+		else if (!std::isdigit(*c))
 			return (false);
 		else
-			while ((++o).distance() < 3)
-				if (!std::isdigit(*o))
+			while ((++c).distance() < 3)
+				if (!std::isdigit(*c))
 					return (false);
-		ft::toUpper(s = o.extract().c_str());
+		ft::toUpper(s = c.extract().c_str());
 		return (true);
 	}
 
-	bool asHost(Context &o, std::string &s)
+	bool asHost(Context &c, std::string &s)
 	{
-		Context ipv4(o), ipv6(o);
+		Context ipv4(c), ipv6(c);
 
 		if (isIPv4(ipv4))
-			o = ipv4;
+			c = ipv4;
 		else if (isIPv6(ipv6))
-			o = ipv6;
+			c = ipv6;
 		else
-			return (asHostname(o, s));
-		s = o.extract();
-		return (o.distance() > 0);
+			return (asHostname(c, s));
+		s = c.extract();
+		return (c.distance() > 0);
 	}
 
-	bool asHostname(Context &o, std::string &s)
+	bool asHostname(Context &c, std::string &s)
 	{
-		o.resetDistance();
-		if (!isShortname(o))
+		c.resetDistance();
+		if (!isShortname(c))
 			return (false);
-		while (*o == '.')
-			if (!isShortname(++o))
+		while (*c == '.')
+			if (!isShortname(++c))
 				return (false);
-		s = o.extract();
+		s = c.extract();
 		return (true);
 	}
 
-	bool asNickname(Context &o, std::string &s)
+	bool asNickname(Context &c, std::string &s)
 	{
-		if (!std::isalpha(*o) && !o.isSpecial())
+		if (!std::isalpha(*c) && !c.isSpecial())
 			return (false);
-		o.resetDistance();
+		c.resetDistance();
 		do
-			++o;
-		while (*o && (std::isalnum(*o) || o.isSpecial() || *o == '-') &&
-		o.distance() < 9);
-		s = o.extract();
+			++c;
+		while (*c && (std::isalnum(*c) || c.isSpecial() || *c == '-') &&
+		c.distance() < 9);
+		s = c.extract();
 		return (true);
 	}
 
-	bool asUser(Context &o, std::string &s)
+	bool asUser(Context &c, std::string &s)
 	{
-		o.resetDistance();
-		while (!o.isSpace() && *o != '@')
-			++o;
-		s = o.extract();
-		return (o.distance() > 0);
+		c.resetDistance();
+		while (!c.isSpace() && *c != '@')
+			++c;
+		s = c.extract();
+		return (c.distance() > 0);
 	}
 
-	bool isNumber(Context &o, size_t min, size_t max)
+	bool isNumber(Context &c, size_t min, size_t max)
 	{
 		size_t n = 0;
 
-		if (!std::isdigit(*o) || (*o == '0' && std::isdigit(*(++o))))
+		if (!std::isdigit(*c) || (*c == '0' && std::isdigit(*(++c))))
 			return (false);
-		while (std::isdigit(*o))
+		while (std::isdigit(*c))
 		{
-			n = 10 * n + *o - '0';
+			n = 10 * n + *c - '0';
 			if (n > max)
 				return (false);
-			++o;
+			++c;
 		}
 		return (n >= min);
 	}
 
-	bool isXNumber(Context &o, size_t min, size_t max)
+	bool isXNumber(Context &c, size_t min, size_t max)
 	{
 		size_t n = 0;
 
-		if (!std::isxdigit(*o) || (*o == '0' && std::isxdigit(*(++o))))
+		if (!std::isxdigit(*c) || (*c == '0' && std::isxdigit(*(++c))))
 			return (false);
-		while (std::isxdigit(*o))
+		while (std::isxdigit(*c))
 		{
 			n *= 16;
-			n += *o - (std::isdigit(*o) ? *o - '0' : std::tolower(*o) - 'a');
+			n += *c - (std::isdigit(*c) ? *c - '0' : std::tolower(*c) - 'a');
 			if (n > max)
 				return (false);
-			++o;
+			++c;
 		}
 		return (n >= min);
 	}
 
-	bool isIPv4(Context &o)
+	bool isIPv4(Context &c)
 	{
-		o.resetDistance();
-		if (!isNumber(o, 0, 255))
+		c.resetDistance();
+		if (!isNumber(c, 0, 255))
 			return (false);
 		for (size_t i = 0; i < 3; ++i)
-			if (*o != '.' || !isNumber(++o, 0, 255))
+			if (*c != '.' || !isNumber(++c, 0, 255))
 				return (false);
 		return (true);
 	}
 
-	bool isIPv6(Context &o)
+	bool isIPv6(Context &c)
 	{
-		o.resetDistance();
-		if (!isXNumber(o, 0, 0xffff))
+		c.resetDistance();
+		if (!isXNumber(c, 0, 0xffff))
 			return (false);
 		for (size_t i = 0; i < 7; ++i)
-			if (*o != '.' || !isXNumber(++o, 0, 0xffff))
+			if (*c != '.' || !isXNumber(++c, 0, 0xffff))
 				return (false);
 		return (true);
 	}
 
-	bool isShortname(Context &o)
+	bool isShortname(Context &c)
 	{
-		size_t	prevDist = o.distance();
+		size_t	prevDist = c.distance();
 		char	last;
 
-		if (std::isalnum(*o))
+		if (std::isalnum(*c))
 			do
-				last = *o;
-			while (std::isalnum(*(++o)) || *o == '-');
-		return (o.distance() - prevDist > 1 && std::isalnum(last));
+				last = *c;
+			while (std::isalnum(*(++c)) || *c == '-');
+		return (c.distance() - prevDist > 1 && std::isalnum(last));
 	}
 }
 
