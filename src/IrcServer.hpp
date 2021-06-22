@@ -118,7 +118,8 @@ class IrcServer
 	void	writeWelcome(User &user);
 	void	writeMotd(User &user);
 	void	writeError(tcp::TcpSocket *s, std::string reason);
-	void	police();
+	void	pingpongProbe();
+	void	flushAndCloseZombies();
 	bool	floodControl(User &u);
 
 	IrcServer(const IrcServer& copy);
