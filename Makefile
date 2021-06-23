@@ -27,6 +27,10 @@ CROSS		:= ✘
 CHECK		:= ✔
 BUILD_MSG	:= @echo "$(C_GREEN)$(CHECK)$(C_NONE)"
 REMOVE_MSG	:= @echo "$(C_RED)$(CROSS)$(C_NONE)"
+INSTL_DIR	:=ircserv_1.0-0_all
+BIN_DIR		:=$(INSTL_DIR)/usr/bin/
+CONF_DIR	:=$(INSTL_DIR)/etc
+CONF		:=$(CONF_DIR)/ircserv
 
 $(NAME): $(OBJ)
 	@make -C $(LIBC4S_DIR) BUILD_TYPE=release CXX=$(CXX) > /dev/null 2>&1
@@ -69,13 +73,27 @@ fclean: clean
 	@$(REMOVE_MSG) $(notdir $(LIBIRC))
 	@make -C $(LIBTCP_DIR) fclean > /dev/null 2>&1
 	@$(REMOVE_MSG) $(notdir $(LIBTCP))
-	@rm -f $(NAME) $(LOG) $(SSL_CERT) $(SSL_KEY)
-	@$(REMOVE_MSG) $(NAME) $(notdir $(LOG)) $(notdir $(SSL_CERT)) $(notdir $(SSL_KEY))
+	@rm -rf $(NAME) $(LOG) $(SSL_CERT) $(SSL_KEY) $(BIN_DIR) $(CONF_DIR) $(INSTL_DIR).deb
+	@$(REMOVE_MSG) $(NAME) $(notdir $(LOG)) $(notdir $(SSL_CERT)) $(notdir $(SSL_KEY)) $(BIN_DIR) $(CONF_DIR) $(INSTL_DIR).deb
 
 re: fclean all
 
 run: $(NAME) $(SSL_CERT)
 	./$< $(CFG_DIR)/ircserv.conf
+
+build : all certs
+	@install -D $(NAME) $(BIN_DIR)/$(NAME) -m 755
+	@mkdir $(CONF_DIR)
+	@cp -r config $(CONF)
+	@chmod 755 $(CONF)
+	@chmod 644 $(CONF)/*
+	@dpkg-deb --build $(INSTL_DIR)
+
+install: build
+	@sudo dpkg -i $(INSTL_DIR).deb
+
+uninstall :
+	@sudo dpkg --remove $(NAME)
 
 $(BUILD_DIR)/%.o: src/%.cpp
 	@mkdir -p $(@D)
@@ -88,4 +106,4 @@ $(SSL_CERT):
 
 -include $(OBJ:.o=.d)
 
-.PHONY: all bonus certs clean doc fclean re run
+.PHONY: all bonus certs clean doc fclean re run build install uninstall

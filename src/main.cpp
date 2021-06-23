@@ -1,34 +1,47 @@
 #include "IrcServer.hpp"
 #include "Config.hpp"
+#include "libft.hpp"
 #include <iostream>
 #include <libgen.h>
 #include <unistd.h>
+
+#define DEF_CONFIG_PATH "/etc/ircserv/ircserv.conf"
 
 static void usage()
 {
 	std::cout << "usage : ./ircserv <configpath>" << std::endl;
 }
 
+static bool getConfigPath(int ac, char **av, std::string &configFile)
+{
+	char workdir[PATH_MAX];
+	char filename[PATH_MAX];
+
+	const char *path = ac == 2 ? av[1] : DEF_CONFIG_PATH;
+	strncpy(workdir, path, PATH_MAX);
+	if (chdir(dirname(workdir)))
+	{
+		std::cerr << ft::systemError(workdir).what() << std::endl;
+		usage();
+		return false;
+	}
+	strncpy(filename, path, PATH_MAX);
+	configFile = basename(filename);
+	return true;
+}
+
 int main(int ac, char **av)
 {
+	std::string configFile;
 	IrcServer::State state = IrcServer::ALIVE;
-	char workdir[256];
-
-	if (ac != 2)
-	{
-		usage();
-		return 1;
-	}
-	else if (chdir(dirname(strncpy(workdir, av[1], 256))))
-	{
-		perror(workdir);
-		return 1;
-	}
+	
+	if (!getConfigPath(ac, av, configFile))
+		return (1);
 	while (state != IrcServer::DIE)
 	{
 		IrcServer irc;
 		try {
-			irc.loadConfig(basename(av[1]));
+			irc.loadConfig(configFile.c_str());
 			irc.run();
 			state = irc.state();
 		}

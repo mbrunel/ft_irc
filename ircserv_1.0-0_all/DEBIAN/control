@@ -1,0 +1,8 @@
+Package: ircserv
+Version: 1.0-0
+Section: base
+Priority: optional
+Architecture: all
+Depends: doxygen, libcurl4-openssl-dev, libssl-dev
+Maintainer: mbrunel mbrunel@student.42.fr
+Description: IRC server
