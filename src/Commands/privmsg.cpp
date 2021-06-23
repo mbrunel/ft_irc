@@ -23,7 +23,7 @@ int IrcServer::privmsg(User &u, const IRC::Message &m)
 			if ((*target)[0] == '$')
 			{
 				if (ft::match(mask, config.servername))
-					network.msgToAll((IRC::MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
+					network.msgToAll((IRC::MessageBuilder(u.prefix(), m.command()) << *target << text).str(), &u);
 				else
 					writeNum(u, IRC::Error::badmask(*target));
 			}
