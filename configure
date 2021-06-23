@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+if ['uname' != 'Linux']
+then
+	echo "You must be on Linux"
+	exit
+fi
+
+sudo apt update
+sudo apt-get -y install clang make doxygen libcurl4-openssl-dev libssl-dev
+

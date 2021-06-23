@@ -23,7 +23,7 @@ class Listener : public Socket
 
 	/**
 	 * Listen() system call
-	 * \param maxQueulen maximum number of simultanate connections
+	 * \param maxQueuLen maximum number of simultanate connections
 	 */
 	void				listen(int maxQueuLen = 3);
 

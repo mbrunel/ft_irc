@@ -33,13 +33,13 @@ class TcpServer
 	 * Creates a Listener listening to the port
 	 * \param port The listened port
 	 * \param tls if true creates a SslListener instead
-	 * \param maxQueulen Maximum number of simultanate connections
+	 * \param maxQueueLen Maximum number of simultanate connections
 	 */
 	void				listen(const std::string &port, bool tls = false, size_t maxQueueLen = 5);
 
 	/**
 	 * Sets maximum number of active connections
-	 * \param Maxconnection The maximum number of active connections
+	 * \param MaxConnections The maximum number of active connections
 	 */
 	void				setMaxConnections(size_t MaxConnections);
 

@@ -14,7 +14,6 @@ struct IrcServerConfig
 	size_t						maxMasks;
 	time_t						ping;
 	time_t						pong;
-	bool						flood;
 	std::string					pass;
 	std::vector<std::string>	motd;
 
