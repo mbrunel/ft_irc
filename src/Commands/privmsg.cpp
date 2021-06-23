@@ -23,7 +23,7 @@ int IrcServer::privmsg(User &u, const IRC::Message &m)
 			if ((*target)[0] == '$')
 			{
 				if (ft::match(mask, config.servername))
-					network.msgToAll((IRC::MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
+					network.msgToAll((IRC::MessageBuilder(u.prefix(), m.command()) << *target << text).str(), &u);
 				else
 					writeNum(u, IRC::Error::badmask(*target));
 			}
@@ -46,7 +46,7 @@ int IrcServer::privmsg(User &u, const IRC::Message &m)
 					for (Network::UserMap::const_iterator it = network.users().begin(); it != network.users().end(); ++it)
 						if (ft::match(mask, it->second->socket()->host()))
 						{
-							it->second->writeLine((IRC::MessageBuilder(it->second->prefix(), m.command()) << text).str());
+							it->second->writeLine((IRC::MessageBuilder(it->second->prefix(), m.command()) << *target << text).str());
 							found = true;
 						}
 					if (!found)
@@ -64,7 +64,7 @@ int IrcServer::privmsg(User &u, const IRC::Message &m)
 			}
 			if (receiver->umode().isSet(UserMode::AWAY))
 				writeNum(u, IRC::Reply::away(receiver->nickname(), receiver->awayReason()));
-			receiver->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << text).str());
+			receiver->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << *target << text).str());
 		}
 		else if (target->isChannel())
 		{
