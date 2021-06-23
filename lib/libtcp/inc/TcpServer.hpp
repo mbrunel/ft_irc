@@ -8,21 +8,59 @@
 namespace tcp
 {
 
+/**
+ * A server using tcp which can be herited
+ */
 class TcpServer
 {
   public:
 	TcpServer();
-	~TcpServer() throw();
+	virtual ~TcpServer() throw();
 
+	/**
+	 * \return The number of current connections to server
+	 */
 	size_t				nbConnections() const;
-	const std::string	&host() const;
+
+	/**
+	 * Calls SslContext::load()
+	 * \param certificatePath Path toward the ssl certificate file
+	 * \param keyPath Path toward the sll key file
+	 */
 	void				loadSslConfig(const std::string &certificatePath, const std::string &keyPath);
+
+	/**
+	 * Creates a Listener listening to the port
+	 * \param port The listened port
+	 * \param tls if true creates a SslListener instead
+	 * \param maxQueulen Maximum number of simultanate connections
+	 */
 	void				listen(const std::string &port, bool tls = false, size_t maxQueueLen = 5);
+
+	/**
+	 * Sets maximum number of active connections
+	 * \param Maxconnection The maximum number of active connections
+	 */
 	void				setMaxConnections(size_t MaxConnections);
 
+	/**
+	 *  Deletes a TcpSocket
+	 */
 	void				disconnect(TcpSocket *client) throw();
+
+	/**
+	 * Pops the first new connection
+	 */
 	TcpSocket			*nextNewConnection() throw();
+
+	/**
+	 * Pops the first pending connection
+	 */
 	TcpSocket			*nextPendingConnection() throw();
+
+	/**
+	 * Blocks, returns if one of the connections can read or write
+	 */
 	void				select();
 
 	class SigintException : public std::exception {};
@@ -38,10 +76,7 @@ class TcpServer
 	std::list<TcpSocket*>	_connections;
 	std::list<TcpSocket*>	_pending;
 	size_t					_maxConnections;
-	std::string				_host;
 	SslContext				_ctx;
-
-	void setUpListener(addrinfo *a, Listener *listener);
 
 	TcpServer(const TcpServer &);
 	TcpServer &operator=(const TcpServer &);

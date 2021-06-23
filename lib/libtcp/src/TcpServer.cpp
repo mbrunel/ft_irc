@@ -42,18 +42,7 @@ TcpServer::~TcpServer() throw()
 		delete *it;
 }
 
-void TcpServer::setUpListener(addrinfo *a, Listener *listener)
-{
-	listener->setReuseAddr();
-	listener->setNonblock();
-	if (a->ai_family == AF_INET6)
-		listener->setIpv6only();
-	listener->bind(a->ai_addr, a->ai_addrlen);
-}
-
 size_t TcpServer::nbConnections() const { return (_connections.size()); }
-
-const std::string &TcpServer::host() const { return (_host); }
 
 void TcpServer::setMaxConnections(size_t maxConnections) { _maxConnections = maxConnections; }
 
@@ -73,17 +62,20 @@ void TcpServer::listen(const std::string &port, bool tls, size_t maxQueueLen)
 	try {
 		while (node && i < 2)
 		{
-			ft::uniquePtr<Listener> newListener;
+			ft::uniquePtr<Listener> listener;
 			if (!tls)
-				newListener.reset(new Listener(node->ai_family));
+				listener.reset(new Listener(node->ai_family));
 			else
-				newListener.reset(new SslListener(node->ai_family, _ctx.ctx()));
-			setUpListener(node, newListener.get());
-			newListener->listen(maxQueueLen);
-			_listeners.push_back(newListener.get());
+				listener.reset(new SslListener(node->ai_family, _ctx.ctx()));
+			listener->setReuseAddr();
+			listener->setNonblock();
+			if (node->ai_family == AF_INET6)
+				listener->setIpv6only();
+			listener->bind(node->ai_addr, node->ai_addrlen);
+			listener->listen(maxQueueLen);
+			_listeners.push_back(listener.release());
 			node = node->ai_next;
 			i++;
-			newListener.release();
 		}
 	}
 	catch (std::exception &e) {

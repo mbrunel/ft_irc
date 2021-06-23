@@ -86,6 +86,7 @@ void IrcServer::run()
 	while (_state == ALIVE)
 	{
 		try { srv.select(); } catch(tcp::TcpServer::SigintException &e) { _state = DIE; return ; }
+		flushAndCloseZombies();
 		tcp::TcpSocket *newSocket;
 		while ((newSocket = srv.nextNewConnection()))
 		{
@@ -94,7 +95,6 @@ void IrcServer::run()
 			log() << u->socket()->host() << " CONNECTED" << std::endl;
 			network.add(u);
 		}
-		police();
 		tcp::TcpSocket *socket;
 		while ((socket = srv.nextPendingConnection()) && _state == ALIVE)
 		{
@@ -125,6 +125,7 @@ void IrcServer::run()
 				continue ;
 			}
 		}
+		pingpongProbe();
 	}
 }
 
@@ -261,10 +262,8 @@ void IrcServer::writeError(tcp::TcpSocket *s, std::string reason)
 	s->writeLine((IRC::MessageBuilder(config.servername, "ERROR") << reason).str());
 }
 
-void IrcServer::police()
+void IrcServer::flushAndCloseZombies()
 {
-	static time_t ptime = 0;
-	time_t ctime = ::time(NULL);
 	BasicConnection *z;
 
 	while ((z = network.nextZombie()))
@@ -273,6 +272,13 @@ void IrcServer::police()
 		srv.disconnect(z->socket());
 		delete z;
 	}
+}
+
+void IrcServer::pingpongProbe()
+{
+	static time_t ptime = 0;
+	time_t ctime = ::time(NULL);
+
 	if (ctime - ptime < 5)
 		return ;
 	ptime = ctime;
