@@ -42,7 +42,6 @@ class Config
 	int maxChannels();
 	int maxMasks();
 	size_t historySize();
-	bool verbose();
 	void opers(std::map<std::string, Oper> &opers);
 	void fnicks(std::set<std::string> &fnicks);
 
