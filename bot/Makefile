@@ -9,7 +9,7 @@ LIBTCP_DIR	:= $(LIB_DIR)/libtcp
 LIBTCP		:= $(LIBTCP_DIR)/libtcp.a
 SRC			:= main.cpp
 CXX			:= clang++
-CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -g -MMD -MP \
+CXXFLAGS	:= -Wall -Wextra -Werror -Wpedantic -Wvla -Ofast -std=c++98 -MMD -MP -DNDEBUG\
 			   -I $(LIBFT_DIR)/inc -I $(LIBIRC_DIR)/inc -I $(LIBTCP_DIR)/inc
 LDFLAGS		:= -L $(LIBIRC_DIR) -lIRC -L $(LIBFT_DIR) -lft -L $(LIBTCP_DIR) -ltcp -lcurl -lssl -lcrypto
 OBJ			:= $(SRC:%.cpp=$(BUILD_DIR)/%.o)
