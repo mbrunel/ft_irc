@@ -81,15 +81,15 @@ re: fclean all
 run: $(NAME) $(SSL_CERT)
 	./$< $(CFG_DIR)/ircserv.conf
 
-build : all certs
-	@install -D $(NAME) $(BIN_DIR)/$(NAME) -m 755
-	@mkdir $(CONF_DIR)
-	@cp -r config $(CONF)
-	@chmod 755 $(CONF)
-	@chmod 644 $(CONF)/*
-	@dpkg-deb --build $(INSTL_DIR)
+$(INSTL_DIR).deb : all certs
+	@sudo install -D $(NAME) $(BIN_DIR)/$(NAME) -m 755
+	@sudo mkdir -p $(CONF_DIR)
+	@sudo cp -r config $(CONF)
+	@sudo chmod 755 $(CONF)
+	@sudo chmod 644 $(CONF)/*
+	@sudo dpkg-deb --build $(INSTL_DIR)
 
-install: build
+install: $(INSTL_DIR).deb
 	@sudo dpkg -i $(INSTL_DIR).deb
 
 uninstall :
