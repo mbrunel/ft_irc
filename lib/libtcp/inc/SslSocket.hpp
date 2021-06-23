@@ -5,6 +5,9 @@
 namespace tcp
 {
 
+/**
+ * A TcpSocket which uses tls protocol
+ */
 class SslSocket : public TcpSocket
 {
   public:
@@ -12,8 +15,20 @@ class SslSocket : public TcpSocket
 
 	virtual ~SslSocket() throw();
 
+	/**
+	 * Performs tls handshake or call TcpSocket::fill()
+	 * \return false if connection is close (SSL_read return 0)
+	 */
 	bool				fill();
+
+	/**
+	 * Performs tls handshake or call TcpSocket::flush()
+	 */
 	void				flush();
+
+	/**
+	 * \return State of completion of tls handshake
+	 */
 	SslSocket::State	state() const;
 
   protected:

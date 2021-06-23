@@ -27,11 +27,7 @@ void Socket::socket(int family)
 
 int Socket::close() throw()
 {
-	int s = 0;
-	if (_fd != -1)
-		s = ::close(_fd);
-	_fd = -1;
-	return s;
+	return ::close(_fd);
 }
 
 void Socket::bind(sockaddr *addr, socklen_t addr_size)
