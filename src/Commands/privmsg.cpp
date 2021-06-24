@@ -18,12 +18,20 @@ int IrcServer::privmsg(User &u, const IRC::Message &m)
 		if (target->isMask())
 		{
 			if (!u.umode().isSet(UserMode::OPERATOR))
-				writeNum(u, IRC::Error::nosuchnick(target->c_str()));
+			{
+				writeNum(u, IRC::Error::noprivileges());
+				continue ;
+			}
 			const std::string mask = target->mask().substr(1);
 			if ((*target)[0] == '$')
 			{
 				if (ft::match(mask, config.servername))
-					network.msgToAll((IRC::MessageBuilder(u.prefix(), m.command()) << *target << text).str(), &u);
+					for (Network::UserMap::const_iterator i = network.users().begin(); i != network.users().end(); ++i)
+					{
+						User *v(i->second);
+						if (!v->hopcount() && v->isRegistered() && v->socket() != u.socket())
+							v->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << *target << text).str());
+					}
 				else
 					writeNum(u, IRC::Error::badmask(*target));
 			}

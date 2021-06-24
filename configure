@@ -2,7 +2,7 @@
 
 set -e
 
-if ['uname' != 'Linux']
+if [ $(uname) != 'Linux' ]
 then
 	echo "You must be on Linux"
 	exit

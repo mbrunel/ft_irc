@@ -32,8 +32,3 @@ int IrcServer::lusers(User &u, const IRC::Message &m)
 	writeNum(u, IRC::Reply::lusersme(nbClients));
 	return (0);
 }
-
-/*
-Command : lusers
-Params : None
-*/

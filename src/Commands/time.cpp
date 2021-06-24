@@ -9,8 +9,3 @@ int IrcServer::time(User &u, const IRC::Message &m)
 		return (writeNum(u, IRC::Error::nosuchserver(m.params()[0])));
 	return (writeNum(u, IRC::Reply::time()));
 }
-
-/*
-> Command : TIME
-> Params : serveur target
-*/

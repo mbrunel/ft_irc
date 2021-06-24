@@ -73,18 +73,10 @@ int IrcServer::join(User &u, const IRC::Message &m)
 					writeNum(u, IRC::Error::channelisfull(*it));
 					continue ;
 				}
-				if (cm.isSet(ChannelMode::KEY))
+				if (cm.isSet(ChannelMode::KEY) && (!parseNextKeyParam(keys, keysI, key) || key != c->key()))
 				{
-					if (!parseNextKeyParam(keys, keysI, key))
-					{
-						writeNum(u, IRC::Error::needmoreparams(m.command()));
-						continue ;
-					}
-					else if (key != c->key())
-					{
-						writeNum(u, IRC::Error::badchannelkey(*it));
-						continue ;
-					}
+					writeNum(u, IRC::Error::badchannelkey(*it));
+					continue ;
 				}
 			}
 			c->addMember(&u, MemberMode(c->count() || c->type() == Channel::UNMODERATED ? 0 : MemberMode::CREATOR | MemberMode::OPERATOR));

@@ -6,75 +6,55 @@ int IrcServer::kick(User &u, const IRC::Message &m)
 		return (writeNum(u, IRC::Error::notregistered()));
 	if (m.params().size() < 2)
 		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
-
-	Params ChanList= m.params()[0].split();
-	Params UserList = m.params()[1].split();
-	const Network::ChannelMap &channels = network.channels();
-	Params::const_iterator i = ChanList.begin();
-	Network::ChannelMap::const_iterator ic;
-	bool check;
-	while (i != ChanList.end())
+	Params chans = m.params()[0].split(), users = m.params()[1].split();
+	if (chans.size() > 1 && chans.size() != users.size())
+		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
+	Params::const_iterator i = users.begin();
+	for (Params::const_iterator j = chans.begin(); j != chans.end(); ++j)
 	{
-		check = false;
-		ic = channels.begin();
-		while (ic != channels.end())
+		Channel *c = network.getByChannelname(*j);
+		if (!c)
 		{
-			Channel *c = ic->second;
-			if ((*i) == c->name())
-			{
-				if (c->mode().isSet(Channel::UNMODERATED))
-				{
-					writeNum(u, IRC::Error::nochanmodes((*i)));
-					++ic;
-					check = true;
-					continue;
-				}
-				MemberMode *mmode = c->findMember(&u);
-				if (!mmode)
-				{
-					writeNum(u, IRC::Error::notonchannel(c->name()));
-					++ic;
-					check = true;
-					continue;
-				}
-				if (!mmode->isSet(MemberMode::OPERATOR)
-						&& !mmode->isSet(MemberMode::CREATOR))
-				{
-					writeNum(u, IRC::Error::chanoprisneeded(c->name()));
-					++ic;
-					check = true;
-					continue;
-				}
-				Params::const_iterator iterUser = UserList.begin();
-				while (iterUser != UserList.end())
-				{
-					User *ufind = network.getByNickname((*iterUser));
-					if (ufind)
-					{
-						if (c->findMember(ufind))
-						{
-							IRC::MessageBuilder buf(u.prefix(), m.command());
-							buf << ic->second->name() << ufind->nickname() << (m.params()[2].size() ? m.params()[2] : u.nickname());
-							c->send(buf.str());
-							c->delMember(ufind);
-							check = true;
-						}
-						else
-							writeNum(u, IRC::Error::usernotinchannel((*iterUser), c->name()));
-					}
-					++iterUser;
-				}
-			}
-			++ic;
+			writeNum(u, IRC::Error::nosuchchannel(*j));
+			continue ;
 		}
-		if (check == false)
-			writeNum(u, IRC::Error::nosuchchannel((*i)));
-		++i;
+		if (c->mode().isSet(Channel::UNMODERATED))
+		{
+			writeNum(u, IRC::Error::nochanmodes(*j));
+			continue;
+		}
+		MemberMode *mmode = c->findMember(&u);
+		if (!mmode)
+		{
+			writeNum(u, IRC::Error::notonchannel(c->name()));
+			continue;
+		}
+		if (!mmode->isSet(MemberMode::OPERATOR) && !mmode->isSet(MemberMode::CREATOR))
+		{
+			writeNum(u, IRC::Error::chanoprisneeded(c->name()));
+			continue;
+		}
+		for (; i != users.end(); ++i)
+		{
+			User *ufind = network.getByNickname(*i);
+			if (ufind && c->findMember(ufind))
+			{
+				IRC::MessageBuilder buf(u.prefix(), m.command());
+				buf << c->name() << ufind->nickname();
+				if (m.params().size() > 2)
+					buf << m.params()[2];
+				else
+					buf << "no reason";
+				c->send(buf.str());
+				c->delMember(ufind);
+			}
+			else
+				writeNum(u, IRC::Error::usernotinchannel(*i, c->name()));
+			if (chans.size() != 1)
+				break ;
+		}
+		if (!c->count())
+			network.remove(c);
 	}
 	return (0);
 }
-
-/*
-Command : kick
-Params : <channel> * (, <channel>) <user> * (, <user>) [<comment>]
- */

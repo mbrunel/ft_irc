@@ -6,7 +6,7 @@ int IrcServer::kill(User &u, const IRC::Message &m)
 
 	if (m.params().size() < 2)
 		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
-	if (!u.umode().isSet(UserMode::OPERATOR|UserMode::LOCAL_OPERATOR))
+	if (!u.umode().isSet(UserMode::OPERATOR))
 		return (writeNum(u, IRC::Error::noprivileges()));
 	if (!(target = network.getByNickname(m.params()[0])))
 		return (writeNum(u, IRC::Error::nosuchnick(m.params()[0])));

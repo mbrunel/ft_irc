@@ -36,7 +36,8 @@ ircserv
 bot/nestor
 
 # Configuration
-config ircserv*_all*
+config
+ircserv*_all*
 
 # Documentation
 doc/html

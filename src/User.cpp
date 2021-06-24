@@ -17,7 +17,7 @@ UserMode::~UserMode()
 UserMode::Flag UserMode::parse(char c)
 {
 	unsigned f;
-	f = islower(c) ? _lowerFlagTable[c - 'a'] : (c == 'O') * LOCAL_OPERATOR;
+	f = islower(c) ? _lowerFlagTable[c - 'a'] : (c == 'o') * OPERATOR;
 	return (static_cast<Flag>(f));
 }
 
@@ -32,8 +32,6 @@ std::string UserMode::toString() const
 		s.push_back('r');
 	if (isSet(OPERATOR))
 		s.push_back('o');
-	if (isSet(LOCAL_OPERATOR))
-		s.push_back('O');
 	return (s);
 }
 
