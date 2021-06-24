@@ -45,7 +45,6 @@ class Network
 	User				*getByNickname(const std::string &nickname);
 	Channel				*getByChannelname(const std::string &channelname);
 	User				*getByServicename(const std::string &servicename);
-	void				msgToAll(const std::string &msg, BasicConnection *origin = NULL);
 	void				remove(User *user) throw();
 	void				remove(const Channel *chan) throw();
 	void				removeService(User *user) throw();

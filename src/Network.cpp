@@ -96,6 +96,7 @@ void Network::remove(User *u) throw()
 void Network::remove(const Channel *c) throw()
 {
 	_channels.erase(c->name());
+	delete c;
 }
 
 void Network::removeService(User *u) throw()
@@ -103,16 +104,6 @@ void Network::removeService(User *u) throw()
 	if (!u->hopcount())
 		_connections.erase(u->socket());
 	_services.erase(u->nickname());
-}
-
-void Network::msgToAll(const std::string &msg, BasicConnection *origin)
-{
-	for (UserMap::const_iterator i = _users.begin(); i != _users.end(); ++i)
-	{
-		User *u(i->second);
-		if (!u->hopcount() && u->isRegistered() && u->socket() != origin->socket())
-			u->writeLine(msg);
-	}
 }
 
 void Network::resetUserReceipt()

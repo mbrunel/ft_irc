@@ -19,7 +19,12 @@ int IrcServer::notice(User &u, const IRC::Message &m)
 			if ((*target)[0] == '$')
 			{
 				if (ft::match(mask, config.servername))
-					network.msgToAll((IRC::MessageBuilder(u.prefix(), m.command()) << text).str(), &u);
+					for (Network::UserMap::const_iterator i = network.users().begin(); i != network.users().end(); ++i)
+					{
+						User *v(i->second);
+						if (!v->hopcount() && v->isRegistered() && v->socket() != u.socket())
+							v->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << *target << text).str());
+					}
 			}
 			else if ((*target)[0] == '#')
 			{
@@ -32,14 +37,14 @@ int IrcServer::notice(User &u, const IRC::Message &m)
 				if (toplevel.find('*') == std::string::npos && toplevel.find('?') == std::string::npos)
 					for (Network::UserMap::const_iterator it = network.users().begin(); it != network.users().end(); ++it)
 						if (ft::match(mask, it->second->socket()->host()))
-							it->second->writeLine((IRC::MessageBuilder(it->second->prefix(), m.command()) << text).str());
+							it->second->writeLine((IRC::MessageBuilder(it->second->prefix(), m.command()) << *target << text).str());
 			}
 		}
 		if (target->isNickname())
 		{
 			User *receiver = network.getByNickname(*target);
 			if (receiver)
-				receiver->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << text).str());
+				receiver->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << *target << text).str());
 		}
 		else if (target->isChannel())
 		{
