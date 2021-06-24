@@ -1,4 +1,3 @@
-#include "MessageBuilder.hpp"
 #include "IrcServer.hpp"
 
 int IrcServer::rehash(User &u, const IRC::Message &m)
@@ -6,7 +5,7 @@ int IrcServer::rehash(User &u, const IRC::Message &m)
 	(void)m;
 	if (!u.isRegistered())
 		writeNum(u, IRC::Error::notregistered());
-	if (!u.umode().isSet(UserMode::OPERATOR|UserMode::LOCAL_OPERATOR))
+	if (!u.umode().isSet(UserMode::OPERATOR))
 		writeNum(u, IRC::Error::noprivileges());
 	try { loadConfig(config.configfile); }
 	catch (config4cpp::ConfigurationException &e)

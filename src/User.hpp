@@ -17,8 +17,6 @@ public:
 		RESTRICTED = 1 << 3,
 		/** 'o' - Operator flag */
 		OPERATOR = 1 << 4,
-		/** 'O' - Local operator flag */
-		LOCAL_OPERATOR = 1 << 5,
 		/** 's' - Marks a User for receipt of server notices */
 		MARK = 1 << 6
 	};

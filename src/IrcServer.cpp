@@ -251,8 +251,9 @@ void IrcServer::writeWelcome(User &u)
 {
 	writeNum(u, (u.type() == User::USER ? IRC::Reply::welcome(u.prefix()) : IRC::Reply::youreservice(u.nickname())));
 	writeNum(u, IRC::Reply::yourhost(config.servername, _version));
-	writeNum(u, IRC::Reply::created(creationDate));
-	writeNum(u, IRC::Reply::myinfo(config.servername, _version, "Oaiorsw", "IObeiklmnopstv"));
+	if (u.type() == User::USER)
+		writeNum(u, IRC::Reply::created(creationDate));
+	writeNum(u, IRC::Reply::myinfo(config.servername, _version, "aiorsw", "IObeiklmnopstv"));
 	if (u.type() == User::USER)
 		writeMotd(u);
 }

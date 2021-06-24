@@ -92,14 +92,13 @@ int IrcServer::mode(User &u, const IRC::Message &m)
 					continue ;
 				if (switchFlag == UNSET)
 				{
-					if (!um.isSet(f) || (!um.isSet(UserMode::OPERATOR | UserMode::LOCAL_OPERATOR)
-					&& f == UserMode::RESTRICTED))
+					if (!um.isSet(f) || (f == UserMode::RESTRICTED && !um.isSet(UserMode::OPERATOR)))
 						continue ;
 					um.unset(f);
 				}
 				else
 				{
-					if (um.isSet(f) || f == UserMode::OPERATOR || f == UserMode::LOCAL_OPERATOR)
+					if (um.isSet(f) || f == UserMode::OPERATOR)
 						continue ;
 					um.set(f);
 				}

@@ -41,7 +41,7 @@ int IrcServer::whois(User &sender, const IRC::Message &m)
 						status = "+";
 					writeNum(sender, IRC::Reply::whoischannels(u->nickname(), status, c->name()));
 				}
-				if (u->umode().isSet(UserMode::LOCAL_OPERATOR|UserMode::OPERATOR))
+				if (u->umode().isSet(UserMode::OPERATOR))
 					writeNum(sender, IRC::Reply::whoisoperator(u->nickname()));
 				writeNum(sender, IRC::Reply::whoisidle(u->nickname(), ::time(NULL) - u->idle()));
 			}
