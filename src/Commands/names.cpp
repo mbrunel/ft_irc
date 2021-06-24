@@ -113,8 +113,3 @@ int IrcServer::names(User &u, const IRC::Message &m)
 	}
 	return (0);
 }
-
-/*
-> Command : NAMES
-> params : <channel> <target>
-*/

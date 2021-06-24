@@ -41,10 +41,8 @@ int IrcServer::info(User &u, const IRC::Message &m)
 		return (writeNum(u, IRC::Error::notregistered()));
 	if (m.params().size() && !ft::match(m.params()[0], config.servername))
 		return (writeNum(u, IRC::Error::nosuchserver(m.params()[0])));
-
 	for (size_t i = 0; ::info[i]; ++i)
 		writeNum(u, IRC::Reply::info(::info[i]));
-	std::string timestamp = "Compilation date: ";
-	writeNum(u, IRC::Reply::info(timestamp + __DATE__ " at " + __TIME__));
+	writeNum(u, IRC::Reply::info(std::string("Compilation date: ") + __DATE__ " at " + __TIME__));
 	return writeNum(u, IRC::Reply::endofinfo());
 }

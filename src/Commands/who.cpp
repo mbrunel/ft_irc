@@ -138,8 +138,3 @@ int IrcServer::who(User &u, const IRC::Message &m)
 	writeNum(u, IRC::Reply::endofwho(mask));
 	return (0);
 }
-
-/*
-Command : WHO
-Params : [<mask> [+ "o"]]
-*/

@@ -58,8 +58,3 @@ int IrcServer::kick(User &u, const IRC::Message &m)
 	}
 	return (0);
 }
-
-/*
-Command : kick
-Params : <channel> * (, <channel>) <user> * (, <user>) [<comment>]
- */
