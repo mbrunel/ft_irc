@@ -32,6 +32,9 @@
 *.app
 ircserv
 
+# SSL
+ssl
+
 # Bot
 bot/nestor
 

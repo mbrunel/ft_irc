@@ -1,7 +1,8 @@
 NAME		:= ircserv
 CFG_DIR		:= config
-SSL_CERT	:= $(CFG_DIR)/ircserv.crt
-SSL_KEY		:= $(CFG_DIR)/ircserv.key
+SSL_DIR		:= ssl
+SSL_CERT	:= $(SSL_DIR)/ircserv.crt
+SSL_KEY		:= $(SSL_DIR)/ircserv.key
 LOG			:= $(CFG_DIR)/ircserv.log
 BUILD_DIR	:= .build
 LIB_DIR		:= lib
@@ -99,6 +100,7 @@ $(BUILD_DIR)/%.o: src/%.cpp
 	@$(BUILD_MSG) $(@F)
 
 $(SSL_CERT):
+	mkdir -p $(SSL_DIR)
 	openssl req -newkey rsa:2048 -nodes -keyout $(SSL_KEY) -x509 -days 365 -out $@ \
 	-subj "/C=FR/ST=France/L=Paris/O=42/OU=Archeology/CN=42.fr/emailAddress=mbrunel@student.42.fr"
 
