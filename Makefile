@@ -82,17 +82,15 @@ run: $(NAME) $(SSL_CERT)
 	./$< $(CFG_DIR)/ircserv.conf
 
 $(INSTL_DIR).deb : all certs
-	@sudo install -D $(NAME) $(BIN_DIR)/$(NAME) -m 755
-	@sudo mkdir -p $(CONF_DIR)
-	@sudo cp -r config $(CONF)
-	@sudo chmod 755 $(CONF)
-	@sudo chmod 644 $(CONF)/*
-	@sudo dpkg-deb --build $(INSTL_DIR)
+	@install -D $(NAME) $(BIN_DIR)/$(NAME)
+	@mkdir -p $(CONF)
+	@cp -r config/* $(CONF)
+	@dpkg-deb --build $(INSTL_DIR)
 
 install: $(INSTL_DIR).deb
 	@sudo dpkg -i $(INSTL_DIR).deb
 
-uninstall :
+uninstall:
 	@sudo dpkg --remove $(NAME)
 
 $(BUILD_DIR)/%.o: src/%.cpp
@@ -106,4 +104,4 @@ $(SSL_CERT):
 
 -include $(OBJ:.o=.d)
 
-.PHONY: all bonus certs clean doc fclean re run build install uninstall
+.PHONY: all bonus certs clean doc fclean re run install uninstall

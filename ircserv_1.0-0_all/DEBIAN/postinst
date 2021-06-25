@@ -1,0 +1,4 @@
+#!/bin/sh
+
+USER="root"
+sudo chown -R ${USER}:${USER} /etc/ircserv /usr/bin/ircserv
