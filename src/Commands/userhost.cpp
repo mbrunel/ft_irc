@@ -9,6 +9,8 @@ int IrcServer::userhost(User &u, const IRC::Message &m)
 	for (size_t i = 0; i < std::min(m.params().size(), 5UL); ++i)
 	{
 		User *us = network.getByNickname(m.params()[i]);
+		if (!us)
+			continue ;
 		UserMode umode = us->umode();
 		std::string msg;
 		msg += m.params()[i];

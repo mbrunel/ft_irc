@@ -75,7 +75,6 @@ class TcpSocket : public Socket
 	TcpSocket();
 	TcpSocket(int listenerFd);
 
-	static const size_t ipv6MaxSize;
 	static const size_t readSize;
 
 	std::string	_ip;
