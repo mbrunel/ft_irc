@@ -2,7 +2,7 @@
 #include "libft.hpp"
 
 #define IRCSERVER_DEBUGLEVEL ""
-#define IRCSERVER_COMMENTS "An obsolete IC server (please do not use it in real life)"
+#define IRCSERVER_COMMENTS "An obsolete IC server"
 
 int IrcServer::version(User &u, const IRC::Message &m)
 {

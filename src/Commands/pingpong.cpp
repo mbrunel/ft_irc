@@ -1,6 +1,6 @@
 #include "IrcServer.hpp"
 
-int IrcServer::ping(User &u, const IRC::Message &m) //for when a client sends a ping : undefined in IRC
+int IrcServer::ping(User &u, const IRC::Message &m)
 {
 	if (!m.params().size())
 		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
@@ -8,7 +8,7 @@ int IrcServer::ping(User &u, const IRC::Message &m) //for when a client sends a 
 	return true;
 }
 
-int IrcServer::pong(User &u, const IRC::Message &m) //for when a client sends a pong : poorly defined in IRC
+int IrcServer::pong(User &u, const IRC::Message &m)
 {
 	if (!m.params().size())
 		return (writeNum(u, IRC::Error::needmoreparams(m.command())));

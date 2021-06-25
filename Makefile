@@ -1,7 +1,8 @@
 NAME		:= ircserv
 CFG_DIR		:= config
-SSL_CERT	:= $(CFG_DIR)/ircserv.crt
-SSL_KEY		:= $(CFG_DIR)/ircserv.key
+SSL_DIR		:= ssl
+SSL_CERT	:= $(SSL_DIR)/ircserv.crt
+SSL_KEY		:= $(SSL_DIR)/ircserv.key
 LOG			:= $(CFG_DIR)/ircserv.log
 BUILD_DIR	:= .build
 LIB_DIR		:= lib
@@ -81,18 +82,16 @@ re: fclean all
 run: $(NAME) $(SSL_CERT)
 	./$< $(CFG_DIR)/ircserv.conf
 
-$(INSTL_DIR).deb : all certs
-	@sudo install -D $(NAME) $(BIN_DIR)/$(NAME) -m 755
-	@sudo mkdir -p $(CONF_DIR)
-	@sudo cp -r config $(CONF)
-	@sudo chmod 755 $(CONF)
-	@sudo chmod 644 $(CONF)/*
-	@sudo dpkg-deb --build $(INSTL_DIR)
+$(INSTL_DIR).deb : all
+	@install -D $(NAME) $(BIN_DIR)/$(NAME)
+	@mkdir -p $(CONF)
+	@cp -r config/* $(CONF)
+	@dpkg-deb --build $(INSTL_DIR)
 
 install: $(INSTL_DIR).deb
 	@sudo dpkg -i $(INSTL_DIR).deb
 
-uninstall :
+uninstall:
 	@sudo dpkg --remove $(NAME)
 
 $(BUILD_DIR)/%.o: src/%.cpp
@@ -101,9 +100,10 @@ $(BUILD_DIR)/%.o: src/%.cpp
 	@$(BUILD_MSG) $(@F)
 
 $(SSL_CERT):
+	mkdir -p $(SSL_DIR)
 	openssl req -newkey rsa:2048 -nodes -keyout $(SSL_KEY) -x509 -days 365 -out $@ \
 	-subj "/C=FR/ST=France/L=Paris/O=42/OU=Archeology/CN=42.fr/emailAddress=mbrunel@student.42.fr"
 
 -include $(OBJ:.o=.d)
 
-.PHONY: all bonus certs clean doc fclean re run build install uninstall
+.PHONY: all bonus certs clean doc fclean re run install uninstall

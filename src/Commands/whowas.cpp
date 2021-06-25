@@ -7,7 +7,7 @@ int IrcServer::whowas(User &sender, const IRC::Message &m)
 		return (writeNum(sender, IRC::Error::notregistered()));
 	if (m.params().size() == 0)
 		return (writeNum(sender, IRC::Error::nonicknamegiven()));
-	Params targets = m.params()[0].split();
+	Params targets = m.params()[0].split(5);
 	int count = 0;
 	if (m.params().size() > 1)
 		count = atoi(m.params()[1].c_str());

@@ -449,17 +449,17 @@ namespace Reply
 
 	const Numeric youreoper()
 	{
-		return (Numeric(RPL_YOUREOPER, "You are now an IRC operator"));
+		return (Numeric(RPL_YOUREOPER, ":You are now an IRC operator"));
 	}
 
 	const Numeric youreservice(const std::string &servicename)
 	{
-		return (Numeric(RPL_YOURESERVICE, "You are service " + servicename));
+		return (Numeric(RPL_YOURESERVICE, ":You are service " + servicename));
 	}
 
-	const Numeric time()
+	const Numeric time(const std::string &servername)
 	{
-		return (Numeric(RPL_TIME, ft::toDate(::time(NULL), "%x - %I:%M:%S %z")));
+		return (Numeric(RPL_TIME, servername + ft::toDate(::time(NULL), " :%x - %I:%M:%S %z")));
 	}
 
 	const Numeric lusersclient(size_t users, size_t services, size_t servers)
@@ -539,12 +539,12 @@ namespace Reply
 
 	const Numeric rehashing(const std::string &filename)
 	{
-		return (Numeric(RPL_REHASHING, filename + ": Rehashing"));
+		return (Numeric(RPL_REHASHING, filename + " :Rehashing"));
 	}
 
 	const Numeric userhostreply(const std::string &msg)
 	{
-		return (Numeric(RPL_USERHOST, msg));
+		return (Numeric(RPL_USERHOST, ":" + msg));
 	}
 } /* end of namespace Reply */
 

@@ -70,17 +70,17 @@ std::string Param::mask() const
 	return (dst);
 }
 
-std::vector<Param> Param::split(char d) const
+std::vector<Param> Param::split(size_t max, char d) const
 {
 	std::vector<Param>	v;
 	Context				c(*this);
 
-	if (*c == d)
+	if (max-- && *c == d)
 	{
 		v.push_back(Param(""));
 		++c;
 	}
-	while (*c)
+	while (max-- && *c)
 	{
 		c.resetDistance();
 		while (*c && *c != d)

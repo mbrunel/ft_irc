@@ -9,7 +9,7 @@ int IrcServer::whois(User &sender, const IRC::Message &m)
 		return writeNum(sender, IRC::Error::nonicknamegiven());
 	Params masks;
 	if (m.params().size() == 1)
-		masks = Params(m.params()[0].split());
+		masks = Params(m.params()[0].split(5));
 	else
 	{
 		if (!ft::match(m.params()[0].mask(), config.servername))
