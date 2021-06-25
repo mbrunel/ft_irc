@@ -79,14 +79,14 @@ public:
 		cmd = Command(&NestorBot::weather, "Request a weather report");
 		cmd.args.push_back(Argument("LOCATION", "A city name, a country, GPS coordinates..."));
 		_commands["WEATHER"] = cmd;
+		if (!(_curl = curl_easy_init()))
+			throw ft::systemError("curl_easy_init");
 
 		ft::fileToData(jokesFile, _jokes, JOKEMAXSIZE);
 		if (pass.size())
 			TcpClient::writeLine((IRC::MessageBuilder("PASS") << pass).str());
 		TcpClient::writeLine((IRC::MessageBuilder("SERVICE") << "Nestor" << "*" << "*" << "*" << "*" << "Nestor bot").str());
 		flush();
-		if (!(_curl = curl_easy_init()))
-			throw ft::systemError("curl_easy_init");
 	}
 
 	~NestorBot()
@@ -104,11 +104,9 @@ public:
 			#ifndef NDEBUG
 				std::cout << m << std::endl;
 			#endif
-			if (m.command() == "PING" && m.params().size())
+			if (m.command() == "PING")
 				TcpClient::writeLine((IRC::MessageBuilder("PONG") << m.params()[0]).str());
-			else if (m.params().size() < 2)
-				continue ;
-			if (m.command() == "SQUERY")
+			else if (m.command() == "SQUERY")
 			{
 				Params args = split(m.params()[1]);
 				if (args.empty())
@@ -251,14 +249,7 @@ int main(int ac, const char **av)
 	try
 	{
 		NestorBot bot(av[1], av[2], av[3], (ac > 4 ? av[4] : ""), (ac > 5 ? av[5] : ""), (ac > 6 ? av[6] : ""));
-		try
-		{
-			bot.run();
-		}
-		catch (const std::exception &e)
-		{
-			std::cerr << "NestorBot: " << e.what() << std::endl;
-		}
+		bot.run();
 	}
 	catch(const std::exception &e)
 	{
