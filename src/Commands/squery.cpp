@@ -12,6 +12,6 @@ int IrcServer::squery(User &u, const IRC::Message &m)
 	User *receiver = network.getByServicename(target);
 	if (!receiver)
 		return (writeNum(u, IRC::Error::nosuchservice(target)));
-	receiver->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << m.params()[1]).str());
+	receiver->writeLine((IRC::MessageBuilder(u.prefix(), m.command()) << target << m.params()[1]).str());
 	return (0);
 }

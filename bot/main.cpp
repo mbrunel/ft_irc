@@ -104,11 +104,13 @@ public:
 			#ifndef NDEBUG
 				std::cout << m << std::endl;
 			#endif
+			if (m.params().size() < 2)
+				continue ;
 			if (m.command() == "PING")
-				TcpClient::writeLine((IRC::MessageBuilder("PONG") << m.params()[0]).str());
+				TcpClient::writeLine((IRC::MessageBuilder("PONG") << m.params()[1]).str());
 			else if (m.command() == "SQUERY")
 			{
-				Params args = split(m.params()[0]);
+				Params args = split(m.params()[1]);
 				if (args.empty())
 				{
 					writeError(m.prefix().nickname(), "No command given.");
