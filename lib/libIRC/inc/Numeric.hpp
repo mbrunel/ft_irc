@@ -231,7 +231,7 @@ namespace Reply
 	const Numeric endofinfo();
 	const Numeric youreoper();
 	const Numeric youreservice(const std::string &servicename);
-	const Numeric time();
+	const Numeric time(const std::string &servername);
 	const Numeric lusersclient(size_t users, size_t services, size_t servers);
 	const Numeric lusersop(size_t nb);
 	const Numeric lusersunknown(size_t nb);
