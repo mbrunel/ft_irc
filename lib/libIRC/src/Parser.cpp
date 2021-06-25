@@ -145,7 +145,7 @@ namespace Parser
 		if (std::isalnum(*c))
 			do
 				last = *c;
-			while (std::isalnum(*(++c)) || *c == '-');
+			while (std::isalnum(*(++c)) || *c == '-' || *c == '_');
 		return (c.distance() - prevDist > 1 && std::isalnum(last));
 	}
 }
