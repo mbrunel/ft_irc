@@ -51,10 +51,11 @@ public:
 
 	/**
 	 * Split this param into a new set of arguments.
+	 * \param max The maximum number of arguments
 	 * \param delimiter The delimiter to use to split the string
 	 * \return The new sequence of arguments
 	 */
-	std::vector<Param> split(char delimiter = ',') const;
+	std::vector<Param> split(size_t max = -1, char delimiter = ',') const;
 
 private:
 	bool check(bool (*parsingFunc)(Context &, std::string &)) const;
