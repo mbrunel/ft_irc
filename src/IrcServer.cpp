@@ -241,7 +241,6 @@ void IrcServer::writeMotd(User &u)
 		return ;
 	}
 	writeNum(u, IRC::Reply::motdstart(config.servername));
-	writeNum(u, IRC::Reply::motd(config.motd.front()));
 	for (size_t i = 0; i < config.motd.size(); ++i)
 		writeNum(u, IRC::Reply::motd(config.motd[i]));
 	writeNum(u, IRC::Reply::endofmotd());
