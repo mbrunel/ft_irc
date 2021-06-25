@@ -82,7 +82,7 @@ re: fclean all
 run: $(NAME) $(SSL_CERT)
 	./$< $(CFG_DIR)/ircserv.conf
 
-$(INSTL_DIR).deb : all certs
+$(INSTL_DIR).deb : all
 	@install -D $(NAME) $(BIN_DIR)/$(NAME)
 	@mkdir -p $(CONF)
 	@cp -r config/* $(CONF)
