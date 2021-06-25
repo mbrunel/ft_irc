@@ -7,6 +7,15 @@ int IrcServer::service(User &u, const IRC::Message &m)
 		return (writeNum(u, IRC::Error::alreadyregistred()));
 	if (m.params().size() < 6)
 		return (writeNum(u, IRC::Error::needmoreparams(m.command())));
+	std::set<std::string>::const_iterator i;
+	for (i = config.servHosts.begin(); i != config.servHosts.end(); ++i)
+		if (ft::match(*i, u.socket()->host()))
+			break ;
+	if (i == config.servHosts.end())
+	{
+		disconnect(u, "Access denied");
+		return (-1);
+	}
 	const IRC::Param &nick = m.params()[0];
 	if (!nick.isNickname())
 		return (writeNum(u, IRC::Error::erroneusnickname(nick)));

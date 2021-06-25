@@ -7,6 +7,8 @@
 
 struct IrcServerConfig
 {
+	typedef std::map<std::string, Oper> OperMap;
+
 	std::string					configfile;
 	std::string					servername;
 	std::string					shortinfo;
@@ -16,6 +18,8 @@ struct IrcServerConfig
 	time_t						pong;
 	std::string					pass;
 	std::vector<std::string>	motd;
+	std::set<std::string>		servHosts;
+	std::map<std::string, Oper>	opers;
 
 	IrcServerConfig();
 	IrcServerConfig(Config &cfg);
@@ -67,7 +71,7 @@ class IrcServer
 	bool				init;
 	std::string			creationDate;
 	IrcServerConfig		config;
-	tcp::TcpServer			srv;
+	tcp::TcpServer		srv;
 	Network				network;
 	userCommandsMap		userCommands;
 	serviceCommandsMap	serviceCommands;
