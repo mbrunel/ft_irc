@@ -21,10 +21,7 @@ TcpClient::TcpClient(const std::string &host, const std::string &port, bool ipv6
 	try {
 		connect(host, port, ipv6);
 		if (!certificatePath.empty())
-		{
-			_socket->unsetNonblock();
 			(static_cast<SslSocket *>(_socket))->SSL_connect();
-		}
 	}
 	catch (std::exception &e) { delete _socket; throw; }
 }
@@ -67,7 +64,6 @@ void TcpClient::writeLine(const std::string &line)
 void TcpClient::flush()
 {
 	_socket->_isWriteable = true;
-	_socket->unsetNonblock();
 	_socket->flush();
 }
 
@@ -75,13 +71,14 @@ bool TcpClient::tryReadLine(std::string &line)
 {
 	_socket->_isReadable = true;
 	_socket->setNonblock();
-	return _socket->readLine(line);
+	bool status = _socket->readLine(line);
+	_socket->unsetNonblock();
+	return status;
 }
 
 bool TcpClient::waitForLine(std::string &line)
 {
 	_socket->_isReadable = true;
-	_socket->unsetNonblock();
 	return _socket->readLine(line);
 }
 
