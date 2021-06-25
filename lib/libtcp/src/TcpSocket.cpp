@@ -8,7 +8,6 @@
 namespace tcp
 {
 
-const size_t TcpSocket::ipv6MaxSize = 39;
 const size_t TcpSocket::readSize = 1024;
 
 TcpSocket::TcpSocket():Socket(), _isReadable(false), _isWriteable(false), _newline(std::string::npos) {}
@@ -25,9 +24,9 @@ TcpSocket::TcpSocket(int listenerFd):Socket(), _isReadable(false), _isWriteable(
 	}
 	else if (family() == AF_INET6)
 	{
-		char buf[ipv6MaxSize];
+		char buf[INET6_ADDRSTRLEN];
 		_port = ntohs(((sockaddr_in6 *)&_addr)->sin6_port);
-		if (!(inet_ntop(AF_INET6, &_addr, buf, ipv6MaxSize)))
+		if (!(inet_ntop(AF_INET6, &_addr, buf, INET6_ADDRSTRLEN)))
 		{
 			close();
 			throw ft::systemError("inet_ntop");
@@ -75,9 +74,10 @@ bool TcpSocket::canReadLine()
 bool TcpSocket::readLine(std::string &line)
 {
 	line.clear();
+	if (!isLine() && !fill())
+		return false;
 	if (!isLine())
-		if (!fill())
-			return false;
+		return true;
 	line = _readBuf.substr(0, _newline + 1);
 	_readBuf.erase(0, _newline + 1);
 	_newline = std::string::npos;
