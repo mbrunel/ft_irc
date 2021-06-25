@@ -2,3 +2,5 @@
 
 USER="root"
 sudo chown -R ${USER}:${USER} /etc/ircserv /usr/bin/ircserv
+sudo chmod 755 /etc/ircserv /usr/bin/ircserv
+sudo chmod 644 /etc/ircserv/*
