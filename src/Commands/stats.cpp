@@ -12,7 +12,7 @@ int IrcServer::stats(User &u, const IRC::Message &m)
 		for (commandsStatsMap::const_iterator i = commandsStats.begin(); i != commandsStats.end(); ++i)
 			writeNum(u, IRC::Reply::statscommands(i->first, i->second.count, i->second.byteCount, 0));
 	else if (c == 'o')
-		for (Network::OperMap::const_iterator i = network.opers().begin(); i != network.opers().end(); ++i)
+		for (IrcServerConfig::OperMap::const_iterator i = config.opers.begin(); i != config.opers.end(); ++i)
 			writeNum(u, IRC::Reply::statoline(i->second.host, i->first));
 	else if (c == 'u')
 		writeNum(u, IRC::Reply::statuptime(::time(NULL) - creation));

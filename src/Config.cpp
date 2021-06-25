@@ -121,3 +121,12 @@ void Config::fnicks(std::set<std::string> &f)
 	cfg->lookupList(IRC_SCOPE, "banned_nicks", nicks);
 	f = std::set<std::string>(nicks.c_array(), nicks.c_array() + nicks.length());
 }
+
+void Config::servHosts(std::set<std::string> &s)
+{
+	s.clear();
+	config4cpp::StringVector servs;
+
+	cfg->lookupList(IRC_SCOPE, "services_allowed_hosts", servs);
+	s = std::set<std::string>(servs.c_array(), servs.c_array() + servs.length());
+}

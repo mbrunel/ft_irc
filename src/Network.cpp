@@ -112,16 +112,6 @@ void Network::resetUserReceipt()
 		i->second->unmark();
 }
 
-Network::OperMap &Network::opers() { return _opers; }
-
-Oper *Network::getOper(const std::string &login)
-{
-	OperMap::iterator it = _opers.find(login);
-	if (it == _opers.end())
-		return (NULL);
-	return &it->second;
-}
-
 Network::FnicksSet &Network::fnicks() {return _fnicks; }
 
 bool Network::isFnick(const std::string &nick)

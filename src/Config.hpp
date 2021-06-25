@@ -43,6 +43,7 @@ class Config
 	int maxMasks();
 	size_t historySize();
 	void opers(std::map<std::string, Oper> &opers);
+	void servHosts(std::set<std::string> &servHosts);
 	void fnicks(std::set<std::string> &fnicks);
 
   private:

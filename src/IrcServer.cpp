@@ -13,6 +13,8 @@ ping(cfg.ping()),
 pong(cfg.pong()),
 pass(cfg.serverpass())
 {
+	cfg.opers(opers);
+	cfg.servHosts(servHosts);
 	if (cfg.motdfile().size())
 		ft::fileToData(cfg.motdfile(), motd, 80);
 }
@@ -147,7 +149,6 @@ void IrcServer::loadConfig(const std::string &file)
 		init = false;
 	}
 	srv.setMaxConnections(cfg.maxConnections());
-	cfg.opers(network.opers());
 	cfg.fnicks(network.fnicks());
 	network.setHistorySize(cfg.historySize());
 	config = IrcServerConfig(cfg);

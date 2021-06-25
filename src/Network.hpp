@@ -22,7 +22,7 @@ class Network
 	typedef std::map<std::string, User *>				UserMap;
 	typedef std::map<std::string, User *>				ServiceMap;
 	typedef std::map<std::string, Channel *>			ChannelMap;
-	typedef std::map<std::string, Oper>					OperMap;
+
 	typedef std::set<std::string>						FnicksSet;
 	typedef std::list<BasicConnection *>				ZombieList;
 	typedef std::vector<UserInfo>						InfoVec;
@@ -35,7 +35,6 @@ class Network
 	const ConnectionMap	&connections() const;
 	const UserMap		&users() const;
 	const ServiceMap	&services() const;
-	OperMap				&opers();
 	FnicksSet			&fnicks();
 	void				add(User *user);
 	void				add(Channel *channel);
@@ -49,7 +48,6 @@ class Network
 	void				remove(const Channel *chan) throw();
 	void				removeService(User *user) throw();
 	void				resetUserReceipt();
-	Oper				*getOper(const std::string &login);
 	bool				isFnick(const std::string &nick);
 	void				addFnick(const std::string &nick);
 	void				newZombie(BasicConnection *);
@@ -63,7 +61,6 @@ class Network
 	UserMap			_users;
 	ServiceMap		_services;
 	ChannelMap		_channels;
-	OperMap			_opers;
 	FnicksSet		_fnicks;
 	ZombieList		_zombies;
 	HistoryList		_history;
