@@ -4,7 +4,8 @@ ft_irc is a C++98 Internet Chat server for Linux.
 
 ## Details
 
-ft_irc is an implementation of the [IRC Client Protocol](https://datatracker.ietf.org/doc/html/rfc2812).
+- ft_irc is an implementation of the [IRC Client Protocol](https://datatracker.ietf.org/doc/html/rfc2812).
+- This is the project's [API documentation](https://mbrunel.github.io/ft_irc/index.html).
 
 ## Installation
 
@@ -14,24 +15,17 @@ make
 make install
 ```
 
-## Documentation
-
-```
-make doc 
-```
-The html doxygen generated documentation.
-
 ## Dependencies
 
 ircserv :
-* [openssl](https://www.openssl.org)
-* [config4cpp](http://www.config4star.org)
+- [openssl](https://www.openssl.org)
+- [config4cpp](http://www.config4star.org)
 
 bot :
-* [libcurl](https://curl.se/libcurl/)
+- [libcurl](https://curl.se/libcurl/)
 
 Documentation :
-* [doxygen](https://github.com/doxygen/doxygen)
+- [doxygen](https://github.com/doxygen/doxygen)
 
 ## License
 
