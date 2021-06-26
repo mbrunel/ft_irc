@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['umode',['umode',['../classUser.html#a3340f8439ad78fe9703c2c73ea5dbb8e',1,'User']]],
+  ['umodeis',['umodeis',['../namespaceIRC_1_1Reply.html#a20be3de1603bdd4b9c0dda77ac9135cc',1,'IRC::Reply']]],
+  ['umodeunknownflag',['umodeunknownflag',['../namespaceIRC_1_1Error.html#aa1dcb7c06dc96a3f2298a88cb9571e86',1,'IRC::Error']]],
+  ['unaway',['unaway',['../namespaceIRC_1_1Reply.html#ac10329a78d30acb5877ed83ec333a52b',1,'IRC::Reply']]],
+  ['uniqueptr',['uniquePtr',['../classft_1_1uniquePtr.html',1,'ft::uniquePtr&lt; T &gt;'],['../classft_1_1uniquePtr.html#a786ec4b5ca5f646623857271ab05fbf9',1,'ft::uniquePtr::uniquePtr()']]],
+  ['unknowncommand',['unknowncommand',['../namespaceIRC_1_1Error.html#ad4827017d6e34ab93f0dc41740971cdd',1,'IRC::Error']]],
+  ['unknownmode',['unknownmode',['../namespaceIRC_1_1Error.html#ad0753828cba0ac83ef0e8f88eae222de',1,'IRC::Error']]],
+  ['unmark',['unmark',['../classUser.html#a3537ac2959e57c1000e3724d221f5e5d',1,'User']]],
+  ['unmoderated',['UNMODERATED',['../classChannel.html#af57655780754d8facbf9ef1b817946f9a5f0fdd2583cf87eeaf479a3bb2b12423',1,'Channel']]],
+  ['unset',['unset',['../classMode.html#a17d4cabb4a183103343e1c246a4d380f',1,'Mode']]],
+  ['unsetnonblock',['unsetNonblock',['../classtcp_1_1Socket.html#a4af9f8b8dd63c4315923492e96c0f238',1,'tcp::Socket']]],
+  ['unsetrequirement',['unsetRequirement',['../classUser.html#ad8a717ed2936b36ab7f41c00f89dc4c6',1,'User']]],
+  ['user',['User',['../classUser.html',1,'User'],['../classBasicConnection.html#a6b8e4c6f5efc9af9423c205228dbf794aee4dfe7da2090268f7d234384ba14703',1,'BasicConnection::USER()'],['../classUserRequirement.html#ae7248b4c71e2905c3914f1165f72258ca6002824eb07aa60b427c8eb7b64808c2',1,'UserRequirement::USER()'],['../classIRC_1_1Prefix.html#a0c746b6b2af1d99912e65628fab115c0',1,'IRC::Prefix::user()'],['../classUser.html#adccc958fab78c08f7a539569c1e0de5e',1,'User::User()']]],
+  ['userhostreply',['userhostreply',['../namespaceIRC_1_1Reply.html#a655fcc4ca918433eed0cbff7c1049fd6',1,'IRC::Reply']]],
+  ['userinfo',['UserInfo',['../structUserInfo.html',1,'UserInfo'],['../structUserInfo.html#a81df81de370d3ad12a5ed6c0484f8a62',1,'UserInfo::UserInfo()']]],
+  ['usermap',['UserMap',['../classNetwork.html#a9437c40d21610764d41e623edebce19f',1,'Network']]],
+  ['usermode',['UserMode',['../classUserMode.html',1,'UserMode'],['../classUserMode.html#a5eabae692741124beefd861818cb6873',1,'UserMode::UserMode()']]],
+  ['username',['username',['../structUserInfo.html#aa7b8dbfdb9d7b953bff221b07f4dc825',1,'UserInfo::username()'],['../classUser.html#a03ef35c233f5b0e5fa85f217cd169665',1,'User::username()']]],
+  ['usernotinchannel',['usernotinchannel',['../namespaceIRC_1_1Error.html#a39af81786e6d3f2db0201a883eb0c9b8',1,'IRC::Error']]],
+  ['useronchannel',['useronchannel',['../namespaceIRC_1_1Error.html#ae4fa4d3dced5962f0b086de04f84a9ef',1,'IRC::Error']]],
+  ['userrequirement',['UserRequirement',['../classUserRequirement.html',1,'UserRequirement'],['../classUserRequirement.html#a31e5c713f21e97381e0fa905d151b65d',1,'UserRequirement::UserRequirement()']]],
+  ['users',['users',['../classNetwork.html#a8ff71f7c2380a91950d83e0616fbd992',1,'Network']]],
+  ['usersdisabled',['usersdisabled',['../namespaceIRC_1_1Error.html#a6548fd23fdbaedbf5d83c20dd2371ea6',1,'IRC::Error']]],
+  ['usersdontmatch',['usersdontmatch',['../namespaceIRC_1_1Error.html#a67770590350cef2178fa66459b4831c6',1,'IRC::Error']]]
+];

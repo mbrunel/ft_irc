@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['_5faddr',['_addr',['../classtcp_1_1Socket.html#a186bff75da6f02eec86e51a1885b350a',1,'tcp::Socket']]],
+  ['_5fawayreason',['_awayReason',['../classUser.html#a5ecd59c8723aaf6d61a005a8a908a239',1,'User']]],
+  ['_5fclock',['_clock',['../classBasicConnection.html#a6ee699a335ee908bbba6b2d26d3deafd',1,'BasicConnection']]],
+  ['_5ffd',['_fd',['../classtcp_1_1Socket.html#a7b783882ebff06cfaea0bc4b05be6b73',1,'tcp::Socket']]],
+  ['_5fhopcount',['_hopcount',['../classBasicConnection.html#a40dd7e9f315263057cb085ae8eb7a7c9',1,'BasicConnection']]],
+  ['_5fhost',['_host',['../classtcp_1_1TcpSocket.html#a75bbbfce06df4229547e4a1b391377ac',1,'tcp::TcpSocket']]],
+  ['_5fidle',['_idle',['../classUser.html#a62d435bd2ca2dfeec0e38aac38cc127a',1,'User']]],
+  ['_5fip',['_ip',['../classtcp_1_1TcpSocket.html#a61b1560767f82f3fae34076121b3077e',1,'tcp::TcpSocket']]],
+  ['_5fisreadable',['_isReadable',['../classtcp_1_1TcpSocket.html#a3816da5e700d3fd6b7d8da9bb32d280d',1,'tcp::TcpSocket']]],
+  ['_5fiswriteable',['_isWriteable',['../classtcp_1_1TcpSocket.html#a46c65682f173217f1bbaea4d47888857',1,'tcp::TcpSocket']]],
+  ['_5fjoinedchannels',['_joinedChannels',['../classUser.html#a62c8bb01416607d293cb5c313da04578',1,'User']]],
+  ['_5fnewline',['_newline',['../classtcp_1_1TcpSocket.html#a8f238d66c16de24c219dde3c19257138',1,'tcp::TcpSocket']]],
+  ['_5fpongexpected',['_pongExpected',['../classBasicConnection.html#ae772207854e33da0fcf45a20fc83cfb2',1,'BasicConnection']]],
+  ['_5fport',['_port',['../classtcp_1_1TcpSocket.html#a5ac87ab5db1d1ab364577a7db17dd408',1,'tcp::TcpSocket']]],
+  ['_5freadbuf',['_readBuf',['../classtcp_1_1TcpSocket.html#a830159478a19e71653e68ba1a0fe9c4c',1,'tcp::TcpSocket']]],
+  ['_5frealname',['_realname',['../classUser.html#ab328421bddf3f2deecb98e02704b2a0e',1,'User']]],
+  ['_5frequirements',['_requirements',['../classUser.html#a9629ad304ae2f4e91e394a662bcf12ca',1,'User']]],
+  ['_5fsocket',['_socket',['../classBasicConnection.html#a40a0c30ccf93e946423734c211cdc8b6',1,'BasicConnection']]],
+  ['_5fsslinit',['_sslInit',['../namespacetcp.html#a7925a8e3182409f7043723452aeacdaf',1,'tcp']]],
+  ['_5ftype',['_type',['../classBasicConnection.html#a9f8e8ab75c354c09a2e16b46e0a8ba09',1,'BasicConnection']]],
+  ['_5fumode',['_umode',['../classUser.html#a3fa5815ebc5d9a6afa3bfe6632114b3c',1,'User']]],
+  ['_5fwritebuf',['_writeBuf',['../classtcp_1_1TcpSocket.html#a09ac425406d756a638f8cb4790b989e9',1,'tcp::TcpSocket']]]
+];
