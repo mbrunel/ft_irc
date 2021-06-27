@@ -4,9 +4,9 @@ int IrcServer::rehash(User &u, const IRC::Message &m)
 {
 	(void)m;
 	if (!u.isRegistered())
-		writeNum(u, IRC::Error::notregistered());
+		return (writeNum(u, IRC::Error::notregistered()));
 	if (!u.umode().isSet(UserMode::OPERATOR))
-		writeNum(u, IRC::Error::noprivileges());
+		return (writeNum(u, IRC::Error::noprivileges()));
 	try { loadConfig(config.configfile); }
 	catch (config4cpp::ConfigurationException &e)
 	{
