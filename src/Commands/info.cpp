@@ -31,7 +31,7 @@ static const char *info[] = {
 "Authors:",
 "- Adrien Soursou",
 "- Matthias Brunel",
-"- Mattéo Papin",
+"- Matteo Papin",
 "",
 NULL };
 
